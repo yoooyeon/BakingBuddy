@@ -16,8 +16,17 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Long dirId;
     private boolean useYn;
-    private Long dirId; // 폴더링
+    private String memo;
+    private boolean openYn; // 공개 여부 True - Open
+
+    private String ingredients; // JPA
+    private String tags; // JPA
+
+    private Integer time; // 소요시간
+    private Integer level; // 난이도
+
 
     public void delete() {
         this.useYn = false;
