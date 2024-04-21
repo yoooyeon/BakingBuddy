@@ -60,8 +60,10 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
     testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-//    testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
