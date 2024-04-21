@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baking Home</title>
+  <!-- 부트스트랩 링크 추가 -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- 상단 바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <!-- 로그인 버튼 -->
+    <a class="navbar-brand" th:href="@{/login}">로그인</a>
+
+    <!-- 로그인한 경우 유저 아이디 -->
+    <div th:if="${loggedIn}" class="navbar-text">
+      <span th:text="${username}">사용자명</span>
+    </div>
+
+    <!-- 검색창 -->
+    <form class="form-inline ml-auto">
+      <input class="form-control mr-sm-2" type="text" placeholder="검색어를 입력하세요" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
+    </form>
+  </div>
+</nav>
+
+<!-- 바디 -->
+<div class="container mt-5">
+  <!-- 로그인 후 레시피 리스트 -->
+  <div th:if="${loggedIn}">
+    <h2>레시피 리스트</h2>
+    <ul class="list-group">
+      <li class="list-group-item">레시피 1</li>
+      <li class="list-group-item">레시피 2</li>
+      <li class="list-group-item">레시피 3</li>
+      <!-- 필요한 만큼 레시피 아이템 추가 -->
+    </ul>
+  </div>
+
+  <!-- 로그인 전 화면에 표시할 내용 추가 -->
+</div>
+
+<!-- 부트스트랩 자바스크립트 추가 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
