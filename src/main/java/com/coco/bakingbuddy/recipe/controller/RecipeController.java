@@ -23,8 +23,8 @@ public class RecipeController {
     }
 
     @GetMapping("{id}")
-    public SelectRecipeResponseDto selectById(@PathVariable Long id) {
-        return recipeService.selectById(id);
+    public SelectRecipeResponseDto selectById(@PathVariable Long id, @RequestParam Long dirId) {
+        return recipeService.selectById(id,dirId);
     }
 
     @PostMapping

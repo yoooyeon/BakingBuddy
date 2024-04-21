@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,23 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepository;
+    private final RecipeQueryDslRepository recipeQueryDslRepository;
 
     public List<SelectRecipeResponseDto> selectAll() {
         return recipeRepository.findAll().stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
 
-    public SelectRecipeResponseDto selectById(Long id) {
-        return SelectRecipeResponseDto.fromEntity(recipeRepository.findById(id).orElseThrow());
+    public SelectRecipeResponseDto selectById(Long id, Long dirId) {
+        if (dirId == null) {
+            return SelectRecipeResponseDto.fromEntity(recipeRepository.findById(id).orElseThrow());
+
+        } else {
+            List<Recipe> recipes = recipeQueryDslRepository.findByIdAndDirId(id, dirId);
+            if (recipes == null || recipes.isEmpty()) {
+                return null;
+            }
+        }
+        return null;
     }
 
     public CreateRecipeResponseDto create(CreateRecipeRequestDto dto) {
