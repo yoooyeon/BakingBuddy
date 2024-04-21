@@ -1,1 +1,25 @@
-spring.application.name=BakingBuddy
+
+spring:
+  application:
+    name: BakingBuddy
+  datasource:
+    url: jdbc:mariadb://localhost:3306/oneday
+    username: root
+    password: root
+    #    url: jdbc:mariadb://mariadb.~~.rds.amazonaws.com:3306/oneday
+    #    username: admin
+    #    password: yooyeon
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+      connection:
+
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MariaDBDialect
+
