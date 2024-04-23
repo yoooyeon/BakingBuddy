@@ -1,19 +1,22 @@
 package com.coco.bakingbuddy.tag.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.coco.bakingbuddy.global.domain.BaseTime;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Tag {
+public class Tag extends BaseTime {
     @Id
+    @Column(name = "TAG_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name; // 태그명
+    @OneToMany(mappedBy = "tag")
+    private List<TagRecipe> tagRecipe;
 }

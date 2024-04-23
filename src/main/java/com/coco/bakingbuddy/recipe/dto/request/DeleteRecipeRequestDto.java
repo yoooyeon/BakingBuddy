@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class DeleteRecipeRequestDto {
     private Long id;
+
     public static Recipe toEntity(DeleteRecipeRequestDto dto) {
         return Recipe.builder()
                 .id(dto.id)

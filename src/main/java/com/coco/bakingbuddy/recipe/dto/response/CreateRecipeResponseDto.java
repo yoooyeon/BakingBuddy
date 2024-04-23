@@ -27,12 +27,11 @@ public class CreateRecipeResponseDto {
     public static CreateRecipeResponseDto fromEntity(Recipe recipe) {
         return CreateRecipeResponseDto.builder()
                 .id(recipe.getId())
-                .dirId(recipe.getDirId())
+                .dirId(recipe.getDirectory().getId())
                 .name(recipe.getName())
-                .userId(recipe.getUserId())
+                .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
                 .ingredients(recipe.getIngredients())
-                .tags(recipe.getTags())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .build();

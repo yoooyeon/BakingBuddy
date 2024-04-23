@@ -23,15 +23,15 @@ public class SelectRecipeResponseDto {
 
     private Integer time; // 소요시간
     private Integer level; // 난이도
+
     public static SelectRecipeResponseDto fromEntity(Recipe recipe) {
         return SelectRecipeResponseDto.builder()
                 .id(recipe.getId())
-                .dirId(recipe.getDirId())
+                .dirId(recipe.getDirectory().getId())
                 .name(recipe.getName())
-                .userId(recipe.getUserId())
+                .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
                 .ingredients(recipe.getIngredients())
-                .tags(recipe.getTags())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .build();

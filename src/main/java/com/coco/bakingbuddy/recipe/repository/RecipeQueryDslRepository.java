@@ -25,7 +25,14 @@ public class RecipeQueryDslRepository {
     public List<Recipe> findByUserId(Long userId) {
         return queryFactory
                 .selectFrom(recipe)
-                .where(recipe.userId.eq(userId))
+                .where(recipe.user.id.eq(userId))
+                .fetch();
+    }
+
+    public List<Recipe> findByDirectoryId(Long directoryId) {
+        return queryFactory
+                .selectFrom(recipe)
+                .where(recipe.directory.id.eq(directoryId))
                 .fetch();
     }
 }

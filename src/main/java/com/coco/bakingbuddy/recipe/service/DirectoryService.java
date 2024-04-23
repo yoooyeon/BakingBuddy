@@ -6,6 +6,8 @@ import com.coco.bakingbuddy.recipe.dto.response.CreateDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.repository.DirectoryQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.DirectoryRepository;
+import com.coco.bakingbuddy.user.domain.User;
+import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class DirectoryService {
     private final DirectoryRepository directoryRepository;
+    private final UserRepository userRepository;
     private final DirectoryQueryDslRepository directoryQueryDslRepository;
 
     public List<SelectDirectoryResponseDto> selectByUserId(Long userId) {
@@ -25,12 +28,14 @@ public class DirectoryService {
 
     public List<SelectDirectoryResponseDto> selectById(Long id) {
         return directoryRepository.findById(id).stream().map(SelectDirectoryResponseDto::fromEntity).collect(Collectors.toList());
-
     }
 
     public CreateDirectoryResponseDto create(CreateDirectoryRequestDto dto) {
-        return CreateDirectoryResponseDto.fromEntity(directoryRepository.save(Directory.builder()
+        Directory directory = Directory.builder()
                 .name(dto.getName())
-                .build()));
+                .build();
+        User user = userRepository.findById(dto.getUserId()).orElseThrow();
+        directory.setUser(user);
+        return CreateDirectoryResponseDto.fromEntity(directoryRepository.save(directory));
     }
 }

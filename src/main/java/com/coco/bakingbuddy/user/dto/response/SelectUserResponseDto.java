@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class SelectUserResponseDto {
     private Long id;
     private String username;
+
     public static SelectUserResponseDto fromEntity(User user) {
         return SelectUserResponseDto.builder()
                 .username(user.getUsername())

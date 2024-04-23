@@ -1,7 +1,6 @@
 package com.coco.bakingbuddy.recipe.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Directory;
-import com.coco.bakingbuddy.recipe.domain.QDirectory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +15,7 @@ import static com.coco.bakingbuddy.recipe.domain.QRecipe.recipe;
 @Repository
 public class DirectoryQueryDslRepository {
     private final JPAQueryFactory queryFactory;
+
     public List<Recipe> findByRecipeId(Long id) {
         return queryFactory
                 .selectFrom(recipe)
@@ -26,7 +26,7 @@ public class DirectoryQueryDslRepository {
     public List<Directory> findByUserId(Long userId) {
         return queryFactory
                 .selectFrom(directory)
-                .where(directory.userId.eq(userId))
+                .where(directory.user.id.eq(userId))
                 .fetch();
     }
 }

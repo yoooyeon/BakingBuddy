@@ -22,6 +22,11 @@ public class RecipeController {
         return recipeService.selectByUserId(userId);
     }
 
+    @GetMapping("directories/{directoryId}")
+    public List<SelectRecipeResponseDto> selectByDirectoryId(@PathVariable Long directoryId) {
+        return recipeService.selectByDirectoryId(directoryId);
+    }
+
     @GetMapping
     public List<SelectRecipeResponseDto> selectAll() {
         return recipeService.selectAll();

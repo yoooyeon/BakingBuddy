@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class CreateDirectoryRequestDto {
     private String name;
+    private Long userId;
 
     public static Directory toEntity(CreateDirectoryRequestDto dto) {
         return Directory.builder()
