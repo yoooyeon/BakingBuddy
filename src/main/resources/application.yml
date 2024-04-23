@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: BakingBuddy
@@ -14,7 +13,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       connection:
 
     show-sql: true
@@ -22,4 +21,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect
-
+  thymeleaf:
+    prefix: classpath:/templates/
+    cache: false
+    check-template-location: true
+    suffix: .html

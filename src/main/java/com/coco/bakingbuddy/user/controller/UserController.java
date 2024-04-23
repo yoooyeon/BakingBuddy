@@ -1,42 +1,34 @@
 package com.coco.bakingbuddy.user.controller;
 
+import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
+import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
+import com.coco.bakingbuddy.user.dto.response.CreateUserResponseDto;
+import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
+import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
+    private final UserService userService;
+
     @GetMapping
-    public String index(Model model) {
-        // 로그인 상태 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean loggedIn = authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
-
-        // 로그인한 경우 유저 아이디
-        model.addAttribute("loggedIn", loggedIn);
-        if (loggedIn) {
-            model.addAttribute("username", authentication.getName());
-        }
-        return "index";
+    public List<SelectUserResponseDto> allUsers() {
+        return userService.selectAll();
     }
-    @PostMapping
-    public String logIn(Model model) {
-        // 로그인 상태 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean loggedIn = authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser");
 
-        // 로그인한 경우 유저 아이디
-        model.addAttribute("loggedIn", loggedIn);
-        if (loggedIn) {
-            model.addAttribute("username", authentication.getName());
-        }
-        return "index";
+    @PostMapping("login")
+    public boolean login(@RequestBody LoginUserRequestDto user) {
+
+        return userService.authenticate(user);
+    }
+
+    @PostMapping("register") // 회원 등록 요청
+    public CreateUserResponseDto register(@RequestBody CreateUserRequestDto user) {
+        return userService.registerUser(user);
     }
 }
