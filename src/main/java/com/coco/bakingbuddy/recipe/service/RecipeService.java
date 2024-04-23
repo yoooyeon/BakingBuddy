@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.*;
+
 @RequiredArgsConstructor
 @Service
 public class RecipeService {
@@ -24,17 +26,9 @@ public class RecipeService {
         return recipeRepository.findAll().stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
 
-    public SelectRecipeResponseDto selectById(Long id, Long dirId) {
-        if (dirId == null) {
-            return SelectRecipeResponseDto.fromEntity(recipeRepository.findById(id).orElseThrow());
+    public SelectRecipeResponseDto selectById(Long id) {
+        return fromEntity(recipeQueryDslRepository.findById(id));
 
-        } else {
-            List<Recipe> recipes = recipeQueryDslRepository.findByIdAndDirId(id, dirId);
-            if (recipes == null || recipes.isEmpty()) {
-                return null;
-            }
-        }
-        return null;
     }
 
     public CreateRecipeResponseDto create(CreateRecipeRequestDto dto) {
@@ -46,5 +40,13 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(id).orElseThrow();
         recipe.delete();
         return DeleteRecipeResponseDto.fromEntity(recipe);
+    }
+
+    public List<SelectRecipeResponseDto> selectByUserId(Long userId) {
+        List<Recipe> recipes = recipeQueryDslRepository.findByUserId(userId);
+        if (recipes == null || recipes.isEmpty()) {
+            return null;
+        }
+        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
 }

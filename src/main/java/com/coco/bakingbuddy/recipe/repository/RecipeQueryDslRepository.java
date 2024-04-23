@@ -15,18 +15,17 @@ public class RecipeQueryDslRepository {
     private final JPAQueryFactory queryFactory;
 
 
-    public List<Recipe> findByRecipeId(Long id) {
+    public Recipe findById(Long id) {
         return queryFactory
                 .selectFrom(recipe)
                 .where(recipe.id.eq(id))
-                .fetch();
+                .fetchOne();
     }
 
-    public List<Recipe> findByIdAndDirId(Long id, Long dirId) {
+    public List<Recipe> findByUserId(Long userId) {
         return queryFactory
                 .selectFrom(recipe)
-                .where(recipe.id.eq(id)
-                        .and(recipe.dirId.eq(dirId)))
+                .where(recipe.userId.eq(userId))
                 .fetch();
     }
 }

@@ -15,6 +15,7 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long userId;
     private String name;
     private Long dirId;
     private boolean useYn;

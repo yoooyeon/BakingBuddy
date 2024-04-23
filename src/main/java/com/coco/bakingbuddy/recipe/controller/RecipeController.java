@@ -17,20 +17,26 @@ import java.util.List;
 public class RecipeController {
     private final RecipeService recipeService;
 
+    @GetMapping("users/{userId}")
+    public List<SelectRecipeResponseDto> selectByUserId(@PathVariable Long userId) {
+        return recipeService.selectByUserId(userId);
+    }
+
     @GetMapping
     public List<SelectRecipeResponseDto> selectAll() {
         return recipeService.selectAll();
     }
 
     @GetMapping("{id}")
-    public SelectRecipeResponseDto selectById(@PathVariable Long id, @RequestParam Long dirId) {
-        return recipeService.selectById(id,dirId);
+    public SelectRecipeResponseDto selectById(@PathVariable Long id) {
+        return recipeService.selectById(id);
     }
 
     @PostMapping
     public CreateRecipeResponseDto create(@RequestBody CreateRecipeRequestDto dto) {
         return recipeService.create(dto);
     }
+
     @DeleteMapping
     public DeleteRecipeResponseDto create(@RequestBody DeleteRecipeRequestDto dto) {
         return recipeService.delete(dto);

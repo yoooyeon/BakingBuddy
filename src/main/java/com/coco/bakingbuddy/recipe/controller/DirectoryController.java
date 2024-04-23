@@ -1,13 +1,11 @@
 package com.coco.bakingbuddy.recipe.controller;
 
+import com.coco.bakingbuddy.recipe.dto.request.CreateDirectoryRequestDto;
+import com.coco.bakingbuddy.recipe.dto.response.CreateDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
-import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,8 +16,19 @@ import java.util.List;
 public class DirectoryController {
 
     private final DirectoryService directoryService;
+
     @GetMapping("users/{userId}")
     public List<SelectDirectoryResponseDto> selectByUserId(@PathVariable Long userId) {
         return directoryService.selectByUserId(userId);
+    }
+
+    @GetMapping("{id}")
+    public List<SelectDirectoryResponseDto> selectById(@PathVariable Long id) {
+        return directoryService.selectById(id);
+    }
+
+    @PostMapping
+    public CreateDirectoryResponseDto create(@RequestBody CreateDirectoryRequestDto dto) {
+        return directoryService.create(dto);
     }
 }
