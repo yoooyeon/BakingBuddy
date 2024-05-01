@@ -20,17 +20,17 @@ public class CreateRecipeRequestDto {
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
 
-    private String ingredients; // JPA
+    private List<String> ingredients; // JPA
 
     private Integer time; // 소요시간
     private Integer level; // 난이도
-    private List<Tag> tags;
+    private List<String> tags;
 
     public static Recipe toEntity(CreateRecipeRequestDto dto) {
         return Recipe.builder()
                 .name(dto.getName())
                 .memo(dto.getMemo())
-                .ingredients(dto.getIngredients())
+//                .ingredients(dto.getIngredients())
                 .time(dto.getTime())
                 .level(dto.getLevel())
                 .build();

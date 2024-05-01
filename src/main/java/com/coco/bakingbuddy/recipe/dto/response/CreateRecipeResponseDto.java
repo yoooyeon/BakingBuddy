@@ -31,7 +31,7 @@ public class CreateRecipeResponseDto {
                 .name(recipe.getName())
                 .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
-                .ingredients(recipe.getIngredients())
+//                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .build();

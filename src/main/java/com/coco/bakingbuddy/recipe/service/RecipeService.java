@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.service;
 
 import com.coco.bakingbuddy.recipe.domain.Directory;
+import com.coco.bakingbuddy.recipe.domain.Ingredient;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
@@ -8,6 +9,7 @@ import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.repository.DirectoryRepository;
+import com.coco.bakingbuddy.recipe.repository.IngredientRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.tag.domain.Tag;
@@ -28,6 +30,7 @@ import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.f
 @RequiredArgsConstructor
 @Service
 public class RecipeService {
+    private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
     private final DirectoryRepository directoryRepository;
     private final UserRepository userRepository;
@@ -55,21 +58,28 @@ public class RecipeService {
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);
-        List<Tag> tags = dto.getTags();
-        for (Tag tag : tags) {
-            if (tagRepository.findByName(tag.getName()).isPresent()) {
-                tag = tagRepository.findByName(tag.getName()).get();
+        List<String> tags = dto.getTags();
+        Tag tag = null;
+        for (String tagName : tags) {
+            if (tagRepository.findByName(tagName).isPresent()) {
+                tag = tagRepository.findByName(tagName).get();
+            } else {
+                tag = tagRepository.save(Tag.builder().name(tagName).build());
             }
             TagRecipe tagRecipe = new TagRecipe();
             tagRecipe.addRecipe(recipe);
             tagRecipe.addTag(tag);
             tagRecipeRepository.save(tagRecipe);
         }
+        List<String> ingredients = dto.getIngredients();
+        for (String name : ingredients) {
+            Ingredient ingredient = Ingredient.builder().name(name).recipe(recipe).build();
+            ingredientRepository.save(ingredient);
+        }
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
 
     @Transactional
-
     public DeleteRecipeResponseDto delete(DeleteRecipeRequestDto dto) {
         Long id = dto.getId();
         Recipe recipe = recipeRepository.findById(id).orElseThrow();

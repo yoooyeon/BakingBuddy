@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -26,7 +27,8 @@ public class Recipe extends BaseTime {
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
 
-    private String ingredients; // JPA
+    @OneToMany(mappedBy = "recipe")
+    private List<Ingredient> ingredients; // JPA
 //    private String tags; // JPA
 
     private Integer time; // 소요시간
@@ -47,5 +49,14 @@ public class Recipe extends BaseTime {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void addIngredient(Ingredient ingredient) {
+        if (this.ingredients != null) {
+            this.ingredients.add(ingredient);
+            return;
+        }
+        this.ingredients = new ArrayList<>();
+        this.ingredients.add(ingredient);
     }
 }

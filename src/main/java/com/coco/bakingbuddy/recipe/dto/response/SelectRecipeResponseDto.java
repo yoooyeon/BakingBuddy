@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -18,7 +20,7 @@ public class SelectRecipeResponseDto {
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
 
-    private String ingredients; // JPA
+    private List<String> ingredients; // JPA
     private String tags; // JPA
 
     private Integer time; // 소요시간
@@ -31,7 +33,7 @@ public class SelectRecipeResponseDto {
                 .name(recipe.getName())
                 .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
-                .ingredients(recipe.getIngredients())
+//                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .build();
