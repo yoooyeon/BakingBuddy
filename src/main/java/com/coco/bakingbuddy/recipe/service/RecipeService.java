@@ -60,13 +60,14 @@ public class RecipeService {
         recipe.setUser(user);
         List<String> tags = dto.getTags();
         Tag tag = null;
+        TagRecipe tagRecipe = new TagRecipe();
+
         for (String tagName : tags) {
             if (tagRepository.findByName(tagName).isPresent()) {
                 tag = tagRepository.findByName(tagName).get();
             } else {
                 tag = tagRepository.save(Tag.builder().name(tagName).build());
             }
-            TagRecipe tagRecipe = new TagRecipe();
             tagRecipe.addRecipe(recipe);
             tagRecipe.addTag(tag);
             tagRecipeRepository.save(tagRecipe);
@@ -75,7 +76,9 @@ public class RecipeService {
         for (String name : ingredients) {
             Ingredient ingredient = Ingredient.builder().name(name).recipe(recipe).build();
             ingredientRepository.save(ingredient);
+            recipe.addIngredient(ingredient);
         }
+        recipe = recipeRepository.save(recipe);
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
 
