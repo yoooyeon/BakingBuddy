@@ -1,14 +1,11 @@
 package com.coco.bakingbuddy.recipe.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
-
-    Optional<Ingredient> findByName(String name);
+public interface IngredientRecipeRepository extends JpaRepository<IngredientRecipe, Long> {
 
 }

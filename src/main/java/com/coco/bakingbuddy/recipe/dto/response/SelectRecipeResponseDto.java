@@ -1,6 +1,8 @@
 package com.coco.bakingbuddy.recipe.dto.response;
 
+import com.coco.bakingbuddy.recipe.domain.Ingredient;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.tag.domain.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +22,8 @@ public class SelectRecipeResponseDto {
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
 
-    private List<String> ingredients; // JPA
-    private String tags; // JPA
+    private List<Ingredient> ingredients; // JPA
+    private List<Tag> tags; // JPA
 
     private Integer time; // 소요시간
     private Integer level; // 난이도
@@ -33,7 +35,6 @@ public class SelectRecipeResponseDto {
                 .name(recipe.getName())
                 .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
-//                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .build();

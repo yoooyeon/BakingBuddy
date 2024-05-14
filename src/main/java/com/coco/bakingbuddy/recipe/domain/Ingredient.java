@@ -3,6 +3,8 @@ package com.coco.bakingbuddy.recipe.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -14,9 +16,7 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "RECIPE_ID")
-    private Recipe recipe;
+    @OneToMany(mappedBy = "ingredient")
+    private List<IngredientRecipe> ingredientRecipes;
 
 }

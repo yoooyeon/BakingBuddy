@@ -6,8 +6,8 @@ import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -27,17 +27,15 @@ public class Recipe extends BaseTime {
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
 
-    @OneToMany(mappedBy = "recipe")
-    private List<Ingredient> ingredients; // JPA
-//    private String tags; // JPA
-
     private Integer time; // 소요시간
     private Integer level; // 난이도
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "recipe")
-    private List<TagRecipe> tagRecipe;
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+    private Set<TagRecipe> tagRecipes;
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+    private List<IngredientRecipe> ingredientRecipes;
 
     public void delete() {
         this.useYn = false;
@@ -51,12 +49,5 @@ public class Recipe extends BaseTime {
         this.user = user;
     }
 
-    public void addIngredient(Ingredient ingredient) {
-        if (this.ingredients != null) {
-            this.ingredients.add(ingredient);
-            return;
-        }
-        this.ingredients = new ArrayList<>();
-        this.ingredients.add(ingredient);
-    }
+
 }
