@@ -22,6 +22,7 @@ public class User extends BaseTime {
     private String nickname;
     private String username;
     private String password;
+    private String profileImageUrl;
     // 관심 태그
 //    private List<Tag> tags = new ArrayList<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

@@ -6,9 +6,7 @@ import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
-import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
-import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
-import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.*;
 import com.coco.bakingbuddy.recipe.repository.*;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
@@ -22,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
@@ -83,7 +81,7 @@ public class RecipeService {
         for (String name : ingredients) {
             if (ingredientRepository.findByName(name).isPresent()) {
                 ingredient = ingredientRepository.findByName(name).get();
-            }else {
+            } else {
                 ingredient = ingredientRepository.save(Ingredient.builder().name(name).build());
             }
             ingredientRecipe.addRecipe(recipe);
@@ -103,7 +101,6 @@ public class RecipeService {
     }
 
     @Transactional(readOnly = true)
-
     public List<SelectRecipeResponseDto> selectByUserId(Long userId) {
         List<Recipe> recipes = recipeQueryDslRepository.findByUserId(userId);
         List<SelectRecipeResponseDto> result = new ArrayList<>();
@@ -138,5 +135,48 @@ public class RecipeService {
             return null;
         }
         return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<DirectoryWithRecipesResponseDto> selectDirsByUserId(Long userId) {
+        List<Recipe> recipes = recipeQueryDslRepository.findByUserId(userId);
+        List<DirectoryWithRecipesResponseDto> result = new ArrayList<>();
+        if (recipes == null || recipes.isEmpty()) {
+            return null;
+        }
+        HashMap<Directory, List<Recipe>> recipeByDir = new HashMap<>();
+        List<Tag> tags = new ArrayList<>();
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            Long id = recipe.getId();
+            List<TagRecipe> tagRecipes = tagRecipeQueryDslRepository.findByRecipeId(id);
+            List<IngredientRecipe> ingredientRecipes = ingredientRecipeQueryDslRepository.findByRecipeId(id);
+            for (TagRecipe tagRecipe : tagRecipes) {
+                Tag tag = tagRecipe.getTag();
+                tags.add(tag);
+            }
+            for (IngredientRecipe ingredientRecipe : ingredientRecipes) {
+                Ingredient ingredient = ingredientRecipe.getIngredient();
+                ingredients.add(ingredient);
+            }
+            SelectRecipeResponseDto selectRecipeResponseDto = fromEntity(recipe);
+            selectRecipeResponseDto.setIngredients(ingredients);
+            selectRecipeResponseDto.setTags(tags);
+            List<Recipe> list = recipeByDir.getOrDefault(recipe.getDirectory(), new ArrayList<>());
+            list.add(recipe);
+            recipeByDir.put(recipe.getDirectory(), list);
+        }
+        for (Directory key : recipeByDir.keySet()) {
+            List<Recipe> recipe = recipeByDir.get(key);
+
+            result.add(DirectoryWithRecipesResponseDto.builder()
+                    .dirId(key.getId())
+                    .dirName(key.getName())
+                    .recipes(recipe.stream().map(RecipeResponseDto::fromEntity).collect(Collectors.toList()))
+                    .build());
+
+        }
+        return result;
     }
 }

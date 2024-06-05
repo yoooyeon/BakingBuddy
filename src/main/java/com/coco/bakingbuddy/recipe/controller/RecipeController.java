@@ -6,20 +6,26 @@ import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
+import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequestMapping("/api/recipes")
 @RequiredArgsConstructor
-@RestController
+@Controller
 public class RecipeController {
     private final RecipeService recipeService;
+    private final UserService userService;
 
     @GetMapping("users/{userId}")
-    public List<SelectRecipeResponseDto> selectByUserId(@PathVariable Long userId) {
-        return recipeService.selectByUserId(userId);
+    public String selectByUserId(@PathVariable Long userId, Model model) {
+        model.addAttribute("user", userService.selectById(userId));
+        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
+        return "user";
     }
 
     @GetMapping("directories/{directoryId}")
@@ -28,13 +34,17 @@ public class RecipeController {
     }
 
     @GetMapping
-    public List<SelectRecipeResponseDto> selectAll() {
-        return recipeService.selectAll();
+    public String selectAll(Model model) {
+        List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
+        model.addAttribute("items", dtos);
+        return "items";
     }
 
     @GetMapping("{id}")
-    public SelectRecipeResponseDto selectById(@PathVariable Long id) {
-        return recipeService.selectById(id);
+    public String selectById(@PathVariable Long id, Model model) {
+        SelectRecipeResponseDto dto = recipeService.selectById(id);
+        model.addAttribute("item", dto);
+        return "item";
     }
 
     @PostMapping

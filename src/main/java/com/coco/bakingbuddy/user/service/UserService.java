@@ -39,4 +39,8 @@ public class UserService {
     public List<SelectUserResponseDto> selectAll() {
         return userRepository.findAll().stream().map(SelectUserResponseDto::fromEntity).collect(Collectors.toList());
     }
+
+    public User selectById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
 }
