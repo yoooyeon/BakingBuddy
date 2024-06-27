@@ -34,17 +34,19 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="item : ${items}">
-                <td><a href="item.html" th:href="@{/api/recipes/{itemId}(itemId=${item.id})}" th:text="${item.id}">ID</a>
+            <tr th:each="recipe : ${recipes}">
+                <td><a href="recipe.html" th:href="@{/api/recipes/{recipeId}(recipeId=${recipe.id})}"
+                       th:text="${recipe.id}">ID</a>
                 </td>
-                <td><a href="item.html" th:href="@{/api/recipes/users/{userId}(userId=${item.userId})}" th:text="${item.userId}">사용자ID</td>
-                <td th:text="${item.dirId}">분류</td>
-                <td><a href="item.html" th:href="@{|/api/recipes/${item.id}|}" th:text="${item.name}">상품명</a></td>
-                <td th:text="${item.memo}">메모</td>
-                <td th:text="${item.ingredients}">재료</td>
-                <td th:text="${item.tags}">태그</td>
-                <td th:text="${item.time}">태그</td>
-                <td th:text="${item.level}">태그</td>
+                <td><a href="recipe.html" th:href="@{/api/recipes/users/{userId}(userId=${recipe.userId})}"
+                       th:text="${recipe.userId}">사용자ID</a></td>
+                <td th:text="${recipe.dirId}">분류</td>
+                <td><a href="recipe.html" th:href="@{|/api/recipes/${recipe.id}|}" th:text="${recipe.name}">상품명</a></td>
+                <td th:text="${recipe.memo}">메모</td>
+                <td th:text="${recipe.ingredients}">재료</td>
+                <td th:text="${recipe.tags}">태그</td>
+                <td th:text="${recipe.time}">태그</td>
+                <td th:text="${recipe.level}">태그</td>
             </tr>
             </tbody>
         </table>

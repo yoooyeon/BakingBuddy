@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
+import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.*;
 import com.coco.bakingbuddy.recipe.repository.*;
 import com.coco.bakingbuddy.tag.domain.Tag;
@@ -16,6 +17,7 @@ import com.coco.bakingbuddy.tag.repository.TagRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RecipeService {
@@ -41,16 +44,24 @@ public class RecipeService {
     private final RecipeQueryDslRepository recipeQueryDslRepository;
 
     @Transactional(readOnly = true)
-
     public List<SelectRecipeResponseDto> selectAll() {
         List<Recipe> recipes = recipeQueryDslRepository.findAll();
+        if (recipes.isEmpty()) {
+            return null;
+        }
         return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-
     public SelectRecipeResponseDto selectById(Long id) {
-        return fromEntity(recipeQueryDslRepository.findById(id));
+        SelectRecipeResponseDto recipe = fromEntity(recipeQueryDslRepository.findById(id));
+        List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(id);
+        List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(id);
+        log.info("ingredients:" + ingredients);
+        log.info(("tags:" + tags));
+        recipe.setIngredients(ingredients);
+        recipe.setTags(tags);
+        return recipe;
 
     }
 
@@ -178,5 +189,11 @@ public class RecipeService {
 
         }
         return result;
+    }
+
+    public CreateRecipeResponseDto edit(EditRecipeRequestDto dto) {
+        Recipe recipe = EditRecipeRequestDto.toEntity(dto);
+        Recipe saved = recipeRepository.save(recipe);
+        return CreateRecipeResponseDto.fromEntity(saved);
     }
 }

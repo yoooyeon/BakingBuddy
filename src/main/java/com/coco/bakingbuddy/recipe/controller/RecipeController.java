@@ -1,10 +1,14 @@
 package com.coco.bakingbuddy.recipe.controller;
 
+import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
+import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import java.util.List;
 public class RecipeController {
     private final RecipeService recipeService;
     private final UserService userService;
+    private final DirectoryService directoryService;
 
     @GetMapping("users/{userId}")
     public String selectByUserId(@PathVariable Long userId, Model model) {
@@ -36,15 +41,24 @@ public class RecipeController {
     @GetMapping
     public String selectAll(Model model) {
         List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
-        model.addAttribute("items", dtos);
-        return "items";
+        model.addAttribute("recipes", dtos);
+        return "recipe-list";
     }
 
     @GetMapping("{id}")
     public String selectById(@PathVariable Long id, Model model) {
         SelectRecipeResponseDto dto = recipeService.selectById(id);
-        model.addAttribute("item", dto);
-        return "item";
+        model.addAttribute("recipe", dto);
+        return "recipe";
+    }
+
+    @GetMapping("register")
+    public String register(Model model) {
+        Long userId = 1L; // todo 임시 , 로그인 구현 후 userId 입력
+        List<SelectDirectoryResponseDto> dirs = directoryService.selectByUserId(userId);
+        model.addAttribute("userId", userId);
+        model.addAttribute("dirs", dirs);
+        return "register-recipe";
     }
 
     @PostMapping
@@ -55,5 +69,18 @@ public class RecipeController {
     @DeleteMapping
     public DeleteRecipeResponseDto create(@RequestBody DeleteRecipeRequestDto dto) {
         return recipeService.delete(dto);
+    }
+
+    @GetMapping("{recipeId}/edit") // 레시피 수정 화면 조회
+    public String editRecipe(@PathVariable Long recipeId, Model model) {
+        SelectRecipeResponseDto recipe = recipeService.selectById(recipeId);
+        model.addAttribute("recipe", recipe);
+        return "edit-recipe.html";
+    }
+
+    @PutMapping("{recipeId}/edit") // 레시피 수정 화면 조회
+    public CreateRecipeResponseDto editRecipe(@PathVariable Long recipeId, @RequestBody EditRecipeRequestDto dto) {
+        dto.setId(recipeId);
+        return recipeService.edit(dto);
     }
 }

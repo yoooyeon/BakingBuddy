@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Baking Buddy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>레시피 수정</h2>
+    </div>
+
+    <hr class="my-4">
+    <div>
+        <form id="recipeForm" th:action="@{/api/recipes}" method="post">
+            <div class="mb-3">
+                <label for="userId" class="form-label">User ID</label>
+                <input type="text" class="form-control" id="userId" name="userId" th:value="${recipe.userId}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">디렉토리</label>
+                <input type="text" class="form-control" id="category" name="category" th:value="${recipe.dirId}">
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">레시피 이름</label>
+                <input type="text" class="form-control" id="name" name="name" th:value="${recipe.name}">
+            </div>
+            <div class="mb-3">
+                <label for="memo" class="form-label">메모</label>
+                <input type="text" class="form-control" id="memo" name="memo" th:value="${recipe.memo}">
+            </div>
+            <div class="mb-3">
+                <label for="ingredients" class="form-label">재료</label>
+                <div id="ingredientList" class="mt-2"></div>
+                <input type="text" class="form-control" id="xIngredientList"
+                       th:value="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}">
+                <input type="text" class="form-control" id="ingredientsInput"
+                       placeholder="각 항목을 입력하고 엔터 키를 눌러 구분하세요">
+            </div>
+            <div class="mb-3">
+                <label for="tags" class="form-label">태그</label>
+                <input type="text" class="form-control" id="xTagList"
+                       th:value="${#strings.arrayJoin(recipe.tags.![name], ', ')}"
+                       readonly>
+                <div id="tagList" class="mt-2"></div>
+
+                <!--                <input type="text" class="form-control" th:value="${recipe.tags}">-->
+
+                <input type="text" class="form-control" id="tagsInput"
+                       placeholder="각 항목을 입력하고 엔터 키를 눌러 구분하세요">
+            </div>
+            <div class="mb-3">
+                <label for="time" class="form-label">소요시간(분 단위)</label>
+                <input type="number" class="form-control" id="time" name="time" th:value="${recipe.time}">
+            </div>
+            <div class="mb-3">
+                <label for="level" class="form-label">난이도</label>
+                <select class="form-select" id="level" name="level">
+                    <option value="Easy">쉬움</option>
+                    <option value="Medium">보통</option>
+                    <option value="Hard">어려움</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">등록하기</button>
+        </form>
+    </div>
+</div>
+<script>
+    let ingredientList = document.getElementById("ingredientList");
+    let tagList = document.getElementById("tagList");
+
+    document.getElementById("recipeForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // 폼 제출 방지 (예시를 위해)
+        const formData = new FormData(event.target);
+        // formData로 폼 제출 또는 AJAX 요청 처리
+        console.log("폼 데이터로 제출됨:", Object.fromEntries(formData.entries()));
+    });
+
+    function addToList(inputId, listContainer) {
+        let input = document.getElementById(inputId);
+        let inputValue = input.value.trim();
+        console.log("inputValue", inputValue);
+        if (inputValue) {
+            const existingItems = Array.from(listContainer.children).map(item => item.textContent.slice(0, -1).trim());
+            console.log("existingItems", existingItems);
+
+            if (!existingItems.includes(inputValue)) {
+                console.log("inputValue", inputValue);
+
+                const itemContainer = document.createElement("div");
+                itemContainer.className = "badge bg-secondary me-2";
+                itemContainer.textContent = input.value.trim();
+                const closeButton = document.createElement("span");
+                closeButton.className = "badge bg-danger ms-1";
+                closeButton.textContent = "x";
+                closeButton.style.cursor = "pointer";
+                closeButton.addEventListener("click", function () {
+                    itemContainer.remove();
+                });
+                itemContainer.appendChild(closeButton);
+                listContainer.appendChild(itemContainer);
+                input.value = ""; // 추가 후 입력 비우기
+            } else {
+                alert("이 항목은 이미 목록에 있습니다.");
+            }
+        }
+    }
+
+    document.getElementById("ingredientsInput").addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            addToList("ingredientsInput", ingredientList);
+        }
+    });
+
+    document.getElementById("tagsInput").addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            addToList("tagsInput", tagList);
+        }
+    });
+</script>
+
+</body>
+</html>

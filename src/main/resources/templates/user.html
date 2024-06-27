@@ -12,6 +12,12 @@
 </head>
 <body>
 <div class="container" style="max-width: 800px; margin-top: 50px;">
+    <!-- Add Recipe Button -->
+    <button class="w-100 btn btn-primary btn-lg"
+            onclick="location.href='register-recipe.html'"
+            th:onclick="|location.href='@{/api/recipes/register}'|"
+            type="button">레시피 등록하기
+    </button>
     <!-- User Info Section -->
     <div class="card mb-4">
         <div class="card-header text-center">

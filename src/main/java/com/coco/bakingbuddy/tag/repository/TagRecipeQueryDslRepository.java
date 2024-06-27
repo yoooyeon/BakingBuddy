@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.tag.repository;
 
+import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.coco.bakingbuddy.tag.domain.QTag.tag;
 import static com.coco.bakingbuddy.tag.domain.QTagRecipe.tagRecipe;
 
 @RequiredArgsConstructor
@@ -24,6 +26,14 @@ public class TagRecipeQueryDslRepository {
     public List<TagRecipe> findByRecipeId(Long recipeId) {
         return queryFactory
                 .selectFrom(tagRecipe)
+                .where(tagRecipe.recipe.id.eq(recipeId))
+                .fetch();
+    }
+    public List<Tag> findTagsByRecipeId(Long recipeId) {
+        return queryFactory
+                .select(tag)
+                .from(tagRecipe)
+                .leftJoin(tagRecipe.tag,tag)
                 .where(tagRecipe.recipe.id.eq(recipeId))
                 .fetch();
     }
