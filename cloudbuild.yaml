@@ -1,0 +1,31 @@
+steps:
+  # Gradle 설치 및 빌드
+  - name: 'gradle:7.5.1-jdk17'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        ./gradlew build --no-daemon
+        # 필요한 경우 또는 빌드할 JAR 파일 이름이 다르면 설정
+        cp build/libs/*.jar app.jar
+    dir: /workspace   # 작업 디렉토리 설정
+
+  # Docker 이미지 빌드
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-northeast3-docker.pkg.dev/baking-buddy-428009/baking-buddy-image'
+      - '--build-arg=JAR_FILE=app.jar'  # 빌드할 JAR 파일 경로 지정
+      - '.'
+    dir: /workspace   # 작업 디렉토리 설정
+
+  # Artifact Registry에 이미지 푸시
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'asia-northeast3-docker.pkg.dev/baking-buddy-428009/baking-buddy-image'
+    dir: /workspace   # 작업 디렉토리 설정
+
+options:
+  logging: CLOUD_LOGGING_ONLY

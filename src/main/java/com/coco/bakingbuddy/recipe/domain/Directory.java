@@ -23,6 +23,7 @@ public class Directory extends BaseTime {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @Builder.Default
     @OneToMany(mappedBy = "directory", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
 

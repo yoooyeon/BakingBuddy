@@ -25,8 +25,10 @@ public class User extends BaseTime {
     private String profileImageUrl;
     // 관심 태그
 //    private List<Tag> tags = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Directory> directories = new ArrayList<>();
 
@@ -38,6 +40,8 @@ public class User extends BaseTime {
         User user = User.builder()
                 .username(username)
                 .password(password)
+                .recipes(new ArrayList<>())
+                .directories(new ArrayList<>())
                 .build();
         // 사용자 등록 로직 추가 가능 (예: 이메일 확인, 초기 설정 등)
         return user;
