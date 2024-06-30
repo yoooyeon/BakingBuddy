@@ -46,7 +46,11 @@ public class RecipeService {
     @Transactional(readOnly = true)
     public List<SelectRecipeResponseDto> selectAll() {
         List<Recipe> recipes = recipeQueryDslRepository.findAll();
-        if (recipes.isEmpty()) {
+        for (Recipe recipe : recipes) {
+            log.info("recipe:", recipe, recipes.isEmpty(), recipes == null);
+
+        }
+        if (recipes.isEmpty() || recipes == null) {
             return null;
         }
         return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());

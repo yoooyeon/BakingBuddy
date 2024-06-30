@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+
+    <div class="container" style="max-width: 600px">
+        <div class="py-5 text-center">
+            <h2>레시피 목록</h2>
+        </div>
+
+        <hr class="my-4">
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>사용자ID</th>
+                    <th>분류</th>
+                    <th>상품명</th>
+                    <th>메모</th>
+                    <th>재료</th>
+                    <th>태그</th>
+                    <th>소요시간</th>
+                    <th>난이도</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="recipe : ${recipes}">
+                    <td><a href="recipe.html" th:href="@{/api/recipes/{recipeId}(recipeId=${recipe.id})}"
+                           th:text="${recipe.id}">ID</a>
+                    </td>
+                    <td><a href="recipe.html" th:href="@{/api/recipes/users/{userId}(userId=${recipe.userId})}"
+                           th:text="${recipe.userId}">사용자ID</a></td>
+                    <td th:text="${recipe.dirId}">분류</td>
+                    <td><a href="recipe.html" th:href="@{|/api/recipes/${recipe.id}|}" th:text="${recipe.name}">상품명</a>
+                    </td>
+                    <td th:text="${recipe.memo}">메모</td>
+                    <td th:text="${recipe.ingredients}">재료</td>
+                    <td th:text="${recipe.tags}">태그</td>
+                    <td th:text="${recipe.time}">태그</td>
+                    <td th:text="${recipe.level}">태그</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div> <!-- /container -->
+</th:block>
+</html>

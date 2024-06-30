@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.recipe.controller;
 
-import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -30,7 +29,7 @@ public class RecipeController {
     public String selectByUserId(@PathVariable Long userId, Model model) {
         model.addAttribute("user", userService.selectById(userId));
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
-        return "user";
+        return "user/user";
     }
 
     @GetMapping("directories/{directoryId}")
@@ -42,14 +41,14 @@ public class RecipeController {
     public String selectAll(Model model) {
         List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
         model.addAttribute("recipes", dtos);
-        return "recipe-list";
+        return "recipe/recipe-list";
     }
 
     @GetMapping("{id}")
     public String selectById(@PathVariable Long id, Model model) {
         SelectRecipeResponseDto dto = recipeService.selectById(id);
         model.addAttribute("recipe", dto);
-        return "recipe";
+        return "recipe/recipe";
     }
 
     @GetMapping("register")
@@ -58,7 +57,7 @@ public class RecipeController {
         List<SelectDirectoryResponseDto> dirs = directoryService.selectByUserId(userId);
         model.addAttribute("userId", userId);
         model.addAttribute("dirs", dirs);
-        return "register-recipe";
+        return "recipe/register-recipe";
     }
 
     @PostMapping
@@ -75,7 +74,7 @@ public class RecipeController {
     public String editRecipe(@PathVariable Long recipeId, Model model) {
         SelectRecipeResponseDto recipe = recipeService.selectById(recipeId);
         model.addAttribute("recipe", recipe);
-        return "edit-recipe.html";
+        return "recipe/edit-recipe";
     }
 
     @PutMapping("{recipeId}/edit") // 레시피 수정 화면 조회

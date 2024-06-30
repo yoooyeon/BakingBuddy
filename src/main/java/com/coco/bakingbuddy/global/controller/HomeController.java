@@ -10,6 +10,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home() {
-        return "redirect:/api/recipes";
+//        return "redirect:/api/recipes";
+        return "index";
     }
 }
