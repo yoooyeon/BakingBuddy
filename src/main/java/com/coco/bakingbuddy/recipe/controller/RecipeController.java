@@ -41,6 +41,7 @@ public class RecipeController {
     public String selectAll(Model model) {
         List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
         model.addAttribute("recipes", dtos);
+        model.addAttribute("isLoggedIn", true);
         return "recipe/recipe-list";
     }
 
