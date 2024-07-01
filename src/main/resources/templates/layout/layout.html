@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<th:block th:replace="/layout/fragments/header :: headerLayout"></th:block>
-
+<head>
+    <title>My Page</title>
+    <th:block th:replace="/layout/fragments/header :: headerLayout"></th:block>
+</head>
 <body>
 <div layout:fragment="content">
-
+    <p>본문내용입니다.</p>
 </div>
-
-</body>
-
 <th:block th:replace="/layout/fragments/footer :: footerLayout"></th:block>
+</body>
 </html>
