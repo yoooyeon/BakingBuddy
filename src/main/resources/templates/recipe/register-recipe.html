@@ -32,6 +32,10 @@
                         <option th:value="${dir.id}" th:text="${dir.name}"></option>
                     </div>
                 </select>
+<!--                <select class="form-select" id="directory" name="directory">-->
+<!--                    <option th:each="dir : ${dirs}" th:value="${dir.id}" th:text="${dir.name}"></option>-->
+<!--                </select>-->
+
 
             </div>
             <div class="mb-3">
@@ -69,7 +73,7 @@
             <button type="submit" class="btn btn-primary">등록하기</button>
         </form>
     </div>
-    <div class="modal" tabindex="-1" id="myModal">
+    <div class="modal" tabindex="-1" id="createDirModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -83,7 +87,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="saveDir">저장</button>
                 </div>
-            </div>
+            </div>하
         </div>
     </div>
 </div>
@@ -147,13 +151,13 @@
 
     document.addEventListener('DOMContentLoaded', (event) => {
         // Get the modal
-        var modal = document.getElementById("myModal");
+        let modal = document.getElementById("createDirModal");
 
         // Get the button that opens the modal
-        var btn = document.getElementById("addDirBtn");
+        let btn = document.getElementById("addDirBtn");
 
         // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("btn-close")[0];
+        let span = document.getElementsByClassName("btn-close")[0];
 
         // When the user clicks on the button, open the modal
         btn.onclick = function () {
@@ -175,17 +179,19 @@
     // 디렉토리 추가 POST 요청
     $(document).ready(function () {
         $('#saveDir').click(function () {
-            var dirName = $('#newDirName').val();
-            console.log(dirName)
+            let dirName = $('#newDirName').val();
+            let userId = $('#userId').val();
+            console.log(userId)
             $.ajax({
                 url: '/api/directories',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({name: dirName, userId: 1}), // todo userId 처리
+                data: JSON.stringify({name: dirName, userId: userId}),
                 success: function (response) {
                     console.info(response)
+
                     // alert('디렉토리가 저장되었습니다!');
-                    $('#myModal').modal('hide');
+                    $('#createDirModal').modal('hide');
 
                     $('#directory').append($('<option>', {
                         value: response.id,

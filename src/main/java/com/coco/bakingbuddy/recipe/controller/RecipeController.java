@@ -25,6 +25,14 @@ public class RecipeController {
     private final UserService userService;
     private final DirectoryService directoryService;
 
+    @GetMapping
+    public String selectAll(Model model) {
+        List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
+        model.addAttribute("recipes", dtos);
+//        model.addAttribute("isLoggedIn", true);
+        return "recipe/recipe-list";
+    }
+
     @GetMapping("users/{userId}")
     public String selectByUserId(@PathVariable Long userId, Model model) {
         model.addAttribute("user", userService.selectById(userId));
@@ -37,24 +45,16 @@ public class RecipeController {
         return recipeService.selectByDirectoryId(directoryId);
     }
 
-    @GetMapping
-    public String selectAll(Model model) {
-        List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
-        model.addAttribute("recipes", dtos);
-        model.addAttribute("isLoggedIn", true);
-        return "recipe/recipe-list";
-    }
 
     @GetMapping("{id}")
-    public String selectById(@PathVariable Long id, Model model) {
+    public String selectById(@PathVariable(name = "id") Long id, Model model) {
         SelectRecipeResponseDto dto = recipeService.selectById(id);
         model.addAttribute("recipe", dto);
         return "recipe/recipe";
     }
 
     @GetMapping("register")
-    public String register(Model model) {
-        Long userId = 1L; // todo 임시 , 로그인 구현 후 userId 입력
+    public String register(Model model, @RequestParam(name = "userId") Long userId) {
         List<SelectDirectoryResponseDto> dirs = directoryService.selectByUserId(userId);
         model.addAttribute("userId", userId);
         model.addAttribute("dirs", dirs);
@@ -62,8 +62,10 @@ public class RecipeController {
     }
 
     @PostMapping
-    public CreateRecipeResponseDto create(@RequestBody CreateRecipeRequestDto dto) {
-        return recipeService.create(dto);
+    public String create(@RequestBody CreateRecipeRequestDto dto) {
+        CreateRecipeResponseDto save = recipeService.create(dto);
+//        return "redirect:/api/recipes/" + save.getId();
+        return "redirect:/api/recipes";
     }
 
     @DeleteMapping

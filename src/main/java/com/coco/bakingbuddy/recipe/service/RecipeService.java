@@ -79,29 +79,35 @@ public class RecipeService {
         List<String> tags = dto.getTags();
         Tag tag = null;
         TagRecipe tagRecipe = new TagRecipe();
+        if (tags != null) {
 
-        for (String tagName : tags) {
-            if (tagRepository.findByName(tagName).isPresent()) {
-                tag = tagRepository.findByName(tagName).get();
-            } else {
-                tag = tagRepository.save(Tag.builder().name(tagName).build());
+            for (String tagName : tags) {
+                if (tagRepository.findByName(tagName).isPresent()) {
+                    tag = tagRepository.findByName(tagName).get();
+                } else {
+                    tag = tagRepository.save(Tag.builder().name(tagName).build());
+                }
+                tagRecipe.addRecipe(recipe);
+                tagRecipe.addTag(tag);
+                tagRecipeRepository.save(tagRecipe);
             }
-            tagRecipe.addRecipe(recipe);
-            tagRecipe.addTag(tag);
-            tagRecipeRepository.save(tagRecipe);
         }
+
         List<String> ingredients = dto.getIngredients();
         Ingredient ingredient = null;
-        IngredientRecipe ingredientRecipe = new IngredientRecipe();
-        for (String name : ingredients) {
-            if (ingredientRepository.findByName(name).isPresent()) {
-                ingredient = ingredientRepository.findByName(name).get();
-            } else {
-                ingredient = ingredientRepository.save(Ingredient.builder().name(name).build());
+        if (ingredients != null) {
+            IngredientRecipe ingredientRecipe = new IngredientRecipe();
+            for (String name : ingredients) {
+                if (ingredientRepository.findByName(name).isPresent()) {
+                    ingredient = ingredientRepository.findByName(name).get();
+                } else {
+                    ingredient = ingredientRepository.save(Ingredient.builder().name(name).build());
+                }
+                ingredientRecipe.addRecipe(recipe);
+                ingredientRecipe.addIngredient(ingredient);
+                ingredientRecipeRepository.save(ingredientRecipe);
             }
-            ingredientRecipe.addRecipe(recipe);
-            ingredientRecipe.addIngredient(ingredient);
-            ingredientRecipeRepository.save(ingredientRecipe);
+
         }
 
         return CreateRecipeResponseDto.fromEntity(recipe);

@@ -15,7 +15,7 @@
     <!-- Add Recipe Button -->
     <button class="w-100 btn btn-primary btn-lg"
             onclick="location.href='register-recipe.html'"
-            th:onclick="|location.href='@{/api/recipes/register}'|"
+            th:onclick="|location.href='@{/api/recipes/register(userId=${user.id})}'|"
             type="button">레시피 등록하기
     </button>
     <!-- User Info Section -->
