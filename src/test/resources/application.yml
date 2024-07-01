@@ -1,6 +1,9 @@
 spring:
   application:
     name: BakingBuddy
+  sql:
+    init:
+      mode: always
   datasource:
     url: jdbc:mariadb://localhost:3306/oneday
     username: root
