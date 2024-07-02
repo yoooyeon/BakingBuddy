@@ -18,6 +18,8 @@ import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,16 +46,23 @@ public class RecipeService {
     private final RecipeQueryDslRepository recipeQueryDslRepository;
 
     @Transactional(readOnly = true)
-    public List<SelectRecipeResponseDto> selectAll() {
-        List<Recipe> recipes = recipeQueryDslRepository.findAll();
-        for (Recipe recipe : recipes) {
-            log.info("recipe:", recipe, recipes.isEmpty(), recipes == null);
+    public Page<SelectRecipeResponseDto> selectAll(Pageable pageable) {
+        Page<Recipe> recipePage = recipeQueryDslRepository.findAll(pageable);
+        if (recipePage.isEmpty()) {
+            return Page.empty(); // 빈 페이지 객체를 반환
+        }
+        return recipePage.map(SelectRecipeResponseDto::fromEntity); // Recipe를 SelectRecipeResponseDto로 매핑하여 반환
 
-        }
-        if (recipes.isEmpty() || recipes == null) {
-            return null;
-        }
-        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
+
+//    List<Recipe> recipes = recipeQueryDslRepository.findAll();
+//        for (Recipe recipe : recipes) {
+//            log.info("recipe:", recipe, recipes.isEmpty(), recipes == null);
+//
+//        }
+//        if (recipes.isEmpty() || recipes == null) {
+//            return null;
+//        }
+//        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -205,5 +214,15 @@ public class RecipeService {
         Recipe recipe = EditRecipeRequestDto.toEntity(dto);
         Recipe saved = recipeRepository.save(recipe);
         return CreateRecipeResponseDto.fromEntity(saved);
+    }
+
+    public Page<SelectRecipeResponseDto> selectByKeyword(String keyword, Pageable pageable) {
+        Page<Recipe> recipePage = recipeQueryDslRepository.findByKeyword(keyword, pageable);
+        if (recipePage.isEmpty()) {
+            return Page.empty(); // 빈 페이지 객체를 반환
+        }
+        return recipePage.map(SelectRecipeResponseDto::fromEntity); // Recipe를 SelectRecipeResponseDto로 매핑하여 반환
+
+//        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
 }

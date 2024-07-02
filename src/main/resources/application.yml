@@ -1,4 +1,6 @@
 spring:
+  mvc:
+    charset: UTF-8
   profiles:
     active: mysql
   application:

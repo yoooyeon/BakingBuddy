@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>레시피 수정</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous">
@@ -21,7 +22,7 @@
     <div>
         <form id="recipeForm">
             <div class="mb-3">
-                <label for="userId" class="form-label">Recipe ID</label>
+                <label for="recipeId" class="form-label">Recipe ID</label>
                 <input type="text" class="form-control" id="recipeId" name="recipeId" th:value="${recipe.id}" readonly>
             </div>
             <div class="mb-3">
@@ -30,7 +31,11 @@
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">디렉토리</label>
-                <input type="text" class="form-control" id="category" name="category" th:value="${recipe.dirId}">
+                <button id="addDirBtn" type="button">디렉토리 추가</button>
+                <select class="form-select" id="directory" name="directory">
+                    <option th:each="dir : ${directories}" th:value="${dir.id}" th:text="${dir.name}"
+                            th:selected="${dir.id eq recipe.dirId}"></option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">레시피 이름</label>
@@ -42,23 +47,29 @@
             </div>
             <div class="mb-3">
                 <label for="ingredients" class="form-label">재료</label>
-                <div id="ingredientList" class="mt-2"></div>
-                <input type="text" class="form-control" id="xIngredientList"
-                       th:value="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}">
                 <input type="text" class="form-control" id="ingredientsInput"
                        placeholder="각 항목을 입력하고 엔터 키를 눌러 구분하세요">
+                <div id="ingredientList" class="mt-2">
+                    <!-- 기존 재료 목록 -->
+                    <div th:each="ingredient : ${recipe.ingredients}">
+                        <div class="badge bg-secondary me-2" th:text="${ingredient}"><span class="badge bg-danger ms-1"
+                                                                                           style="cursor: pointer"
+                                                                                           onclick="removeItem(this)">x</span></div>
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="tags" class="form-label">태그</label>
-                <input type="text" class="form-control" id="xTagList"
-                       th:value="${#strings.arrayJoin(recipe.tags.![name], ', ')}"
-                       readonly>
-                <div id="tagList" class="mt-2"></div>
-
-                <!--                <input type="text" class="form-control" th:value="${recipe.tags}">-->
-
                 <input type="text" class="form-control" id="tagsInput"
                        placeholder="각 항목을 입력하고 엔터 키를 눌러 구분하세요">
+                <div id="tagList" class="mt-2">
+                    <!-- 기존 태그 목록 -->
+                    <div th:each="tag : ${recipe.tags}">
+                        <div class="badge bg-secondary me-2" th:text="${tag}"><span class="badge bg-danger ms-1"
+                                                                                    style="cursor: pointer"
+                                                                                    onclick="removeItem(this)">x</span></div>
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="time" class="form-label">소요시간(분 단위)</label>
@@ -67,92 +78,63 @@
             <div class="mb-3">
                 <label for="level" class="form-label">난이도</label>
                 <select class="form-select" id="level" name="level">
-                    <option value="Easy">쉬움</option>
-                    <option value="Medium">보통</option>
-                    <option value="Hard">어려움</option>
+                    <option value="Easy" th:selected="${recipe.level == 'Easy'}">쉬움</option>
+                    <option value="Medium" th:selected="${recipe.level == 'Medium'}">보통</option>
+                    <option value="Hard" th:selected="${recipe.level == 'Hard'}">어려움</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">등록하기</button>
+            <button type="submit" class="btn btn-primary">수정하기</button>
         </form>
     </div>
+    <div class="modal" tabindex="-1" id="createDirModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">디렉토리 추가</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input id="newDirName" class="form-control" placeholder="새로운 디렉토리 이름을 입력하세요.">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" id="saveDir">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    let ingredientList = document.getElementById("ingredientList");
-    let tagList = document.getElementById("tagList");
-
-    document.getElementById("recipeForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // 폼 제출 방지
-        const data = {
-            userId: document.getElementById("userId").value,
-            dirId: document.getElementById("directory").value,
-            name: document.getElementById("name").value,
-            memo: document.getElementById("memo").value,
-            ingredients: collectItems(ingredientList),
-            tags: collectItems(tagList),
-            time: document.getElementById("time").value,
-            level: document.getElementById("level").value
-        };
-        console.log("data", data);
-        let recipeId = document.getElementById("recipeId").value;
-        $.ajax({
-            url: '/api/recipes/' + recipeId + "/edit",
-            type: 'PUT',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function (response) {
-                console.log(response)
-                alert('레시피가 성공적으로 수정되었습니다!');
-                window.location.href = '/api/recipes/' + response.id;
-                // 필요에 따라 폼 초기화 또는 리디렉션 등의 작업 수행
-            },
-            error: function (error) {
-                alert('레시피 등록 중 오류가 발생했습니다.');
-                console.log(error);
-            }
-        });
-    });
-
-
-    function addToList(inputId, listContainer) {
-        let input = document.getElementById(inputId);
-        let inputValue = input.value.trim();
-        console.log("inputValue", inputValue);
-        if (inputValue) {
-            const existingItems = Array.from(listContainer.children).map(item => item.textContent.slice(0, -1).trim());
-            console.log("existingItems", existingItems);
-
-            if (!existingItems.includes(inputValue)) {
-                console.log("inputValue", inputValue);
-
-                const itemContainer = document.createElement("div");
-                itemContainer.className = "badge bg-secondary me-2";
-                itemContainer.textContent = input.value.trim();
-                const closeButton = document.createElement("span");
-                closeButton.className = "badge bg-danger ms-1";
-                closeButton.textContent = "x";
-                closeButton.style.cursor = "pointer";
-                closeButton.addEventListener("click", function () {
-                    itemContainer.remove();
-                });
-                itemContainer.appendChild(closeButton);
-                listContainer.appendChild(itemContainer);
-                input.value = ""; // 추가 후 입력 비우기
-            } else {
-                alert("이 항목은 이미 목록에 있습니다.");
-            }
-        }
+    // 기존 태그와 재료 목록에서 항목 삭제
+    function removeItem(element) {
+        element.parentNode.remove();
     }
 
-    document.getElementById("ingredientsInput").addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-            addToList("ingredientsInput", ingredientList);
-        }
-    });
-
-    document.getElementById("tagsInput").addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-            addToList("tagsInput", tagList);
-        }
+    // AJAX로 디렉토리 추가
+    $(document).ready(function () {
+        $('#saveDir').click(function () {
+            let dirName = $('#newDirName').val();
+            let userId = $('#userId').val();
+            $.ajax({
+                url: '/api/directories',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({name: dirName, userId: userId}),
+                success: function (response) {
+                    $('#createDirModal').modal('hide');
+                    $('#directory').append($('<option>', {
+                        value: response.id,
+                        text: response.name
+                    }));
+                },
+                error: function (error) {
+                    alert('디렉토리 추가 중 오류가 발생했습니다.');
+                    console.log(error);
+                }
+            });
+        });
     });
 </script>
 

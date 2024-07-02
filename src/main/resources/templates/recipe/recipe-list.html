@@ -12,6 +12,7 @@
 </head>
 <body>
 <div>
+
     <div class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Baking Buddy</a>
@@ -27,12 +28,65 @@
             </div>
         </div>
     </div>
-    <div class="container" style="max-width: 600px">
-
+    <div class="container" style="max-width: 800px">
         <div class="py-5 text-center">
             <h2>레시피 목록</h2>
         </div>
-        <hr class="my-4">
+        <div class="container">
+            <div class="py-3">
+                <!-- 검색 폼 -->
+                <form th:action="@{/api/recipes/search}" method="get" accept-charset="UTF-8"
+                      class="row align-items-center">
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" id="keyword" name="keyword"
+                               placeholder="레시피 이름, 재료명, 태그로 검색하세요">
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="submit" class="btn btn-primary w-100">검색</button>
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                data-bs-target="#filterModal">필터
+                        </button>
+                    </div>
+                </form>
+
+                <!-- 필터 버튼 -->
+
+            </div>
+        </div>
+
+        <!-- 필터 모달 -->
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">검색 필터</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- 필터 옵션들을 여기에 추가 -->
+                        <form th:action="@{/api/recipes/search}" method="get" accept-charset="UTF-8">
+                            <div class="mb-3">
+                                <label for="difficulty" class="form-label">난이도</label>
+                                <select class="form-select" id="difficulty" name="difficulty">
+                                    <option value="">선택하세요</option>
+                                    <option value="easy">쉬움</option>
+                                    <option value="medium">보통</option>
+                                    <option value="hard">어려움</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="time" class="form-label">소요 시간</label>
+                                <input type="text" class="form-control" id="time" name="time"
+                                       placeholder="소요 시간을 분 단위로 입력하세요">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">적용</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div th:if="${not #lists.isEmpty(recipes)}">
 
@@ -63,12 +117,36 @@
                     <td th:text="${recipe.memo}">메모</td>
                     <td th:text="${recipe.ingredients}">재료</td>
                     <td th:text="${recipe.tags}">태그</td>
-                    <td th:text="${recipe.time}">태그</td>
-                    <td th:text="${recipe.level}">태그</td>
+                    <td th:text="${recipe.time}">소요시간</td>
+                    <td th:text="${recipe.level}">난이도</td>
                 </tr>
                 </tbody>
             </table>
+            <!-- 페이지네이션 -->
+            <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+                <ul class="pagination">
+                    <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=0)}" class="page-link">First</a>
+                    </li>
+                    <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage - 1})}" class="page-link">Previous</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'">
+                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${pageNum})}" class="page-link" th:text="${pageNum + 1}"></a>
+                    </li>
+                    <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage + 1})}" class="page-link">Next</a>
+                    </li>
+                    <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${totalPages - 1})}" class="page-link">Last</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
+
+
+
     </div>
 </div>
 </body>
