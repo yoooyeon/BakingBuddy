@@ -32,9 +32,6 @@ public class RecipeController {
     public String selectAll(Model model) {
         List<SelectRecipeResponseDto> dtos = recipeService.selectAll();
         model.addAttribute("recipes", dtos);
-        log.info("dto size=" + dtos.size());
-
-//        model.addAttribute("isLoggedIn", true);
         return "recipe/recipe-list";
     }
 
@@ -44,8 +41,8 @@ public class RecipeController {
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
         return "user/user";
     }
-    @ResponseBody
 
+    @ResponseBody
     @GetMapping("directories/{directoryId}")
     public List<SelectRecipeResponseDto> selectByDirectoryId(@PathVariable("directoryId") Long directoryId) {
         return recipeService.selectByDirectoryId(directoryId);
@@ -73,8 +70,8 @@ public class RecipeController {
         CreateRecipeResponseDto save = recipeService.create(dto);
         return save;
     }
-    @ResponseBody
 
+    @ResponseBody
     @DeleteMapping
     public DeleteRecipeResponseDto create(@Valid @RequestBody DeleteRecipeRequestDto dto) {
         return recipeService.delete(dto);
@@ -86,6 +83,7 @@ public class RecipeController {
         model.addAttribute("recipe", recipe);
         return "recipe/edit-recipe";
     }
+
     @ResponseBody
     @PutMapping("{recipeId}/edit")
     public CreateRecipeResponseDto editRecipe(@PathVariable("recipeId") Long recipeId, @Valid @RequestBody EditRecipeRequestDto dto) {
