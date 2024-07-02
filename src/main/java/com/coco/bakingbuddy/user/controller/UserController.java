@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ public class UserController {
     private final RecipeService recipeService;
 
     @GetMapping
-    public String allUsers(Model model) {
+    public String allUsers(Model model) { // todo 페이징 처리
         List<SelectUserResponseDto> dto = userService.selectAll();
         model.addAttribute("users", dto);
         return "user/user-list";
@@ -41,11 +42,10 @@ public class UserController {
     }
 
     @PostMapping("signup")
-    public String register(@ModelAttribute CreateUserRequestDto user) {
+    public String register(@Valid @ModelAttribute CreateUserRequestDto user) {
         Long userId = userService.registerUser(user);
         return "redirect:/api/users/login?userId=" + userId;
     }
-
 
     @GetMapping("login") // 화면 이동
     public String login() {
@@ -54,9 +54,8 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("login")
-    public LoginUserResponseDto login(@ModelAttribute LoginUserRequestDto user) {
+    public LoginUserResponseDto login(@Valid @ModelAttribute LoginUserRequestDto user) {
          return userService.authenticate(user);
     }
-
 
 }

@@ -4,6 +4,7 @@ import com.coco.bakingbuddy.recipe.dto.request.CreateDirectoryRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class DirectoryController {
 
     @PostMapping
     @ResponseBody
-    public CreateDirectoryResponseDto create(@RequestBody CreateDirectoryRequestDto dto) {
+    public CreateDirectoryResponseDto create(@Valid @RequestBody CreateDirectoryRequestDto dto) {
         return directoryService.create(dto);
     }
 }

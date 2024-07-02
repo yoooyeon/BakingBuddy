@@ -1,6 +1,11 @@
 package com.coco.bakingbuddy.recipe.dto.request;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,28 +18,43 @@ import java.util.List;
 @Builder
 @Data
 public class EditRecipeRequestDto {
+    @NotNull(message = "ID가 빈 값일 수 없습니다.")
     private Long id;
+
+    @NotBlank(message = "이름이 빈 값일 수 없습니다.")
     private String name;
+
+    @NotNull(message = "dirId가 빈 값일 수 없습니다.")
     private Long dirId;
+
+    @NotNull(message = "userId가 빈 값일 수 없습니다.")
     private Long userId;
+
     private String memo;
+
+    @Pattern(regexp = "^[yYnN]$", message = "openYn은 y, Y, n, N 중 하나여야 합니다.")
     private String openYn; // 공개 여부 True - Open
 
+    @NotEmpty(message = "ingredients가 빈 값일 수 없습니다.")
     private List<String> ingredients; // JPA
 
+    @NotNull(message = "time이 빈 값일 수 없습니다.")
+    @Positive(message = "time은 양수여야 합니다.")
     private Integer time; // 소요시간
+
+    @NotBlank(message = "level이 빈 값일 수 없습니다.")
     private String level; // 난이도
+
+    @NotEmpty(message = "tags가 빈 값일 수 없습니다.")
     private List<String> tags;
 
     public static Recipe toEntity(EditRecipeRequestDto dto) {
         return Recipe.builder()
                 .name(dto.getName())
                 .memo(dto.getMemo())
-//                .ingredients(dto.getIngredients())
                 .time(dto.getTime())
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())
                 .build();
     }
 }
-

@@ -10,6 +10,7 @@ import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -68,14 +69,14 @@ public class RecipeController {
 
     @ResponseBody
     @PostMapping
-    public CreateRecipeResponseDto create(@RequestBody CreateRecipeRequestDto dto) {
+    public CreateRecipeResponseDto create(@Valid @RequestBody CreateRecipeRequestDto dto) {
         CreateRecipeResponseDto save = recipeService.create(dto);
         return save;
     }
     @ResponseBody
 
     @DeleteMapping
-    public DeleteRecipeResponseDto create(@RequestBody DeleteRecipeRequestDto dto) {
+    public DeleteRecipeResponseDto create(@Valid @RequestBody DeleteRecipeRequestDto dto) {
         return recipeService.delete(dto);
     }
 
@@ -87,7 +88,7 @@ public class RecipeController {
     }
     @ResponseBody
     @PutMapping("{recipeId}/edit")
-    public CreateRecipeResponseDto editRecipe(@PathVariable("recipeId") Long recipeId, @RequestBody EditRecipeRequestDto dto) {
+    public CreateRecipeResponseDto editRecipe(@PathVariable("recipeId") Long recipeId, @Valid @RequestBody EditRecipeRequestDto dto) {
         dto.setId(recipeId);
         return recipeService.edit(dto);
     }
