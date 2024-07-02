@@ -25,10 +25,10 @@ public class Recipe extends BaseTime {
     private Directory directory;
     private boolean useYn;
     private String memo;
-    private boolean openYn; // 공개 여부 True - Open
+    private String openYn; // 공개 여부 True - Open
 
     private Integer time; // 소요시간
-    private Integer level; // 난이도
+    private String level; // 난이도
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
