@@ -55,7 +55,7 @@
                     <td><a href="recipe.html" th:href="@{/api/recipes/{recipeId}(recipeId=${recipe.id})}"
                            th:text="${recipe.id}">ID</a>
                     </td>
-                    <td><a href="recipe.html" th:href="@{/api/recipes/users/{userId}(userId=${recipe.userId})}"
+                    <td><a href="../user/user.html" th:href="@{/api/recipes/users/{userId}(userId=${recipe.userId})}"
                            th:text="${recipe.userId}">사용자ID</a></td>
                     <td th:text="${recipe.dirId}">분류</td>
                     <td><a href="recipe.html" th:href="@{|/api/recipes/${recipe.id}|}" th:text="${recipe.name}">상품명</a>

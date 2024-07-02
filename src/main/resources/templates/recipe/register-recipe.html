@@ -19,24 +19,19 @@
 
     <hr class="my-4">
     <div>
-        <form id="recipeForm" th:action="@{/api/recipes}" method="post">
+        <form id="recipeForm">
             <div class="mb-3">
                 <label for="userId" class="form-label">User ID</label>
                 <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">디렉토리</label>
-                <button id="addDirBtn"> 디렉토리 추가</button>
+                <button id="addDirBtn" type="button">디렉토리 추가</button>
                 <select class="form-select" id="directory" name="directory">
                     <div th:each="dir : ${dirs}">
                         <option th:value="${dir.id}" th:text="${dir.name}"></option>
                     </div>
                 </select>
-<!--                <select class="form-select" id="directory" name="directory">-->
-<!--                    <option th:each="dir : ${dirs}" th:value="${dir.id}" th:text="${dir.name}"></option>-->
-<!--                </select>-->
-
-
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">레시피 이름</label>
@@ -87,7 +82,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="saveDir">저장</button>
                 </div>
-            </div>하
+            </div>
         </div>
     </div>
 </div>
@@ -98,24 +93,45 @@
     let ingredientList = document.getElementById("ingredientList");
     let tagList = document.getElementById("tagList");
 
+    function collectItems(container) {
+        return Array.from(container.children).map(item => item.textContent.slice(0, -1).trim());
+    }
+
     document.getElementById("recipeForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // 폼 제출 방지 (예시를 위해)
-        const formData = new FormData(event.target);
-        // formData로 폼 제출 또는 AJAX 요청 처리
-        console.log("폼 데이터로 제출됨:", Object.fromEntries(formData.entries()));
+        event.preventDefault(); // 폼 제출 방지
+        const data = {
+            userId: document.getElementById("userId").value,
+            dirId: document.getElementById("directory").value,
+            name: document.getElementById("name").value,
+            memo: document.getElementById("memo").value,
+            ingredients: collectItems(ingredientList),
+            tags: collectItems(tagList),
+            time: document.getElementById("time").value,
+            level: document.getElementById("level").value
+        };
+        console.log("data",data);
+        $.ajax({
+            url: '/api/recipes',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function(response) {
+                alert('레시피가 성공적으로 등록되었습니다!');
+                // 필요에 따라 폼 초기화 또는 리디렉션 등의 작업 수행
+            },
+            error: function(error) {
+                alert('레시피 등록 중 오류가 발생했습니다.');
+                console.log(error);
+            }
+        });
     });
 
     function addToList(inputId, listContainer) {
         let input = document.getElementById(inputId);
         let inputValue = input.value.trim();
-        console.log("inputValue", inputValue);
         if (inputValue) {
             const existingItems = Array.from(listContainer.children).map(item => item.textContent.slice(0, -1).trim());
-            console.log("existingItems", existingItems);
-
             if (!existingItems.includes(inputValue)) {
-                console.log("inputValue", inputValue);
-
                 const itemContainer = document.createElement("div");
                 itemContainer.className = "badge bg-secondary me-2";
                 itemContainer.textContent = input.value.trim();
@@ -139,65 +155,52 @@
 
     document.getElementById("ingredientsInput").addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
+            event.preventDefault(); // 엔터 키로 폼 제출 방지
             addToList("ingredientsInput", ingredientList);
         }
     });
 
     document.getElementById("tagsInput").addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
+            event.preventDefault(); // 엔터 키로 폼 제출 방지
             addToList("tagsInput", tagList);
         }
     });
 
     document.addEventListener('DOMContentLoaded', (event) => {
-        // Get the modal
         let modal = document.getElementById("createDirModal");
-
-        // Get the button that opens the modal
         let btn = document.getElementById("addDirBtn");
-
-        // Get the <span> element that closes the modal
         let span = document.getElementsByClassName("btn-close")[0];
 
-        // When the user clicks on the button, open the modal
         btn.onclick = function () {
             modal.style.display = "block";
         }
-
-        // When the user clicks on <span> (x), close the modal
         span.onclick = function () {
             modal.style.display = "none";
         }
-
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
     });
+
     // 디렉토리 추가 POST 요청
     $(document).ready(function () {
         $('#saveDir').click(function () {
             let dirName = $('#newDirName').val();
             let userId = $('#userId').val();
-            console.log(userId)
             $.ajax({
                 url: '/api/directories',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({name: dirName, userId: userId}),
                 success: function (response) {
-                    console.info(response)
-
-                    // alert('디렉토리가 저장되었습니다!');
                     $('#createDirModal').modal('hide');
-
                     $('#directory').append($('<option>', {
                         value: response.id,
                         text: response.name
                     }));
-
                 },
                 error: function (error) {
                     alert('디렉토리 저장 중 오류가 발생했습니다.');
@@ -206,7 +209,6 @@
             });
         });
     });
-
 </script>
 
 </body>
