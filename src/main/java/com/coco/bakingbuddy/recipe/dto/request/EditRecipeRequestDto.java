@@ -18,12 +18,12 @@ public class EditRecipeRequestDto {
     private Long dirId;
     private Long userId;
     private String memo;
-    private boolean openYn; // 공개 여부 True - Open
+    private String openYn; // 공개 여부 True - Open
 
     private List<String> ingredients; // JPA
 
     private Integer time; // 소요시간
-    private Integer level; // 난이도
+    private String level; // 난이도
     private List<String> tags;
 
     public static Recipe toEntity(EditRecipeRequestDto dto) {
@@ -33,6 +33,7 @@ public class EditRecipeRequestDto {
 //                .ingredients(dto.getIngredients())
                 .time(dto.getTime())
                 .level(dto.getLevel())
+                .openYn(dto.getOpenYn())
                 .build();
     }
 }

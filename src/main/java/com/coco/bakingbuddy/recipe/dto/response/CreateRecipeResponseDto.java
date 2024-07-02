@@ -22,7 +22,7 @@ public class CreateRecipeResponseDto {
     private String tags; // JPA
 
     private Integer time; // 소요시간
-    private Integer level; // 난이도
+    private String level; // 난이도
 
     public static CreateRecipeResponseDto fromEntity(Recipe recipe) {
         return CreateRecipeResponseDto.builder()

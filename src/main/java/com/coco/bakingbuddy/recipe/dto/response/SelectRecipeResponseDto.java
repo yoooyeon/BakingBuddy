@@ -26,7 +26,7 @@ public class SelectRecipeResponseDto {
     private List<Tag> tags; // JPA
 
     private Integer time; // 소요시간
-    private Integer level; // 난이도
+    private String level; // 난이도
 
     public static SelectRecipeResponseDto fromEntity(Recipe recipe) {
         return SelectRecipeResponseDto.builder()

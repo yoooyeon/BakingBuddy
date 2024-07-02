@@ -24,7 +24,7 @@ public class CreateRecipeRequestDto {
     private Long userId;
     private String memo;
 
-    private boolean openYn; // 공개 여부 True - Open
+    private String openYn; // 공개 여부 True - Open
     @NotBlank(message = "ingredients 가 빈 값일 수 없습니다.")
 
     private List<String> ingredients; // JPA
@@ -32,7 +32,7 @@ public class CreateRecipeRequestDto {
 
     private Integer time; // 소요시간
     @NotBlank(message = "level 가 빈 값일 수 없습니다.")
-    private Integer level; // 난이도
+    private String level; // 난이도
     @NotBlank(message = "tags 가 빈 값일 수 없습니다.")
     private List<String> tags;
 
@@ -43,6 +43,7 @@ public class CreateRecipeRequestDto {
 //                .ingredients(dto.getIngredients())
                 .time(dto.getTime())
                 .level(dto.getLevel())
+                .openYn(dto.getOpenYn())
                 .build();
     }
 }
