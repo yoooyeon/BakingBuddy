@@ -3,7 +3,7 @@ package com.coco.bakingbuddy.user.service;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
-import com.coco.bakingbuddy.user.dto.response.CreateUserResponseDto;
+import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,14 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-//    public CreateUserResponseDto registerUser(CreateUserRequestDto user) {
+    //    public CreateUserResponseDto registerUser(CreateUserRequestDto user) {
 //        return CreateUserResponseDto.fromEntity(userRepository.save(User.builder()
 //                .username(user.getUsername())
 //                .password(user.getPassword())
 //                .nickname(user.getNickname())
 //                .build()));
 //    }
-@Transactional
+    @Transactional
 
     public Long registerUser(CreateUserRequestDto user) {
         User save = userRepository.save(User.builder()
@@ -39,18 +39,26 @@ public class UserService {
         return save.getId();
     }
 
-    public boolean authenticate(LoginUserRequestDto user) {
+    public LoginUserResponseDto authenticate(LoginUserRequestDto user) {
         Optional<User> registered = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
         if (registered.isPresent()) {
-            return true;
+            return LoginUserResponseDto.builder()
+                    .success(true)
+                    .userId(registered.get().getId())
+                    .build();
         }
-        return false;
+        return LoginUserResponseDto.builder()
+                .success(false)
+                .userId(null)
+                .build();
     }
+
     @Transactional(readOnly = true)
 
     public List<SelectUserResponseDto> selectAll() {
         return userRepository.findAll().stream().map(SelectUserResponseDto::fromEntity).collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
 
     public User selectById(Long userId) {

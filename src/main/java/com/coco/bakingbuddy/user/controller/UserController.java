@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.user.controller;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
+import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,14 @@ public class UserController {
         model.addAttribute("users", dto);
         return "user/user-list";
     }
+
     @GetMapping("{userId}")
     public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
         model.addAttribute("user", userService.selectById(userId));
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
         return "user/user";
     }
+
     @GetMapping("signup")
     public String signup(Model model) {
         model.addAttribute("createUserRequestDto", new CreateUserRequestDto());
@@ -43,16 +46,16 @@ public class UserController {
         return "redirect:/api/users/login?userId=" + userId;
     }
 
-    @GetMapping("login")
-    public String login(@RequestParam("userId") Long userId, Model model) {
-        model.addAttribute("user", userService.selectById(userId));
-        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
-        return "user/user";
+
+    @GetMapping("login") // 화면 이동
+    public String login() {
+        return "user/login";
     }
 
+    @ResponseBody
     @PostMapping("login")
-    public boolean login(@RequestBody LoginUserRequestDto user) {
-        return userService.authenticate(user);
+    public LoginUserResponseDto login(@ModelAttribute LoginUserRequestDto user) {
+         return userService.authenticate(user);
     }
 
 
