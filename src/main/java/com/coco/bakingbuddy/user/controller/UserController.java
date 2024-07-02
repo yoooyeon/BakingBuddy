@@ -25,7 +25,12 @@ public class UserController {
         model.addAttribute("users", dto);
         return "user/user-list";
     }
-
+    @GetMapping("{userId}")
+    public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
+        model.addAttribute("user", userService.selectById(userId));
+        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
+        return "user/user";
+    }
     @GetMapping("signup")
     public String signup(Model model) {
         model.addAttribute("createUserRequestDto", new CreateUserRequestDto());

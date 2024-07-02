@@ -19,12 +19,12 @@ public class DirectoryController {
     private final DirectoryService directoryService;
 
     @GetMapping("users/{userId}")
-    public List<SelectDirectoryResponseDto> selectByUserId(@PathVariable Long userId) {
+    public List<SelectDirectoryResponseDto> selectByUserId(@PathVariable("userId") Long userId) {
         return directoryService.selectByUserId(userId);
     }
 
     @GetMapping("{id}")
-    public List<SelectDirectoryResponseDto> selectById(@PathVariable Long id) {
+    public List<SelectDirectoryResponseDto> selectById(@PathVariable("id") Long id) {
         return directoryService.selectById(id);
     }
 
