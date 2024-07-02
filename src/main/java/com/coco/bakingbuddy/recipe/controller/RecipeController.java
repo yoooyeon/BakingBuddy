@@ -43,6 +43,7 @@ public class RecipeController {
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
         return "user/user";
     }
+    @ResponseBody
 
     @GetMapping("directories/{directoryId}")
     public List<SelectRecipeResponseDto> selectByDirectoryId(@PathVariable("directoryId") Long directoryId) {
@@ -65,12 +66,13 @@ public class RecipeController {
         return "recipe/register-recipe";
     }
 
+    @ResponseBody
     @PostMapping
-    public String create(@RequestBody CreateRecipeRequestDto dto) {
+    public CreateRecipeResponseDto create(@RequestBody CreateRecipeRequestDto dto) {
         CreateRecipeResponseDto save = recipeService.create(dto);
-//        return "redirect:/api/recipes/" + save.getId();
-        return "redirect:/api/recipes";
+        return save;
     }
+    @ResponseBody
 
     @DeleteMapping
     public DeleteRecipeResponseDto create(@RequestBody DeleteRecipeRequestDto dto) {
@@ -83,8 +85,8 @@ public class RecipeController {
         model.addAttribute("recipe", recipe);
         return "recipe/edit-recipe";
     }
-
-    @PutMapping("{recipeId}/edit") // 레시피 수정 화면 조회
+    @ResponseBody
+    @PutMapping("{recipeId}/edit")
     public CreateRecipeResponseDto editRecipe(@PathVariable("recipeId") Long recipeId, @RequestBody EditRecipeRequestDto dto) {
         dto.setId(recipeId);
         return recipeService.edit(dto);

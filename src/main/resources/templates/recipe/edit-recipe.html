@@ -19,7 +19,11 @@
 
     <hr class="my-4">
     <div>
-        <form id="recipeForm" th:action="@{/api/recipes}" method="post">
+        <form id="recipeForm">
+            <div class="mb-3">
+                <label for="userId" class="form-label">Recipe ID</label>
+                <input type="text" class="form-control" id="recipeId" name="recipeId" th:value="${recipe.id}" readonly>
+            </div>
             <div class="mb-3">
                 <label for="userId" class="form-label">User ID</label>
                 <input type="text" class="form-control" id="userId" name="userId" th:value="${recipe.userId}" readonly>
@@ -77,11 +81,37 @@
     let tagList = document.getElementById("tagList");
 
     document.getElementById("recipeForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // 폼 제출 방지 (예시를 위해)
-        const formData = new FormData(event.target);
-        // formData로 폼 제출 또는 AJAX 요청 처리
-        console.log("폼 데이터로 제출됨:", Object.fromEntries(formData.entries()));
+        event.preventDefault(); // 폼 제출 방지
+        const data = {
+            userId: document.getElementById("userId").value,
+            dirId: document.getElementById("directory").value,
+            name: document.getElementById("name").value,
+            memo: document.getElementById("memo").value,
+            ingredients: collectItems(ingredientList),
+            tags: collectItems(tagList),
+            time: document.getElementById("time").value,
+            level: document.getElementById("level").value
+        };
+        console.log("data", data);
+        let recipeId = document.getElementById("recipeId").value;
+        $.ajax({
+            url: '/api/recipes/' + recipeId + "/edit",
+            type: 'PUT',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log(response)
+                alert('레시피가 성공적으로 수정되었습니다!');
+                window.location.href = '/api/recipes/' + response.id;
+                // 필요에 따라 폼 초기화 또는 리디렉션 등의 작업 수행
+            },
+            error: function (error) {
+                alert('레시피 등록 중 오류가 발생했습니다.');
+                console.log(error);
+            }
+        });
     });
+
 
     function addToList(inputId, listContainer) {
         let input = document.getElementById(inputId);

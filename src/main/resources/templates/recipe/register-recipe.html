@@ -116,7 +116,9 @@
             data: JSON.stringify(data),
             contentType: 'application/json',
             success: function(response) {
+                console.log(response)
                 alert('레시피가 성공적으로 등록되었습니다!');
+                window.location.href = '/api/recipes/'+response.id;
                 // 필요에 따라 폼 초기화 또는 리디렉션 등의 작업 수행
             },
             error: function(error) {
