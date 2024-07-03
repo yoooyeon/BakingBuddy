@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.tag.domain;
 
+import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Getter;
 @Getter
 //@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class TagRecipe {
+public class TagRecipe extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 

@@ -1,12 +1,13 @@
 package com.coco.bakingbuddy.recipe.domain;
 
+import com.coco.bakingbuddy.global.domain.BaseTime;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
 //@EntityListeners(AuditingEntityListener.class)
 @Entity
-public class IngredientRecipe {
+public class IngredientRecipe extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 

@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.file.domain;
 
+import com.coco.bakingbuddy.global.domain.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ImageFile {
+public class ImageFile extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
