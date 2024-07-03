@@ -28,9 +28,16 @@ spring:
     cache: false
     check-template-location: true
     suffix: .html
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: classpath:/keys/baking-buddy-428009-28b83cf67c33.json
+        project-id: baking-buddy-428009
+
 logging:
   level:
     org:
       springframework:
-        web: DEBUG
+        web: INFO
       hibernate: ERROR
