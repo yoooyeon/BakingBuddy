@@ -1,5 +1,7 @@
 package com.coco.bakingbuddy.recipe.service;
 
+import com.coco.bakingbuddy.global.error.ErrorCode;
+import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Ingredient;
 import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
 import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
 
 @Slf4j
@@ -80,8 +83,10 @@ public class RecipeService {
 
     @Transactional
     public CreateRecipeResponseDto create(CreateRecipeRequestDto dto) {
-        Directory directory = directoryRepository.findById(dto.getDirId()).orElseThrow();
-        User user = userRepository.findById(dto.getUserId()).orElseThrow();
+        Directory directory = directoryRepository.findById(dto.getDirId())
+                .orElseThrow(() -> new CustomException(ErrorCode.DIR_NOT_FOUND));
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);

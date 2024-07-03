@@ -21,8 +21,12 @@ public enum ErrorCode {
     INVALID_KEYWORD(BAD_REQUEST, "키워드는 5개를 초과할 수 없습니다."),
 
     // user
+    USER_NOT_FOUND(NOT_FOUND, "존재하지 않는 유저"),
     DUPLICATE_EMAIL(BAD_REQUEST, "중복된 이메일이 존재합니다."),
     INVALID_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
+
+    //dir
+    DIR_NOT_FOUND(NOT_FOUND,"존재하지 않는 디렉토리")
     ;
 
     private final HttpStatus status;

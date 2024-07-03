@@ -1,5 +1,7 @@
 package com.coco.bakingbuddy.user.service;
 
+import com.coco.bakingbuddy.global.error.ErrorCode;
+import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
@@ -55,9 +57,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User selectById(Long userId) {
-        return userRepository.findById(userId).orElseThrow();
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    // 프로필 이미지 저장
 
 }

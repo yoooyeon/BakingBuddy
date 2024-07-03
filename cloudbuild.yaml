@@ -1,4 +1,13 @@
 steps:
+  # Secret Manager에서 비밀 정보 가져오기
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Secret Manager에서 JSON 키 파일 가져오기
+        gcloud secrets versions access latest --secret=baking-buddy-key > resources/keys/baking-buddy-428009-28b83cf67c33.json
+
   # Gradle 설치 및 빌드
   - name: 'gradle:7.5.1-jdk17'
     entrypoint: 'bash'
@@ -29,3 +38,8 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
+secrets:
+  - kmsKeyName: projects/baking-buddy-428009/locations/global/keyRings/my-key-ring/cryptoKeys/my-key
+    secretEnv:
+      BAKING_BUDDY_KEY: projects/baking-buddy-428009/secrets/baking-buddy-key/versions/latest

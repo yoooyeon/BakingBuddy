@@ -1,5 +1,7 @@
 package com.coco.bakingbuddy.recipe.service;
 
+import com.coco.bakingbuddy.global.error.ErrorCode;
+import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.dto.request.CreateDirectoryRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateDirectoryResponseDto;
@@ -41,7 +43,8 @@ public class DirectoryService {
                 .name(dto.getName())
                 .build();
         Directory save = directoryRepository.save(directory);
-        User user = userRepository.findById(dto.getUserId()).orElseThrow();
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         save.setUser(user);
         return CreateDirectoryResponseDto.fromEntity(save);
     }
