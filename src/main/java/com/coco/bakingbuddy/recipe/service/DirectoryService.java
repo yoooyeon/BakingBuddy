@@ -21,12 +21,14 @@ public class DirectoryService {
     private final DirectoryRepository directoryRepository;
     private final UserRepository userRepository;
     private final DirectoryQueryDslRepository directoryQueryDslRepository;
+
     @Transactional(readOnly = true)
 
     public List<SelectDirectoryResponseDto> selectByUserId(Long userId) {
         List<Directory> directories = directoryQueryDslRepository.findByUserId(userId);
         return directories.stream().map(SelectDirectoryResponseDto::fromEntity).collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
 
     public List<SelectDirectoryResponseDto> selectById(Long id) {

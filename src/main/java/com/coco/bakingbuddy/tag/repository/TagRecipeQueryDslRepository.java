@@ -29,11 +29,12 @@ public class TagRecipeQueryDslRepository {
                 .where(tagRecipe.recipe.id.eq(recipeId))
                 .fetch();
     }
+
     public List<Tag> findTagsByRecipeId(Long recipeId) {
         return queryFactory
                 .select(tag)
                 .from(tagRecipe)
-                .leftJoin(tagRecipe.tag,tag)
+                .leftJoin(tagRecipe.tag, tag)
                 .where(tagRecipe.recipe.id.eq(recipeId))
                 .fetch();
     }

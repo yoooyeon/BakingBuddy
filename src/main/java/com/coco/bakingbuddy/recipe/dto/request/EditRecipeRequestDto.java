@@ -1,11 +1,7 @@
 package com.coco.bakingbuddy.recipe.dto.request;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

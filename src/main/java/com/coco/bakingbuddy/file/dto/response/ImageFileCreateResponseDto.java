@@ -16,16 +16,16 @@ public class ImageFileCreateResponseDto {
     private String uuid;
     private String uploadPath;
     private String fileName;
-    private Long boardId;
+    private Long userId;
 
-    public ImageFileCreateResponseDto fromEntity(ImageFile file) {
+    public static ImageFileCreateResponseDto fromEntity(ImageFile file) {
         return ImageFileCreateResponseDto.builder()
                 .originalName(file.getOriginalName())
                 .ext(file.getExt())
                 .uuid(file.getUuid())
                 .uploadPath(file.getUploadPath())
                 .fileName(file.getFileName())
-                .boardId(file.getUserId())
+                .userId(file.getUserId())
                 .build();
     }
 }

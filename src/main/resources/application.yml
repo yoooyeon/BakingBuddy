@@ -16,7 +16,7 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: update
-#      connection:
+    #      connection:
 
     show-sql: true
     properties:
@@ -34,6 +34,7 @@ spring:
         credentials:
           location: classpath:/keys/baking-buddy-428009-28b83cf67c33.json
         project-id: baking-buddy-428009
+        bucket: baking-buddy-bucket
 
 logging:
   level:

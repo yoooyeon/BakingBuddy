@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.user.controller;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
+import com.coco.bakingbuddy.user.dto.request.UpdateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
@@ -34,9 +35,11 @@ public class UserController {
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
         return "user/user";
     }
+
     @GetMapping("{userId}/edit-user") //화면 이동
     public String editUser(@PathVariable("userId") Long userId, Model model) {
         model.addAttribute("user", userService.selectById(userId));
+        model.addAttribute("updateUserRequestDto", new UpdateUserRequestDto());
         return "user/edit-user";
     }
 
@@ -60,7 +63,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("login")
     public LoginUserResponseDto login(@Valid @ModelAttribute LoginUserRequestDto user) {
-         return userService.authenticate(user);
+        return userService.authenticate(user);
     }
 
 }

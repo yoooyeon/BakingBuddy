@@ -34,7 +34,8 @@
     </div>
     <div>
         <label for="ingredients">재료</label>
-        <input type="text" class="form-control" th:value="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}" readonly>
+        <input type="text" class="form-control" th:value="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}"
+               readonly>
     </div>
     <div>
         <label for="price">메모</label>

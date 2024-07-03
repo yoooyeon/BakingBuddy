@@ -54,7 +54,8 @@
                     <div th:each="ingredient : ${recipe.ingredients}">
                         <div class="badge bg-secondary me-2" th:text="${ingredient}"><span class="badge bg-danger ms-1"
                                                                                            style="cursor: pointer"
-                                                                                           onclick="removeItem(this)">x</span></div>
+                                                                                           onclick="removeItem(this)">x</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,7 +68,8 @@
                     <div th:each="tag : ${recipe.tags}">
                         <div class="badge bg-secondary me-2" th:text="${tag}"><span class="badge bg-danger ms-1"
                                                                                     style="cursor: pointer"
-                                                                                    onclick="removeItem(this)">x</span></div>
+                                                                                    onclick="removeItem(this)">x</span>
+                        </div>
                     </div>
                 </div>
             </div>

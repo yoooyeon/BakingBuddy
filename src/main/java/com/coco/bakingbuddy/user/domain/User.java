@@ -48,4 +48,13 @@ public class User extends BaseTime {
     }
 
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfile(String uploadPath) {
+        this.profileImageUrl = uploadPath;
+    }
+
+
 }

@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.recipe.domain;
 
-import com.coco.bakingbuddy.tag.domain.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
 

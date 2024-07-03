@@ -17,6 +17,7 @@ import static com.coco.bakingbuddy.recipe.domain.QRecipe.recipe;
 import static com.coco.bakingbuddy.tag.domain.QTag.tag;
 import static com.coco.bakingbuddy.tag.domain.QTagRecipe.tagRecipe;
 import static com.querydsl.core.types.dsl.Expressions.stringTemplate;
+
 @Slf4j
 @RequiredArgsConstructor
 @Repository
