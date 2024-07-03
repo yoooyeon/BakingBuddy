@@ -13,11 +13,13 @@
 <body>
 <div class="container" style="max-width: 800px; margin-top: 50px;">
     <!-- Add Recipe Button -->
-    <button class="w-100 btn btn-primary btn-lg"
+    <button class="w-100 btn btn-primary"
             onclick="location.href='register-recipe.html'"
             th:onclick="|location.href='@{/api/recipes/register(userId=${user.id})}'|"
             type="button">레시피 등록하기
     </button>
+    <button class="btn btn-secondary" onclick="editUser()">사용자 정보 수정</button>
+
     <!-- User Info Section -->
     <div class="card mb-4">
         <div class="card-header text-center">
@@ -75,5 +77,15 @@
         </div>
     </div>
 </div>
+<script th:inline="javascript">
+    function editUser() {
+        /*<![CDATA[*/
+        var userId = "[[${user.id}]]";
+        /*]]>*/
+        var url = '/api/users/' + userId + '/edit-user';
+        alert(url)
+        window.location.href = url;
+    }
+</script>
 </body>
 </html>

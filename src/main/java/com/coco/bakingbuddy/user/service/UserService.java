@@ -21,21 +21,16 @@ public class UserService {
     private final UserRepository userRepository;
 
 
-    //    public CreateUserResponseDto registerUser(CreateUserRequestDto user) {
-//        return CreateUserResponseDto.fromEntity(userRepository.save(User.builder()
-//                .username(user.getUsername())
-//                .password(user.getPassword())
-//                .nickname(user.getNickname())
-//                .build()));
-//    }
     @Transactional
-
     public Long registerUser(CreateUserRequestDto user) {
         User save = userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
                 .build());
+
+
         return save.getId();
     }
 
@@ -54,14 +49,15 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-
     public List<SelectUserResponseDto> selectAll() {
         return userRepository.findAll().stream().map(SelectUserResponseDto::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-
     public User selectById(Long userId) {
         return userRepository.findById(userId).orElseThrow();
     }
+
+    // 프로필 이미지 저장
+
 }

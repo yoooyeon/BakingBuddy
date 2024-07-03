@@ -34,6 +34,11 @@ public class UserController {
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
         return "user/user";
     }
+    @GetMapping("{userId}/edit-user") //화면 이동
+    public String editUser(@PathVariable("userId") Long userId, Model model) {
+        model.addAttribute("user", userService.selectById(userId));
+        return "user/edit-user";
+    }
 
     @GetMapping("signup")
     public String signup(Model model) {
