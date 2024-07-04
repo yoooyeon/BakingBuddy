@@ -88,4 +88,11 @@ public class RecipeQueryDslRepository {
 
 //        return recipes;
     }
+
+    public List<String> findByName(String term) {
+        return queryFactory.select(recipe.name)
+                .from(recipe)
+                .where(recipe.name.containsIgnoreCase(term))
+                .fetch();
+    }
 }
