@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,9 +52,13 @@ public class UserController {
     }
 
     @PostMapping("signup")
-    public String register(@Valid @ModelAttribute CreateUserRequestDto user, Model model) {
+    public String register(@Valid @ModelAttribute CreateUserRequestDto user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "user/signup"; // 에러 발생 시 회원가입 페이지로 이동
+        }
         try {
             Long userId = userService.registerUser(user);
+
             return "redirect:/api/users/login?userId=" + userId;
         } catch (CustomException ex) {
             model.addAttribute("errorCode", ex.getCode().getStatus().name());
