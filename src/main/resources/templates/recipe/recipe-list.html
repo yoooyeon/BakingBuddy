@@ -9,6 +9,44 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+    <title>Home</title>
+    <!-- Ajax를 위한 jQuery 추가 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #searchForm {
+            position: relative;
+        }
+
+        #searchResults {
+            position: relative;
+            z-index: 1000;
+            background-color: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            max-height: 300px;
+            /*overflow-y: auto;*/
+        }
+
+        #searchResults ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #searchResults li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        #searchResults li:hover {
+            background-color: #f0f0f0;
+        }
+
+        #searchForm .btn {
+            height: calc(100% - 2px);
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -35,11 +73,12 @@
         <div class="container">
             <div class="py-3">
                 <!-- 검색 폼 -->
-                <form th:action="@{/api/recipes/search}" method="get" accept-charset="UTF-8"
+                <form id="searchForm" th:action="@{/api/recipes/search}" method="get" accept-charset="UTF-8"
                       class="row align-items-center">
-                    <div class="col-lg-8">
-                        <input type="text" class="form-control" id="keyword" name="keyword"
+                    <div class="col-lg-8 position-relative">
+                        <input type="text" class="form-control" id="term" name="term"
                                placeholder="레시피 이름, 재료명, 태그로 검색하세요">
+                        <div id="searchResults" class="list-group"></div>
                     </div>
                     <div class="col-lg-2">
                         <button type="submit" class="btn btn-primary w-100">검색</button>
@@ -149,8 +188,47 @@
             </nav>
         </div>
 
-
+        <!-- 검색 결과가 없을 때 -->
+        <div th:if="${#lists.isEmpty(recipes)}" class="text-center py-5">
+            <p>검색 결과가 없습니다.</p>
+        </div>
     </div>
 </div>
+
+<!-- 검색어 자동완성을 위한 JavaScript 코드 -->
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#term').on('input', function () {
+            var term = $(this).val().trim();
+            console.log("term:", term);
+            if (term.length > 0) {
+                // Ajax를 통해 검색어 자동완성 결과를 가져옴
+                $.ajax({
+                    type: "GET",
+                    url: "/api/search/autocomplete",
+                    data: {prefix: term},
+                    success: function (data) {
+                        console.log("data:", data)
+                        // 검색 결과를 표시할 HTML 생성
+                        var html = '<ul class="list-group">';
+                        $.each(data, function (index, item) {
+                            html += '<li class="list-group-item">' + item + '</li>';
+                        });
+                        html += '</ul>';
+
+                        // 결과를 화면에 표시
+                        $('#searchResults').html(html);
+                    },
+                    error: function (e) {
+                        console.error("Error fetching autocomplete results: ", e);
+                    }
+                });
+            } else {
+                // 검색어가 비어있을 때, 결과 창 초기화
+                $('#searchResults').html('');
+            }
+        });
+    });
+</script>
 </body>
 </html>

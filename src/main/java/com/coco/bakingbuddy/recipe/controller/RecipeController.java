@@ -9,6 +9,7 @@ import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
+import com.coco.bakingbuddy.redis.service.RedisService;
 import com.coco.bakingbuddy.user.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -30,11 +31,11 @@ public class RecipeController {
     private final RecipeService recipeService;
     private final UserService userService;
     private final DirectoryService directoryService;
-
+    private final RedisService redisService;
 
     @GetMapping("search")
     public String search(Model model,
-                         @NotNull(message = "검색어를 한 글자 이상 입력해주세요.") @RequestParam(name = "keyword", required = false) String keyword,
+                         @NotNull(message = "검색어를 한 글자 이상 입력해주세요.") @RequestParam(name = "term", required = false) String term,
                          @RequestParam(name = "level", required = false) String level,
                          @RequestParam(name = "time", required = false) Integer time,
                          @RequestParam(name = "page", defaultValue = "0") int page,
@@ -44,8 +45,9 @@ public class RecipeController {
 
 
         Page<SelectRecipeResponseDto> recipePage;
-        if (keyword != null && !keyword.isEmpty()) {
-            recipePage = recipeService.selectByKeyword(keyword, PageRequest.of(page, size));
+        if (term != null && !term.isEmpty()) {
+            recipePage = recipeService.selectByTerm(term, PageRequest.of(page, size));
+            redisService.saveSearchTerm(term);
         } else {
             recipePage = recipeService.selectAll(PageRequest.of(page, size));
         }

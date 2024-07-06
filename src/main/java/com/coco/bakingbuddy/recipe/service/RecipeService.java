@@ -221,7 +221,7 @@ public class RecipeService {
         return CreateRecipeResponseDto.fromEntity(saved);
     }
 
-    public Page<SelectRecipeResponseDto> selectByKeyword(String keyword, Pageable pageable) {
+    public Page<SelectRecipeResponseDto> selectByTerm(String keyword, Pageable pageable) {
         Page<Recipe> recipePage = recipeQueryDslRepository.findByKeyword(keyword, pageable);
         if (recipePage.isEmpty()) {
             return Page.empty(); // 빈 페이지 객체를 반환
