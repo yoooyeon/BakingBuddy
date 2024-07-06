@@ -3,15 +3,9 @@ spring:
     host: "10.170.239.131"
     port: 6379
   data:
-
       jedis:
         pool:
           max-wait-millis: 1000
-
-
-  cache:
-    redis:
-      time-to-live: 600000
   mvc:
     charset: UTF-8
   profiles:
