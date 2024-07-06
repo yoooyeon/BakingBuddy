@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.file.controller;
 
 import com.coco.bakingbuddy.file.dto.response.ImageFileCreateResponseDto;
+import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,5 +23,14 @@ public class FileController {
     ) {
         return fileService.uploadImageFile(userId, nickname, profileImage);
     }
+
+//    @ResponseBody
+//    @PostMapping("/recipes/{recipeId}")
+//    public RecipeImageFileCreateResponseDto upload(
+//            @PathVariable("recipeId") Long recipeId,
+//            @RequestParam("recipeImage") MultipartFile recipeImage
+//    ) {
+//        return fileService.uploadRecipeImageFile(recipeId, recipeImage);
+//    }
 
 }
