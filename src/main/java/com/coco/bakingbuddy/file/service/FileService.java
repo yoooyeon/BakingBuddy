@@ -1,8 +1,14 @@
 package com.coco.bakingbuddy.file.service;
 
 import com.coco.bakingbuddy.file.dto.request.ImageFileCreateRequestDto;
+import com.coco.bakingbuddy.file.dto.request.RecipeImageFileCreateRequestDto;
 import com.coco.bakingbuddy.file.dto.response.ImageFileCreateResponseDto;
+import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
+import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
+import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
+import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.UserService;
 import com.google.cloud.storage.BlobInfo;
@@ -10,6 +16,7 @@ import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,10 +27,15 @@ import java.util.UUID;
 @Service
 public class FileService {
     private final String UPLOAD_PATH = "UserProfile/";
+    private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
     private final String BUCKET_NAME = "baking-buddy-bucket";
     private final Storage storage;
     private final ImageFileRepository imageFileRepository;
     private final UserService userService;
+
+
+
+    @Transactional
 
     public ImageFileCreateResponseDto uploadImageFile(Long userId, String nickname, MultipartFile multiPartFile) {
         String originalName = multiPartFile.getOriginalFilename();
@@ -47,7 +59,6 @@ public class FileService {
                     .userId(userId)
                     .uploadPath(uploadPath)
                     .build();
-            log.info("uploadPath:" + uploadPath);
             // 유저 도메인에 파일 경로 저장
             User user = userService.selectById(userId);
             user.updateProfile("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);

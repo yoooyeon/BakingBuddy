@@ -23,7 +23,7 @@ public class UserController {
     private final RecipeService recipeService;
 
     @GetMapping
-    public String allUsers(Model model) { // todo 페이징 처리
+    public String allUsers(Model model) {
         List<SelectUserResponseDto> dto = userService.selectAll();
         model.addAttribute("users", dto);
         return "user/user-list";
