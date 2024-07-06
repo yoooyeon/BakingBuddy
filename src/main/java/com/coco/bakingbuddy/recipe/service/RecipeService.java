@@ -1,5 +1,9 @@
 package com.coco.bakingbuddy.recipe.service;
 
+import com.coco.bakingbuddy.file.dto.request.RecipeImageFileCreateRequestDto;
+import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
+import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
+import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Directory;
@@ -18,16 +22,21 @@ import com.coco.bakingbuddy.tag.repository.TagRecipeRepository;
 import com.coco.bakingbuddy.tag.repository.TagRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
@@ -37,6 +46,8 @@ import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.f
 @RequiredArgsConstructor
 @Service
 public class RecipeService {
+    private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
+    private final String BUCKET_NAME = "baking-buddy-bucket";
     private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
     private final DirectoryRepository directoryRepository;
@@ -47,7 +58,10 @@ public class RecipeService {
     private final IngredientRecipeQueryDslRepository ingredientRecipeQueryDslRepository;
     private final IngredientRecipeRepository ingredientRecipeRepository;
     private final RecipeQueryDslRepository recipeQueryDslRepository;
+    private final FileService fileService;
+    private final Storage storage;
 
+    private final RecipeImageFileRepository recipeImageFileRepository;
     @Transactional(readOnly = true)
     public Page<SelectRecipeResponseDto> selectAll(Pageable pageable) {
         Page<Recipe> recipePage = recipeQueryDslRepository.findAll(pageable);
@@ -73,8 +87,6 @@ public class RecipeService {
         SelectRecipeResponseDto recipe = fromEntity(recipeQueryDslRepository.findById(id));
         List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(id);
         List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(id);
-        log.info("ingredients:" + ingredients);
-        log.info(("tags:" + tags));
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
         return recipe;
@@ -82,7 +94,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto) {
+    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile) {
         Directory directory = directoryRepository.findById(dto.getDirId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DIR_NOT_FOUND));
         User user = userRepository.findById(dto.getUserId())
@@ -90,11 +102,11 @@ public class RecipeService {
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);
+        uploadRecipeImageFile(recipe.getId(), multipartFile);
         List<String> tags = dto.getTags();
         Tag tag = null;
         TagRecipe tagRecipe = new TagRecipe();
         if (tags != null) {
-
             for (String tagName : tags) {
                 if (tagRepository.findByName(tagName).isPresent()) {
                     tag = tagRepository.findByName(tagName).get();
@@ -230,4 +242,47 @@ public class RecipeService {
 
 //        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
+
+    public Recipe findById(Long recipeId) {
+        return recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
+    }
+
+    @Transactional
+    public RecipeImageFileCreateResponseDto uploadRecipeImageFile(Long recipeId, MultipartFile multiPartFile) {
+        String originalName = multiPartFile.getOriginalFilename();
+        String ext = multiPartFile.getContentType();
+        String uuid = UUID.randomUUID().toString();
+        String fileName = RECIPE_UPLOAD_PATH + uuid + "_" + originalName;
+        String uploadPath = RECIPE_UPLOAD_PATH + uuid;
+        try {
+            // GCS에 이미지 파일 업로드
+            BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, fileName)
+                    .setContentType(ext)
+                    .build();
+            storage.create(blobInfo, multiPartFile.getInputStream());
+
+            // 이미지 파일 메타 데이터 저장
+            RecipeImageFileCreateRequestDto dto = RecipeImageFileCreateRequestDto.builder()
+                    .originalName(originalName)
+                    .ext(ext)
+                    .uuid(uuid)
+                    .fileName(fileName)
+                    .recipeId(recipeId)
+                    .uploadPath(uploadPath)
+                    .build();
+            // 유저 도메인에 파일 경로 저장
+            Recipe recipe = findById(recipeId);
+            recipe.updateImage("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+            recipeRepository.save(recipe);
+            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+
+            return RecipeImageFileCreateResponseDto.fromEntity(recipeImageFileRepository.save(dto.toEntity()));
+
+        } catch (IOException e) {
+            // 파일 업로드 중 오류 발생 시 처리
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save profile image: " + e.getMessage());
+        }
+    }
+
 }

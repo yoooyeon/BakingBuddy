@@ -18,6 +18,7 @@ public class RecipeResponseDto {
 
     private String ingredients; // JPA
     private String tags; // JPA
+    private String recipeImageUrl;
 
     private Integer time; // 소요시간
     private String level; // 난이도
@@ -25,9 +26,8 @@ public class RecipeResponseDto {
     public static RecipeResponseDto fromEntity(Recipe recipe) {
         return RecipeResponseDto.builder()
                 .id(recipe.getId())
-
                 .name(recipe.getName())
-
+                .recipeImageUrl(recipe.getRecipeImageUrl())
                 .memo(recipe.getMemo())
 //                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())

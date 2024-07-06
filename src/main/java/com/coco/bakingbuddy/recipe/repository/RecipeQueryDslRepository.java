@@ -83,7 +83,6 @@ public class RecipeQueryDslRepository {
                 .offset(pageable.getOffset()) // 페이지 시작 위치 설정
                 .limit(pageable.getPageSize()) // 페이지 크기 설정
                 .fetchResults();
-        log.info("queryResults.getTotal(),", queryResults.getTotal());
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
 
 //        return recipes;
