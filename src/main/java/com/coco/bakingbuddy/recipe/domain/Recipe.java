@@ -26,6 +26,7 @@ public class Recipe extends BaseTime {
     private boolean useYn;
     private String memo;
     private String openYn; // 공개 여부 True - Open
+    private String recipeImageUrl;
 
     private Integer time; // 소요시간
     private String level; // 난이도
@@ -50,4 +51,7 @@ public class Recipe extends BaseTime {
     }
 
 
+    public void updateImage(String imageUrl) {
+        this.recipeImageUrl = imageUrl;
+    }
 }

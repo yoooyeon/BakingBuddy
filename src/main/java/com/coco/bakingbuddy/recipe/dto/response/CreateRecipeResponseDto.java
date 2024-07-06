@@ -20,6 +20,7 @@ public class CreateRecipeResponseDto {
 
     private String ingredients; // JPA
     private String tags; // JPA
+    private String recipeImageUrl;
 
     private Integer time; // 소요시간
     private String level; // 난이도
@@ -31,6 +32,7 @@ public class CreateRecipeResponseDto {
                 .name(recipe.getName())
                 .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
+                .recipeImageUrl(recipe.getRecipeImageUrl())
 //                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())

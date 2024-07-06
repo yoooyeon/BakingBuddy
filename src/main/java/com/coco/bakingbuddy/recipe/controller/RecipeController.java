@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,8 +43,6 @@ public class RecipeController {
                          @RequestParam(name = "size", defaultValue = "7") int size) {
         // 키워드, 필터 조건을 기반으로 검색한 결과를 페이징하여 가져옴
 //        Page<Recipe> recipePage = recipeService.findRecipes(keyword, difficulty, time, PageRequest.of(page, size));
-
-
         Page<SelectRecipeResponseDto> recipePage;
         if (term != null && !term.isEmpty()) {
             recipePage = recipeService.selectByTerm(term, PageRequest.of(page, size));
@@ -51,7 +50,6 @@ public class RecipeController {
         } else {
             recipePage = recipeService.selectAll(PageRequest.of(page, size));
         }
-        log.info("recipePage=", recipePage.toString());
         model.addAttribute("recipes", recipePage.getContent());
         model.addAttribute("currentPage", recipePage.getNumber());
         model.addAttribute("totalPages", recipePage.getTotalPages());
@@ -102,8 +100,10 @@ public class RecipeController {
 
     @ResponseBody
     @PostMapping
-    public CreateRecipeResponseDto create(@Valid @RequestBody CreateRecipeRequestDto dto) {
-        CreateRecipeResponseDto save = recipeService.create(dto);
+    public CreateRecipeResponseDto create(@Valid @RequestPart("dto") CreateRecipeRequestDto dto,
+                                          @RequestParam("recipeImage") MultipartFile recipeImage
+    ) {
+        CreateRecipeResponseDto save = recipeService.create(dto,recipeImage);
         return save;
     }
 

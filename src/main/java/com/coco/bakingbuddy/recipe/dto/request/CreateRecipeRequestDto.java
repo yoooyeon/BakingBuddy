@@ -40,6 +40,7 @@ public class CreateRecipeRequestDto {
 
     @NotEmpty(message = "tags가 빈 값일 수 없습니다.")
     private List<String> tags;
+    private String recipeImageUrl;
 
     public static Recipe toEntity(CreateRecipeRequestDto dto) {
         return Recipe.builder()
@@ -48,6 +49,7 @@ public class CreateRecipeRequestDto {
                 .time(dto.getTime())
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())
+                .recipeImageUrl(dto.getRecipeImageUrl())
                 .build();
     }
 }

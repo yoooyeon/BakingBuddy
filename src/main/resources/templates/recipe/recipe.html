@@ -32,6 +32,13 @@
         <input type="text" id="recipeName" name="recipeName" class="form-control" value="상품A" th:value="${recipe.name}"
                readonly>
     </div>
+    <div class="card-body text-center">
+        <label for="recipeImageUrl">사진</label>
+        <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture"
+             class="img-thumbnail rounded-circle"
+             style="width: 150px; height: 150px;"
+             name="recipeImageUrl" id="recipeImageUrl">
+    </div>
     <div>
         <label for="ingredients">재료</label>
         <input type="text" class="form-control" th:value="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}"
