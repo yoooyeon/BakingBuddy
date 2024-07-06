@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.user.controller;
 
+import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
@@ -50,9 +51,15 @@ public class UserController {
     }
 
     @PostMapping("signup")
-    public String register(@Valid @ModelAttribute CreateUserRequestDto user) {
-        Long userId = userService.registerUser(user);
-        return "redirect:/api/users/login?userId=" + userId;
+    public String register(@Valid @ModelAttribute CreateUserRequestDto user, Model model) {
+        try {
+            Long userId = userService.registerUser(user);
+            return "redirect:/api/users/login?userId=" + userId;
+        } catch (CustomException ex) {
+            model.addAttribute("errorCode", ex.getCode().getStatus().name());
+            model.addAttribute("errorMessage", ex.getCode().getMessage());
+            return "user/signup"; // 에러 발생 시 회원가입 페이지로 이동
+        }
     }
 
     @GetMapping("login") // 화면 이동

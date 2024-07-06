@@ -23,6 +23,7 @@ public enum ErrorCode {
     // user
     USER_NOT_FOUND(NOT_FOUND, "존재하지 않는 유저"),
     DUPLICATE_EMAIL(BAD_REQUEST, "중복된 이메일이 존재합니다."),
+    DUPLICATE_USERNAME(BAD_REQUEST, "이미 가입된 회원입니다. 다른 사용자명으로 시도해주세요."),
     INVALID_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
 
     //dir

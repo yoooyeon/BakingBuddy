@@ -25,6 +25,10 @@ public class UserService {
 
     @Transactional
     public Long registerUser(CreateUserRequestDto user) {
+        if (isDuplicated(user.getUsername())) {
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        }
+
         User save = userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
@@ -32,8 +36,14 @@ public class UserService {
                 .profileImageUrl(user.getProfileImageUrl())
                 .build());
 
-
         return save.getId();
+    }
+
+    private boolean isDuplicated(String username) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     public LoginUserResponseDto authenticate(LoginUserRequestDto user) {
