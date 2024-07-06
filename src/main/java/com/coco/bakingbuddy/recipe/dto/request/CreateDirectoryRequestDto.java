@@ -2,6 +2,7 @@ package com.coco.bakingbuddy.recipe.dto.request;
 
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CreateDirectoryRequestDto {
     @NotBlank(message = "이름이 빈 값일 수 없습니다.")
     private String name;
-    @NotBlank(message = "userId가 빈 값일 수 없습니다.")
+    @NotNull(message = "userId가 빈 값일 수 없습니다.")
     private Long userId;
 
     public static Directory toEntity(CreateDirectoryRequestDto dto) {
