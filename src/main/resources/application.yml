@@ -1,4 +1,17 @@
 spring:
+  redis:
+    host: "10.170.239.131"
+    port: 6379
+  data:
+
+      jedis:
+        pool:
+          max-wait-millis: 1000
+
+
+  cache:
+    redis:
+      time-to-live: 600000
   mvc:
     charset: UTF-8
   profiles:
@@ -24,13 +37,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect
 
-  redis:
-    host:
-      port: 6379
-#      password: root
-    jedis:
-      pool:
-        max-wait-millis: 1000
+
   thymeleaf:
     prefix: classpath:/templates/
     cache: false
@@ -50,3 +57,11 @@ logging:
       springframework:
         web: INFO
       hibernate: ERROR
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: env, beans
+      base-path: "/manage"
