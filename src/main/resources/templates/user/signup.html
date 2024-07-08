@@ -12,6 +12,7 @@
 </head>
 <body>
 <div class="container" style="max-width: 600px; margin-top: 50px;">
+
     <h2 class="text-center">회원가입</h2>
     <form th:action="@{/api/users/signup}" th:object="${createUserRequestDto}" method="post">
         <div class="mb-3">
