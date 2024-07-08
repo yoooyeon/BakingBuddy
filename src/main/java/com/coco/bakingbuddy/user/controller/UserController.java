@@ -3,20 +3,19 @@ package com.coco.bakingbuddy.user.controller;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
-import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.UpdateUserRequestDto;
-import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Controller
@@ -45,37 +44,17 @@ public class UserController {
         return "user/edit-user";
     }
 
-    @GetMapping("signup")
-    public String signup(Model model) {
-        model.addAttribute("createUserRequestDto", new CreateUserRequestDto());
-        return "user/signup";
-    }
 
     @PostMapping("signup")
-    public String register(@Valid @ModelAttribute CreateUserRequestDto user, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "user/signup"; // 에러 발생 시 회원가입 페이지로 이동
-        }
+    public String register(@Valid @ModelAttribute CreateUserRequestDto user, Model model) {
         try {
             Long userId = userService.registerUser(user);
-
-            return "redirect:/api/users/login?userId=" + userId;
+            return "redirect:/login";
         } catch (CustomException ex) {
             model.addAttribute("errorCode", ex.getCode().getStatus().name());
             model.addAttribute("errorMessage", ex.getCode().getMessage());
             return "user/signup"; // 에러 발생 시 회원가입 페이지로 이동
         }
-    }
-
-    @GetMapping("login") // 화면 이동
-    public String login() {
-        return "user/login";
-    }
-
-    @ResponseBody
-    @PostMapping("login")
-    public LoginUserResponseDto login(@Valid @ModelAttribute LoginUserRequestDto user) {
-        return userService.authenticate(user);
     }
 
 }

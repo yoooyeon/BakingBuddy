@@ -4,24 +4,21 @@ import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
-import com.coco.bakingbuddy.user.dto.request.LoginUserRequestDto;
-import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long registerUser(CreateUserRequestDto user) {
@@ -29,14 +26,12 @@ public class UserService {
             throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
 
-        User save = userRepository.save(User.builder()
+        return userRepository.save(User.builder()
                 .username(user.getUsername())
-                .password(user.getPassword())
+                .password(passwordEncoder.encode(user.getPassword()))
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
-                .build());
-
-        return save.getId();
+                .build()).getId();
     }
 
     private boolean isDuplicated(String username) {
@@ -46,19 +41,19 @@ public class UserService {
         return false;
     }
 
-    public LoginUserResponseDto authenticate(LoginUserRequestDto user) {
-        Optional<User> registered = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
-        if (registered.isPresent()) {
-            return LoginUserResponseDto.builder()
-                    .success(true)
-                    .userId(registered.get().getId())
-                    .build();
-        }
-        return LoginUserResponseDto.builder()
-                .success(false)
-                .userId(null)
-                .build();
-    }
+//    public LoginUserResponseDto authenticate(LoginUserRequestDto user) {
+//        Optional<User> registered = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+//        if (registered.isPresent()) {
+//            return LoginUserResponseDto.builder()
+//                    .success(true)
+//                    .userId(registered.get().getId())
+//                    .build();
+//        }
+//        return LoginUserResponseDto.builder()
+//                .success(false)
+//                .userId(null)
+//                .build();
+//    }
 
     @Transactional(readOnly = true)
     public List<SelectUserResponseDto> selectAll() {
@@ -70,6 +65,5 @@ public class UserService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
-
 
 }
