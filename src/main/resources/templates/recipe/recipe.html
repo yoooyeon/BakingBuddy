@@ -6,77 +6,105 @@
     <title>Baking Buddy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style>
+        .recipe-card {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+        }
+
+        .recipe-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-card img {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .recipe-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .recipe-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recipe-card .card-text {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .recipe-card hr {
+            margin: 1.5rem 0;
+        }
+
+        .recipe-card .btn {
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Recipe Detail</h2>
+    </div>
+
+    <div class="card recipe-card">
+        <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture" class="card-img-top">
+        <div class="card-body">
+            <h2 th:text="${recipe.name}">Recipe Name</h2>
+            <hr>
+            <div>
+                <label>ID: </label>
+                <span th:text="${recipe.id}">1</span>
+            </div>
+            <div>
+                <label>Ingredients: </label>
+                <span th:text="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}"></span>
+            </div>
+            <div>
+                <label>Memo: </label>
+                <span th:text="${recipe.memo}"></span>
+            </div>
+            <div>
+                <label>Time: </label>
+                <span th:text="${recipe.time}"></span> minutes
+            </div>
+            <div>
+                <label>Tags: </label>
+                <span th:text="${#strings.arrayJoin(recipe.tags.![name], ', ')}"></span>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col">
+                    <button class="w-100 btn btn-primary btn-lg"
+                            onclick="location.href='editForm.html'"
+                            th:onclick="|location.href='@{/api/recipes/{recipeId}/edit(recipeId=${recipe.id})}'|"
+                            type="button">Edit Recipe
+                    </button>
+                </div>
+                <div class="col">
+                    <button class="w-100 btn btn-secondary btn-lg"
+                            onclick="location.href='recipe-list.html'"
+                            th:onclick="|location.href='@{/api/recipes}'|"
+                            type="button">Back to List
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
-
-
-<div class="container">
-
-    <div class="py-5 text-center">
-        <h2>상품 상세</h2>
-    </div>
-
-    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2>
-
-    <div>
-        <label for="recipeId">ID</label>
-        <input type="text" id="recipeId" name="recipeId" class="form-control" value="1" th:value="${recipe.id}"
-               readonly>
-    </div>
-    <div>
-        <label for="recipeName">이름</label>
-        <input type="text" id="recipeName" name="recipeName" class="form-control" value="상품A" th:value="${recipe.name}"
-               readonly>
-    </div>
-    <div class="card-body text-center">
-        <label for="recipeImageUrl">사진</label>
-        <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture"
-             class="img-thumbnail rounded-circle"
-             style="width: 150px; height: 150px;"
-             name="recipeImageUrl" id="recipeImageUrl">
-    </div>
-    <div>
-        <label for="ingredients">재료</label>
-        <input type="text" class="form-control" th:value="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}"
-               readonly>
-    </div>
-    <div>
-        <label for="price">메모</label>
-        <input type="text" id="price" name="price" class="form-control" value="10000" th:value="${recipe.memo}"
-               readonly>
-    </div>
-    <div>
-        <label for="quantity">소요시간</label>
-        <input type="text" id="quantity" name="quantity" class="form-control" value="10" th:value="${recipe.time}"
-               readonly>
-    </div>
-    <div>
-        <label for="tags">태그</label>
-        <input type="text" class="form-control" th:value="${#strings.arrayJoin(recipe.tags.![name], ', ')}" readonly>
-    </div>
-    <hr class="my-4">
-
-    <div class="row">
-        <div class="col">
-            <button class="w-100 btn btn-primary btn-lg"
-                    onclick="location.href='editForm.html'"
-                    th:onclick="|location.href='@{/api/recipes/{recipeId}/edit(recipeId=${recipe.id})}'|"
-                    type="button">상품 수정
-            </button>
-        </div>
-        <div class="col">
-            <button class="w-100 btn btn-secondary btn-lg"
-                    onclick="location.href='recipe-list.html'"
-                    th:onclick="|location.href='@{/api/recipes}'|"
-                    type="button">목록으로
-            </button>
-        </div>
-    </div>
-
-</div> <!-- /container -->
 </body>
 </html>

@@ -24,7 +24,6 @@
             width: 100%;
             border: 1px solid #ccc;
             max-height: 300px;
-            /*overflow-y: auto;*/
         }
 
         #searchResults ul {
@@ -46,6 +45,37 @@
         #searchForm .btn {
             height: calc(100% - 2px);
         }
+
+        /* Custom styling for the recipe cards */
+        .recipe-card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .recipe-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .recipe-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .recipe-card h5.card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .recipe-card .card-text {
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -54,22 +84,27 @@
     <div class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Baking Buddy</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/api/users/signup">회원가입</a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    <li class="nav-item" th:if="${loggedIn==null or !loggedIn}">
+                        <a class="nav-link" href="/signup">회원가입</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/api/users/login">로그인</a>
+                    <li class="nav-item" th:if="${loggedIn==null or !loggedIn}">
+                        <a class="nav-link" href="/login">로그인</a>
                     </li>
-                    <button type="button" class="btn btn-secondary" onclick="location.href='/logout'">로그아웃</button>
+                    <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
+                        <a class="nav-link" th:href="@{/api/users/{id}(id=${user.id})}">My Page</a>
+                    </li>
+                    <li class="nav-item" th:if="${loggedIn!=null and loggedIn}">
+                        <a class="nav-link" href="/logout">로그아웃</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="container" style="max-width: 800px">
         <div class="py-5 text-center">
-            <h2>레시피 목록</h2>
+            <h3>Recipes</h3>
         </div>
         <div class="container">
             <div class="py-3">
@@ -130,88 +165,69 @@
 
         <div th:if="${not #lists.isEmpty(recipes)}">
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>사용자ID</th>
-                    <!--                    <th>프로필 이미지</th>-->
-                    <th>분류</th>
-                    <th>상품명</th>
-                    <th>상품 사진</th>
-                    <th>메모</th>
-                    <th>재료</th>
-                    <th>태그</th>
-                    <th>소요시간</th>
-                    <th>난이도</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="recipe : ${recipes}">
-                    <td><a href="recipe.html" th:href="@{/api/recipes/{recipeId}(recipeId=${recipe.id})}"
-                           th:text="${recipe.id}">ID</a>
-                    </td>
-                    <td><a href="../user/user.html" th:href="@{/api/recipes/users/{userId}(userId=${recipe.userId})}"
-                           th:text="${recipe.userId}">사용자ID</a></td>
-                    <!--                    <td th:text="${recipe.profileImageUrl}">프로필 사진</td>-->
-                    <td th:text="${recipe.dirId}">분류</td>
-                    <td><a href="recipe.html" th:href="@{|/api/recipes/${recipe.id}|}" th:text="${recipe.name}">상품명</a>
-                    </td>
-                    <td>
-                        <div class="card-body text-center">
-                            <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture"
-                                 class="img-thumbnail rounded-circle"
-                                 style="width: 150px; height: 150px;">
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4" th:each="recipe : ${recipes}">
+                    <a th:href="@{|/api/recipes/${recipe.id}|}" class="card recipe-card"
+                       th:attr="data-url=@{/api/recipes/{recipeId}(recipeId=${recipe.id})}">
+                        <div class="card">
+                            <img th:src="${recipe.recipeImageUrl}" class="card-img-top" alt="Recipe Image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                                <p class="card-text" th:text="${recipe.memo}">Recipe Memo</p>
+                            </div>
                         </div>
-                    </td>
-                    <td th:text="${recipe.memo}">메모</td>
-                    <td th:text="${recipe.ingredients}">재료</td>
-                    <td th:text="${recipe.tags}">태그</td>
-                    <td th:text="${recipe.time}">소요시간</td>
-                    <td th:text="${recipe.level}">난이도</td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- 페이지네이션 -->
-            <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
-                <ul class="pagination">
-                    <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=0)}" class="page-link">First</a>
-                    </li>
-                    <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage - 1})}"
-                           class="page-link">Previous</a>
-                    </li>
-                    <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                        th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'">
-                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${pageNum})}" class="page-link"
-                           th:text="${pageNum + 1}"></a>
-                    </li>
-                    <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
-                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage + 1})}"
-                           class="page-link">Next</a>
-                    </li>
-                    <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
-                        <a th:href="@{/api/recipes/search(keyword=${keyword},page=${totalPages - 1})}"
-                           class="page-link">Last</a>
-                    </li>
-                </ul>
-            </nav>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <!-- 검색 결과가 없을 때 -->
-        <div th:if="${#lists.isEmpty(recipes)}" class="text-center py-5">
-            <p>검색 결과가 없습니다.</p>
-        </div>
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+            <ul class="pagination">
+                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                    <a th:href="@{/api/recipes/search(keyword=${keyword},page=0)}" class="page-link">First</a>
+                </li>
+                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                    <a th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage - 1})}"
+                       class="page-link">Previous</a>
+                </li>
+                <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'}">
+                    <a th:href="@{/api/recipes/search(keyword=${keyword},page=${pageNum})}" class="page-link"
+                       th:text="${pageNum + 1}"></a>
+                </li>
+                <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                    <a th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage + 1})}"
+                       class="page-link">Next</a>
+                </li>
+                <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                    <a th:href="@{/api/recipes/search(keyword=${keyword},page=${totalPages - 1})}"
+                       class="page-link">Last</a>
+                </li>
+            </ul>
+        </nav>
     </div>
+
+    <!-- 검색 결과가 없을 때 -->
+    <div th:if="${#lists.isEmpty(recipes)}" class="text-center py-5">
+        <p>검색 결과가 없습니다.</p>
+    </div>
+</div>
 </div>
 
 <!-- 검색어 자동완성을 위한 JavaScript 코드 -->
 <script th:inline="javascript">
     $(document).ready(function () {
+        // Recipe card click event handler
+        $('.recipe-card').click(function () {
+            var recipeUrl = $(this).data('url');
+            if (recipeUrl) {
+                window.location.href = recipeUrl; // Redirect to recipe detail page
+            }
+        });
+
         $('#term').on('input', function () {
             var term = $(this).val().trim();
-            console.log("term:", term);
             if (term.length > 0) {
                 // Ajax를 통해 검색어 자동완성 결과를 가져옴
                 $.ajax({
@@ -219,7 +235,6 @@
                     url: "/api/search/autocomplete",
                     data: {prefix: term},
                     success: function (data) {
-                        console.log("data:", data)
                         // 검색 결과를 표시할 HTML 생성
                         var html = '<ul class="list-group">';
                         $.each(data, function (index, item) {
