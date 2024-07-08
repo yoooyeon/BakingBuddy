@@ -24,10 +24,10 @@
             </thead>
             <tbody>
             <tr th:each="user : ${users}">
-                <td><a href="user.html" th:href="@{/api/recipes/users/{userId}(userId=${user.id})}"
+                <td><a href="my-page.html" th:href="@{/api/recipes/users/{userId}(userId=${user.id})}"
                        th:text="${user.id}">사용자ID</a></td>
                 <td th:text="${user.nickname}">닉네임</td>
-                <td><a href="user.html" th:href="@{|/api/users/${user.id}|}" th:text="${user.username}">이름</a>
+                <td><a href="my-page.html" th:href="@{|/api/users/${user.id}|}" th:text="${user.username}">이름</a>
                 </td>
             </tr>
             </tbody>

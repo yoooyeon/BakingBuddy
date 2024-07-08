@@ -34,7 +34,7 @@ public class UserController {
     public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
         model.addAttribute("user", userService.selectById(userId));
         model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
-        return "user/user";
+        return "user/my-page";
     }
 
     @GetMapping("{userId}/edit-user") //화면 이동

@@ -71,7 +71,7 @@ public class RecipeController {
 //        log.info("user=" + user.toString());
 
         if (user != null) {
-            log.info("user.getId()="+user.getId());
+            log.info("user.getId()=" + user.getId());
             model.addAttribute("user", user);
         }
         Page<SelectRecipeResponseDto> recipePage;
@@ -82,12 +82,12 @@ public class RecipeController {
         return "recipe/recipe-list";
     }
 
-    @GetMapping("users/{userId}")
-    public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
-        model.addAttribute("user", userService.selectById(userId));
-        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
-        return "user/user";
-    }
+//    @GetMapping("users/{userId}")
+//    public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
+//        model.addAttribute("user", userService.selectById(userId));
+//        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
+//        return "user/my-page";
+//    }
 
     @ResponseBody
     @GetMapping("directories/{directoryId}")
@@ -138,5 +138,12 @@ public class RecipeController {
     public CreateRecipeResponseDto editRecipe(@PathVariable("recipeId") Long recipeId, @Valid @RequestBody EditRecipeRequestDto dto) {
         dto.setId(recipeId);
         return recipeService.edit(dto);
+    }
+
+    @GetMapping("users/{userId}")
+    public String selectRecipeByUserId(@PathVariable("userId") Long userId, Model model) {
+        model.addAttribute("user", userService.selectById(userId));
+        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
+        return "user/user-recipe";
     }
 }
