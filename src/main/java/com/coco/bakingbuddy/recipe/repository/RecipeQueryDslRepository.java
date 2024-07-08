@@ -64,6 +64,7 @@ public class RecipeQueryDslRepository {
                 .leftJoin(tagRecipe.tag, tag)
                 .offset(pageable.getOffset()) // 페이지 시작 위치 설정
                 .limit(pageable.getPageSize()) // 페이지 크기 설정
+                .orderBy(recipe.createdDate.desc())
                 .fetchResults();
 
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
