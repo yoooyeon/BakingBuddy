@@ -46,7 +46,11 @@ spring:
           location: classpath:/keys/baking-buddy-428009-28b83cf67c33.json
         project-id: baking-buddy-428009
         bucket: baking-buddy-bucket
-
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
 logging:
   level:
     org:
