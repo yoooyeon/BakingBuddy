@@ -84,6 +84,8 @@ dependencies {
     // 스프링 시큐리티를 테스트하기 위한 의존성 추가
     testImplementation 'org.springframework.security:spring-security-test'
 
+    // Spring Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 dependencyManagement {
     imports {
@@ -95,7 +97,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-def generated = "/build/generated/querydsl"
+def generated = "generated/querydsl"
 
 tasks.withType(JavaCompile) {
     options.annotationProcessorGeneratedSourcesDirectory = file(generated)
