@@ -12,6 +12,16 @@
 </head>
 <body>
 <div class="container" style="max-width: 800px; margin-top: 50px;">
+    <h1 class="mb-4">사용자 알림</h1>
+    <div id="alarm-list" class="list-group">
+        <div th:if="${alarms.size() == 0}" class="alert alert-info" role="alert">
+            알림이 없습니다.
+        </div>
+        <div th:each="alarm : ${alarms}" class="list-group-item">
+            <h5 class="mb-1" th:text="${alarm.type}"></h5>
+            <p class="mb-1" th:text="${alarm.msg}"></p>
+        </div>
+    </div>
 </div>
 </body>
 </html>
