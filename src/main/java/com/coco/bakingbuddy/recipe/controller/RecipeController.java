@@ -74,7 +74,10 @@ public class RecipeController {
             log.info("user.getId()=" + user.getId());
             model.addAttribute("user", user);
         }
-        Page<SelectRecipeResponseDto> recipePage;
+        Page<SelectRecipeResponseDto> recipePage = null;
+        log.info("Page="+recipePage.getTotalPages());
+        log.info("Page="+recipePage.getNumber());
+        log.info("Page="+recipePage.getContent());
         recipePage = recipeService.selectAll(PageRequest.of(page, size));
         model.addAttribute("recipes", recipePage.getContent());
         model.addAttribute("currentPage", recipePage.getNumber());
