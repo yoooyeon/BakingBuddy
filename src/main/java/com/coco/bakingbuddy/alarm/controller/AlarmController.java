@@ -1,5 +1,7 @@
 package com.coco.bakingbuddy.alarm.controller;
 
+import com.coco.bakingbuddy.alarm.dto.response.SelectAlarmResponseDto;
+import com.coco.bakingbuddy.alarm.service.AlarmService;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -31,9 +33,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Controller
 public class AlarmController {
+    private final AlarmService alarmService;
 
     @GetMapping("users/{userId}")
-    public String selectByUserId(@PathVariable("userId") Long userId) {
+    public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
+        List<SelectAlarmResponseDto> alarms = alarmService.selectByUserId(userId);
+        model.addAttribute("alarms", alarms);
         return "alarm/user-alarm-list";
     }
     @GetMapping("{id}")

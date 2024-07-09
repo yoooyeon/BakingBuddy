@@ -1,17 +1,16 @@
 package com.coco.bakingbuddy.user.domain;
 
+import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Builder
@@ -39,6 +38,10 @@ public class User extends BaseTime implements UserDetails {
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Directory> directories = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Alarm> alarms = new ArrayList<>();
 
     private boolean alarmYn; // 알림 설정
 
@@ -77,6 +80,7 @@ public class User extends BaseTime implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
     public static User register(String username, String password) {
         // 사용자 객체 생성
         User user = User.builder()
@@ -84,7 +88,9 @@ public class User extends BaseTime implements UserDetails {
                 .password(password)
                 .recipes(new ArrayList<>())
                 .directories(new ArrayList<>())
+                .alarms(new ArrayList<>())
                 .build();
+
         // 사용자 등록 로직 추가 가능 (예: 이메일 확인, 초기 설정 등)
         return user;
     }
@@ -97,7 +103,6 @@ public class User extends BaseTime implements UserDetails {
     public void updateProfile(String uploadPath) {
         this.profileImageUrl = uploadPath;
     }
-
 
 
 }

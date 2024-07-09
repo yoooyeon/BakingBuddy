@@ -31,8 +31,13 @@
                         <a class="nav-link" href="/login">로그인</a>
                     </li>
                     <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
+                        <a class="nav-link" th:href="@{/api/alarms/users/{userId}(userId=${user.id})}">
+                            <img src="/notification.png" alt="알림 아이콘" style="width: 24px; height: 24px;"></a>
+                    </li>
+                    <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
                         <a class="nav-link" th:href="@{/api/users/{id}(id=${user.id})}">내 프로필</a>
                     </li>
+
                     <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
                         <a class="nav-link" th:href="@{/api/recipes/users/{userId}(userId=${user.id})}">내 레시피</a>
                     </li>
@@ -133,7 +138,8 @@
                     <a th:href="@{/api/recipes/search(keyword=${keyword},page=0)}" class="page-link">First</a>
                 </li>
                 <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a th:if="${currentPage > 0}" th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage - 1})}" class="page-link">Previous</a>
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/api/recipes/search(keyword=${keyword},page=${currentPage - 1})}" class="page-link">Previous</a>
                 </li>
                 <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                     th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'">
