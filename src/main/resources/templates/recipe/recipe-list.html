@@ -13,11 +13,80 @@
     <!-- Ajax를 위한 jQuery 추가 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
-        /* CSS 스타일 생략 */
+        #searchForm {
+            position: relative;
+        }
+
+        #searchResults {
+            position: relative;
+            z-index: 1000;
+            background-color: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            max-height: 300px;
+        }
+
+        #searchResults ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #searchResults li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        #searchResults li:hover {
+            background-color: #f0f0f0;
+        }
+
+        #searchForm .btn {
+            height: calc(100% - 2px);
+        }
+
+        .container {
+            max-width: 100%; /* 최대 너비를 100%로 설정하여 여백을 없앱니다 */
+            padding-left: 15px; /* 좌측 패딩을 줄입니다 */
+            padding-right: 15px; /* 우측 패딩을 줄입니다 */
+        }
+
+        /* Custom styling for the recipe cards */
+        .recipe-card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+            height: 100%;
+        }
+
+        .recipe-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .recipe-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .recipe-card h5.card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .recipe-card .card-text {
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
-<div>
+<div class="container">
 
     <div class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -50,9 +119,6 @@
     </div>
 
     <div class="container" style="max-width: 800px">
-        <div class="py-5 text-center">
-            <h3>Recipes</h3>
-        </div>
         <div class="container">
             <div class="py-3">
                 <!-- 검색 폼 -->
@@ -72,6 +138,13 @@
                         </button>
                     </div>
                 </form>
+                <!-- 인기 검색어 -->
+                <div class="py-2">
+                    <h5>인기 검색어</h5>
+                    <ul id="popularSearches" class="list-group">
+                        <!-- 인기 검색어가 여기에 동적으로 추가됩니다. -->
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -203,6 +276,49 @@
                 $('#searchResults').html('');
             }
         });
+
+
+        // 인기 검색어 가져오기 함수
+        function fetchPopularSearches() {
+            $.ajax({
+                type: "GET",
+                url: "/api/ranking/terms",
+                success: function (data) {
+                    // 인기 검색어를 표시할 HTML 생성
+                    var html = '';
+                    $.each(data, function (index, item) {
+                        html += '<li class="list-group-item">' + item + '</li>';
+                    });
+
+                    // 결과를 화면에 표시
+                    $('#popularSearches').html(html);
+                },
+                error: function (e) {
+                    console.error("Error fetching popular searches: ", e);
+                }
+            });
+        }
+
+        // 페이지 로드 시 인기 검색어 가져오기
+        fetchPopularSearches();
+
+        // 5분마다 인기 검색어 업데이트
+        setInterval(fetchPopularSearches, 300000);
+
+        // WebSocket 초기화
+        var socket = new SockJS('/ws');
+        var stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/queue/user', function (message) {
+                showNotification(JSON.parse(message.body).content);
+            });
+        });
+
+        function showNotification(message) {
+            alert("New notification: " + message);
+        }
     });
 </script>
 </body>
