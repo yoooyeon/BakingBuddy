@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.controller;
 
+import com.coco.bakingbuddy.ranking.service.RankingService;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -35,6 +36,7 @@ public class RecipeController {
     private final UserService userService;
     private final DirectoryService directoryService;
     private final RedisService redisService;
+    private final RankingService rankingService;
 
     @GetMapping("search")
     public String search(@AuthenticationPrincipal User user,
@@ -54,6 +56,7 @@ public class RecipeController {
         if (term != null && !term.isEmpty()) {
             recipePage = recipeService.selectByTerm(term, PageRequest.of(page, size));
             redisService.saveSearchTerm(term);
+            rankingService.incrementSearchCount(term); // ranking counter
         } else {
             recipePage = recipeService.selectAll(PageRequest.of(page, size));
         }
@@ -68,16 +71,10 @@ public class RecipeController {
                             Model model,
                             @RequestParam(name = "page", defaultValue = "0") int page,
                             @RequestParam(name = "size", defaultValue = "7") int size) {
-//        log.info("user=" + user.toString());
-
         if (user != null) {
-            log.info("user.getId()=" + user.getId());
             model.addAttribute("user", user);
         }
         Page<SelectRecipeResponseDto> recipePage = null;
-        log.info("Page="+recipePage.getTotalPages());
-        log.info("Page="+recipePage.getNumber());
-        log.info("Page="+recipePage.getContent());
         recipePage = recipeService.selectAll(PageRequest.of(page, size));
         model.addAttribute("recipes", recipePage.getContent());
         model.addAttribute("currentPage", recipePage.getNumber());
@@ -85,19 +82,11 @@ public class RecipeController {
         return "recipe/recipe-list";
     }
 
-//    @GetMapping("users/{userId}")
-//    public String selectByUserId(@PathVariable("userId") Long userId, Model model) {
-//        model.addAttribute("user", userService.selectById(userId));
-//        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
-//        return "user/my-page";
-//    }
-
     @ResponseBody
     @GetMapping("directories/{directoryId}")
     public List<SelectRecipeResponseDto> selectByDirectoryId(@PathVariable("directoryId") Long directoryId) {
         return recipeService.selectByDirectoryId(directoryId);
     }
-
 
     @GetMapping("{id}")
     public String selectById(@PathVariable("id") Long id, Model model) {
@@ -117,8 +106,7 @@ public class RecipeController {
     @ResponseBody
     @PostMapping
     public CreateRecipeResponseDto create(@Valid @RequestPart("dto") CreateRecipeRequestDto dto,
-                                          @RequestParam("recipeImage") MultipartFile recipeImage
-    ) {
+                                          @RequestParam("recipeImage") MultipartFile recipeImage) {
         CreateRecipeResponseDto save = recipeService.create(dto, recipeImage);
         return save;
     }
