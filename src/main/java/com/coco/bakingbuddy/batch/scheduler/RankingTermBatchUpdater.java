@@ -1,8 +1,9 @@
 package com.coco.bakingbuddy.batch.scheduler;
 
 import com.coco.bakingbuddy.ranking.domain.RankingTermCache;
-import com.coco.bakingbuddy.ranking.repository.RankingTermCacheQueryDslRepository;
+import com.coco.bakingbuddy.ranking.domain.TermCounter;
 import com.coco.bakingbuddy.ranking.repository.RankingTermCacheRepository;
+import com.coco.bakingbuddy.ranking.repository.TermCounterQueryDslRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class RankingTermBatchUpdater {
-    private final RankingTermCacheQueryDslRepository rankingTermCacheQueryDslRepository;
+    private final TermCounterQueryDslRepository termCounterQueryDslRepository;
     private final RankingTermCacheRepository rankingTermCacheRepository;
 
+//    @Scheduled(cron = "0 0/5 * * * *") // 5분마다 실행
     @Scheduled(cron = "0 0 * * * *") // 매 시간마다 실행
     public void updateRankingTermCache() {
-        List<RankingTermCache> topTerms = rankingTermCacheQueryDslRepository.selectTop10RankingTerms();
+        List<TermCounter> topTerms = termCounterQueryDslRepository.selectTop10RankingTerms();
         List<RankingTermCache> cacheTerms = topTerms.stream()
                 .map(term -> RankingTermCache.builder()
                         .term(term.getTerm())

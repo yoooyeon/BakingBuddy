@@ -13,6 +13,19 @@
     <!-- Ajax를 위한 jQuery 추가 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
+        #rankingContainer {
+            margin-bottom: 10px; /* 아래 여백 추가 */
+            padding: 5px; /* 패딩 추가 */
+            border: 1px solid #ced4da; /* 테두리 추가 */
+            border-radius: 5px; /* 테두리 모서리 둥글게 */
+        }
+
+        #popularSearches {
+            list-style-type: none; /* 리스트 점 제거 */
+            padding-left: 0; /* 왼쪽 여백 제거 */
+            padding-top: 5px;
+        }
+
         #searchForm {
             position: relative;
         }
@@ -127,14 +140,12 @@
         </div>
     </div>
 
-    <div class="container" style="max-width: 800px">
+    <div class="container" style="max-width: 1000px">
         <div class="container">
             <!-- 인기 검색어 -->
-            <div id="rankingContainer">
+            <h5>인기 검색어</h5>
                 <ul id="popularSearches" class="list-group">
-                    <!-- 여기에 자동으로 추가될 순위 항목들 -->
                 </ul>
-            </div>
             <div class="py-3">
                 <!-- 검색 폼 -->
                 <form id="searchForm" th:action="@{/api/recipes/search}" method="get" accept-charset="UTF-8"
@@ -299,7 +310,7 @@
                     // 인기 검색어를 표시할 HTML 생성
                     $.each(data, function (index, item) {
                         var rank = index + 1; // 순위는 인덱스 + 1
-                        var listItem = '<li id="rank_' + rank + '" class="list-group-item">' + rank + '. ' + item + '</li>';
+                        var listItem = '<li id="rank_' + rank + '" class="list-group-item">' + rank + '. ' + item.term + '</li>';
                         $('#popularSearches').append(listItem);
                     });
 
@@ -319,13 +330,17 @@
 
             setInterval(function () {
                 $('#rank_' + currentRank).fadeOut('fast', function () {
-                    $(this).appendTo('#popularSearches').fadeIn('fast');
-                });
+                    // 다음 순위로 이동
+                    currentRank++;
 
-                currentRank++;
-                if (currentRank > totalRanks) {
-                    currentRank = 1;
-                }
+                    // 마지막 순위까지 갔을 때 처음부터 다시 시작
+                    if (currentRank > totalRanks) {
+                        currentRank = 1;
+                    }
+
+                    // 다음 순위를 fadeIn으로 보여줌
+                    $('#rank_' + currentRank).appendTo('#popularSearches').fadeIn('fast');
+                });
             }, 3000); // 롤링 간격 (3초)
         }
 

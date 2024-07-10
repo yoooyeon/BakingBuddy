@@ -17,4 +17,5 @@ public class RankingTermCache extends BaseTime {
     private String term;
     private int count; // 검색 카운트
 
+
 }
