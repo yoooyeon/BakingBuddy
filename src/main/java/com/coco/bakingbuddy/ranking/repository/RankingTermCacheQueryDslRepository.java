@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.coco.bakingbuddy.ranking.domain.QRankingTerm.rankingTerm;
+import static com.coco.bakingbuddy.ranking.domain.QRankingTermCache.rankingTermCache;
+
 
 @RequiredArgsConstructor
 @Repository
@@ -16,8 +17,8 @@ public class RankingTermCacheQueryDslRepository {
 
     public List<RankingTermCache> selectTop10RankingTerms() {
         return queryFactory
-                .selectFrom(rankingTerm)
-                .orderBy(rankingTerm.count.desc())
+                .selectFrom(rankingTermCache)
+                .orderBy(rankingTermCache.count.desc())
                 .limit(10)
                 .fetch();
     }

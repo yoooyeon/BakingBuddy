@@ -16,8 +16,8 @@ import java.util.List;
 public class RankingController {
     private final RankingService rankingService;
     @GetMapping("/terms")
-    public List<SelectRankingTermsCacheResponseDto> terms() {
-        return rankingService.selectTop10RankingTerms();
+    public List<SelectRankingTermsCacheResponseDto> selectTop10CachedRankingTerm() {
+        return rankingService.selectTop10CachedRankingTerm();
     }
     @GetMapping("/clicks")
     public String clicks() {

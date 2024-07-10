@@ -15,4 +15,9 @@ public class TermCounter {
     private Long id;
     private String term;
     private int count; // 검색 카운트
+
+    public TermCounter updateCount() {
+        this.count++;
+        return this;
+    }
 }

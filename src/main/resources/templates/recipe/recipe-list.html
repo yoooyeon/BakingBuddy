@@ -52,6 +52,11 @@
             padding-right: 15px; /* 우측 패딩을 줄입니다 */
         }
 
+        .rank {
+            font-weight: bold; /* 순위를 더 강조하기 위해 볼드체 */
+            margin-right: 10px; /* 순위 사이에 간격 추가 */
+        }
+
         /* Custom styling for the recipe cards */
         .recipe-card {
             margin-bottom: 20px;
@@ -82,6 +87,10 @@
 
         .recipe-card .card-text {
             color: #6c757d;
+        }
+
+        .list-group-item {
+            display: none; /* 초기에 숨김 상태로 설정 */
         }
     </style>
 </head>
@@ -120,6 +129,12 @@
 
     <div class="container" style="max-width: 800px">
         <div class="container">
+            <!-- 인기 검색어 -->
+            <div id="rankingContainer">
+                <ul id="popularSearches" class="list-group">
+                    <!-- 여기에 자동으로 추가될 순위 항목들 -->
+                </ul>
+            </div>
             <div class="py-3">
                 <!-- 검색 폼 -->
                 <form id="searchForm" th:action="@{/api/recipes/search}" method="get" accept-charset="UTF-8"
@@ -138,13 +153,7 @@
                         </button>
                     </div>
                 </form>
-                <!-- 인기 검색어 -->
-                <div class="py-2">
-                    <h5>인기 검색어</h5>
-                    <ul id="popularSearches" class="list-group">
-                        <!-- 인기 검색어가 여기에 동적으로 추가됩니다. -->
-                    </ul>
-                </div>
+
             </div>
         </div>
 
@@ -284,14 +293,18 @@
                 type: "GET",
                 url: "/api/ranking/terms",
                 success: function (data) {
+                    // 기존 순위 항목들 초기화
+                    $('#popularSearches').empty();
+
                     // 인기 검색어를 표시할 HTML 생성
-                    var html = '';
                     $.each(data, function (index, item) {
-                        html += '<li class="list-group-item">' + item + '</li>';
+                        var rank = index + 1; // 순위는 인덱스 + 1
+                        var listItem = '<li id="rank_' + rank + '" class="list-group-item">' + rank + '. ' + item + '</li>';
+                        $('#popularSearches').append(listItem);
                     });
 
-                    // 결과를 화면에 표시
-                    $('#popularSearches').html(html);
+                    // 순위 롤링 기능 호출
+                    rollRanking();
                 },
                 error: function (e) {
                     console.error("Error fetching popular searches: ", e);
@@ -299,8 +312,28 @@
             });
         }
 
-        // 페이지 로드 시 인기 검색어 가져오기
-        fetchPopularSearches();
+        // 순위 롤링 기능 구현
+        function rollRanking() {
+            var currentRank = 1;
+            var totalRanks = $('#popularSearches').children().length;
+
+            setInterval(function () {
+                $('#rank_' + currentRank).fadeOut('fast', function () {
+                    $(this).appendTo('#popularSearches').fadeIn('fast');
+                });
+
+                currentRank++;
+                if (currentRank > totalRanks) {
+                    currentRank = 1;
+                }
+            }, 3000); // 롤링 간격 (3초)
+        }
+
+        // 페이지 로드 후 인기 검색어 가져오기 함수 호출
+        $(document).ready(function () {
+            fetchPopularSearches();
+        });
+
 
         // 5분마다 인기 검색어 업데이트
         setInterval(fetchPopularSearches, 300000);
