@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,40 +32,9 @@ import java.util.List;
 @RequestMapping("/api/recipes")
 @RequiredArgsConstructor
 @Controller
-public class RecipeController {
+public class RecipeManagementController {
     private final RecipeService recipeService;
-    private final UserService userService;
     private final DirectoryService directoryService;
-    private final RedisService redisService;
-    private final RankingService rankingService;
-
-    @GetMapping("search")
-    public String search(@AuthenticationPrincipal User user,
-                         Model model,
-                         @RequestParam(name = "term", required = false) String term,
-                         @RequestParam(name = "level", required = false) String level,
-                         @RequestParam(name = "time", required = false) Integer time,
-                         @RequestParam(name = "page", defaultValue = "0") int page,
-                         @RequestParam(name = "size", defaultValue = "6") int size) {
-        // 키워드, 필터 조건을 기반으로 검색한 결과를 페이징하여 가져옴
-//        Page<Recipe> recipePage = recipeService.findRecipes(keyword, difficulty, time, PageRequest.of(page, size));
-//        log.info("user=" + user.toString());
-        if (user != null) {
-            model.addAttribute("user", user);
-        }
-        Page<SelectRecipeResponseDto> recipePage;
-        if (term != null && !term.isEmpty()) {
-            recipePage = recipeService.selectByTerm(term, PageRequest.of(page, size));
-            redisService.saveSearchTerm(term);
-            rankingService.incrementSearchCount(term); // ranking counter
-        } else {
-            recipePage = recipeService.selectAll(PageRequest.of(page, size));
-        }
-        model.addAttribute("recipes", recipePage.getContent());
-        model.addAttribute("currentPage", recipePage.getNumber());
-        model.addAttribute("totalPages", recipePage.getTotalPages());
-        return "recipe/recipe-list";
-    }
 
     @GetMapping
     public String selectAll(
@@ -143,12 +111,5 @@ public class RecipeController {
     public CreateRecipeResponseDto editRecipe(@PathVariable("recipeId") Long recipeId, @Valid @RequestBody EditRecipeRequestDto dto) {
         dto.setId(recipeId);
         return recipeService.edit(dto);
-    }
-
-    @GetMapping("users/{userId}")
-    public String selectRecipeByUserId(@PathVariable("userId") Long userId, Model model) {
-        model.addAttribute("user", userService.selectById(userId));
-        model.addAttribute("dirs", recipeService.selectDirsByUserId(userId));
-        return "user/user-recipe";
     }
 }
