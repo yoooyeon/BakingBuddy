@@ -227,12 +227,14 @@ public class RecipeService {
         return result;
     }
 
+    @Transactional
     public CreateRecipeResponseDto edit(EditRecipeRequestDto dto) {
         Recipe recipe = EditRecipeRequestDto.toEntity(dto);
         Recipe saved = recipeRepository.save(recipe);
         return CreateRecipeResponseDto.fromEntity(saved);
     }
 
+    @Transactional(readOnly = true)
     public Page<SelectRecipeResponseDto> selectByTerm(String keyword, Pageable pageable) {
         Page<Recipe> recipePage = recipeQueryDslRepository.findByKeyword(keyword, pageable);
         if (recipePage.isEmpty()) {
@@ -242,6 +244,7 @@ public class RecipeService {
 
 //        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
 
     public Recipe findById(Long recipeId) {
         return recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
