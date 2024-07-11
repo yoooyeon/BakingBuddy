@@ -14,12 +14,14 @@ import com.coco.bakingbuddy.redis.service.RedisService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,11 +43,11 @@ public class RecipeController {
     @GetMapping("search")
     public String search(@AuthenticationPrincipal User user,
                          Model model,
-                         @NotNull(message = "검색어를 한 글자 이상 입력해주세요.") @RequestParam(name = "term", required = false) String term,
+                         @RequestParam(name = "term", required = false) String term,
                          @RequestParam(name = "level", required = false) String level,
                          @RequestParam(name = "time", required = false) Integer time,
                          @RequestParam(name = "page", defaultValue = "0") int page,
-                         @RequestParam(name = "size", defaultValue = "7") int size) {
+                         @RequestParam(name = "size", defaultValue = "6") int size) {
         // 키워드, 필터 조건을 기반으로 검색한 결과를 페이징하여 가져옴
 //        Page<Recipe> recipePage = recipeService.findRecipes(keyword, difficulty, time, PageRequest.of(page, size));
 //        log.info("user=" + user.toString());
@@ -67,15 +69,27 @@ public class RecipeController {
     }
 
     @GetMapping
-    public String selectAll(@AuthenticationPrincipal User user,
-                            Model model,
-                            @RequestParam(name = "page", defaultValue = "0") int page,
-                            @RequestParam(name = "size", defaultValue = "7") int size) {
+    public String selectAll(
+            Model model,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "6") int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = null;
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+            user = (User) authentication.getPrincipal();
+        }
         if (user != null) {
             model.addAttribute("user", user);
+            model.addAttribute("loggedIn", true);
+        } else {
+            model.addAttribute("loggedIn", false);
         }
         Page<SelectRecipeResponseDto> recipePage = null;
         recipePage = recipeService.selectAll(PageRequest.of(page, size));
+        log.info("Fetched recipes: " + recipePage.getContent());
+        log.info("Current page: " + recipePage.getNumber());
+        log.info("Total pages: " + recipePage.getTotalPages());
         model.addAttribute("recipes", recipePage.getContent());
         model.addAttribute("currentPage", recipePage.getNumber());
         model.addAttribute("totalPages", recipePage.getTotalPages());

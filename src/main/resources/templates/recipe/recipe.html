@@ -22,7 +22,7 @@
         .recipe-card img {
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
-            max-width: 100%;
+            max-width: 30%;
             height: auto;
             object-fit: cover;
         }
@@ -85,14 +85,14 @@
             <hr class="my-4">
             <div class="row">
                 <div class="col">
-                    <button class="w-100 btn btn-primary btn-lg"
+                    <button class="w-50 btn btn-primary btn-lg"
                             onclick="location.href='editForm.html'"
                             th:onclick="|location.href='@{/api/recipes/{recipeId}/edit(recipeId=${recipe.id})}'|"
                             type="button">Edit Recipe
                     </button>
                 </div>
                 <div class="col">
-                    <button class="w-100 btn btn-secondary btn-lg"
+                    <button class="w-50 btn btn-secondary btn-lg"
                             onclick="location.href='recipe-list.html'"
                             th:onclick="|location.href='@{/api/recipes}'|"
                             type="button">Back to List
