@@ -27,7 +27,6 @@ public class UserController {
     private final RecipeService recipeService;
 
     private final ApplicationEventPublisher eventPublisher;
-    private SimpMessagingTemplate messagingTemplate;
 
 
     @GetMapping

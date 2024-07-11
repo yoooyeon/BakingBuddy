@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.recipe.controller;
 import com.coco.bakingbuddy.ranking.service.RankingService;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
+import com.coco.bakingbuddy.recipe.service.RecipeSearchService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.redis.service.RedisService;
 import com.coco.bakingbuddy.user.domain.User;
@@ -26,6 +27,7 @@ public class RecipeSearchController {
     private final RecipeService recipeService;
     private final RedisService redisService;
     private final RankingService rankingService;
+    private final RecipeSearchService recipeSearchService;
 
     @GetMapping("search")
     public String search(@AuthenticationPrincipal User user,
@@ -43,7 +45,7 @@ public class RecipeSearchController {
         }
         Page<SelectRecipeResponseDto> recipePage;
         if (term != null && !term.isEmpty()) {
-            recipePage = recipeService.selectByTerm(term, PageRequest.of(page, size));
+            recipePage = recipeSearchService.selectByTerm(term, PageRequest.of(page, size));
             redisService.saveSearchTerm(term);
             rankingService.incrementSearchCount(term); // ranking counter
         } else {

@@ -6,6 +6,8 @@ import com.coco.bakingbuddy.file.dto.response.ImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
+import com.coco.bakingbuddy.global.error.ErrorCode;
+import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
@@ -32,7 +34,8 @@ public class FileService {
     private final Storage storage;
     private final ImageFileRepository imageFileRepository;
     private final UserService userService;
-
+    private final RecipeRepository recipeRepository;
+    private final RecipeImageFileRepository recipeImageFileRepository;
 
 
     @Transactional
@@ -73,4 +76,43 @@ public class FileService {
             throw new RuntimeException("Failed to save profile image: " + e.getMessage());
         }
     }
+
+    @Transactional
+    public RecipeImageFileCreateResponseDto uploadRecipeImageFile(Long recipeId, MultipartFile multiPartFile) {
+        String originalName = multiPartFile.getOriginalFilename();
+        String ext = multiPartFile.getContentType();
+        String uuid = UUID.randomUUID().toString();
+        String fileName = RECIPE_UPLOAD_PATH + uuid + "_" + originalName;
+        String uploadPath = RECIPE_UPLOAD_PATH + uuid;
+        try {
+            // GCS에 이미지 파일 업로드
+            BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, fileName)
+                    .setContentType(ext)
+                    .build();
+            storage.create(blobInfo, multiPartFile.getInputStream());
+
+            // 이미지 파일 메타 데이터 저장
+            RecipeImageFileCreateRequestDto dto = RecipeImageFileCreateRequestDto.builder()
+                    .originalName(originalName)
+                    .ext(ext)
+                    .uuid(uuid)
+                    .fileName(fileName)
+                    .recipeId(recipeId)
+                    .uploadPath(uploadPath)
+                    .build();
+            // 유저 도메인에 파일 경로 저장
+            Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
+            recipe.updateImage("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+            recipeRepository.save(recipe);
+            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+
+            return RecipeImageFileCreateResponseDto.fromEntity(recipeImageFileRepository.save(dto.toEntity()));
+
+        } catch (IOException e) {
+            // 파일 업로드 중 오류 발생 시 처리
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save profile image: " + e.getMessage());
+        }
+    }
+
 }

@@ -15,13 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 @Controller
 public class AuthController {
-//    @GetMapping("/")
-//    public String index(@AuthenticationPrincipal User user, Model model) {
-//        boolean loggedIn = user != null;
-//        model.addAttribute("loggedIn", loggedIn);
-//        return "recipe/recipe-list"; // index.html 템플릿
-//    }
-
     @GetMapping("login") // 화면 이동
     public String login() {
         return "user/login";
@@ -37,7 +30,7 @@ public class AuthController {
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         new SecurityContextLogoutHandler().logout(request, response,
                 SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/login";
+        return "redirect:/";
     }
 
 }

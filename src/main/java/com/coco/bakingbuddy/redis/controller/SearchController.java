@@ -14,11 +14,6 @@ public class SearchController {
 
     private final RedisService redisService;
 
-    @GetMapping
-    public String search() {
-        return "recipe/recipe-search";
-    }
-
     @ResponseBody
     @PostMapping("/term")
     public void saveSearchTerm(@RequestParam("term") String term) {
