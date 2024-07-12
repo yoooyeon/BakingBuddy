@@ -31,7 +31,7 @@ public class BatchScheduler {
         return jobProcessor;
     }
 
-    @Scheduled(cron = "0 0/10 * * * *") // 10분마다 실행
+//    @Scheduled(cron = "0 0/10 * * * *") // 10분마다 실행
     public void runJob() {
         String time = LocalDateTime.now().toString();
         try {

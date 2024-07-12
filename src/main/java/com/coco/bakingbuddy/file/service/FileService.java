@@ -10,7 +10,6 @@ import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
-import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.UserService;
 import com.google.cloud.storage.BlobInfo;

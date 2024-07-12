@@ -12,6 +12,8 @@
     <title>Home</title>
     <!-- Ajax를 위한 jQuery 추가 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+
     <style>
         #rankingContainer {
             margin-bottom: 10px; /* 아래 여백 추가 */
@@ -353,20 +355,20 @@
         // 5분마다 인기 검색어 업데이트
         setInterval(fetchPopularSearches, 300000);
 
-        // WebSocket 초기화
-        var socket = new SockJS('/ws');
-        var stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/queue/user', function (message) {
-                showNotification(JSON.parse(message.body).content);
-            });
-        });
-
-        function showNotification(message) {
-            alert("New notification: " + message);
-        }
+        // // WebSocket 초기화
+        // var socket = new SockJS('/ws');
+        // var stompClient = Stomp.over(socket);
+        //
+        // stompClient.connect({}, function (frame) {
+        //     console.log('Connected: ' + frame);
+        //     stompClient.subscribe('/queue/user', function (message) {
+        //         showNotification(JSON.parse(message.body).content);
+        //     });
+        // });
+        //
+        // function showNotification(message) {
+        //     alert("New notification: " + message);
+        // }
     });
 </script>
 </body>

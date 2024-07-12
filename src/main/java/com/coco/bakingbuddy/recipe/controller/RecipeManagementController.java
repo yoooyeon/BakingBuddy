@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.recipe.controller;
 
-import com.coco.bakingbuddy.ranking.service.RankingService;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -10,17 +9,18 @@ import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
-import com.coco.bakingbuddy.redis.service.RedisService;
 import com.coco.bakingbuddy.user.domain.User;
+import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
+import com.coco.bakingbuddy.user.repository.UserRepository;
 import com.coco.bakingbuddy.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,7 @@ import java.util.List;
 public class RecipeManagementController {
     private final RecipeService recipeService;
     private final DirectoryService directoryService;
-
+    private final UserRepository userRepository;
     @GetMapping
     public String selectAll(
             Model model,
@@ -43,9 +43,16 @@ public class RecipeManagementController {
             @RequestParam(name = "size", defaultValue = "6") int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = null;
-        if (authentication != null && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)) {
-            user = (User) authentication.getPrincipal();
+        if (authentication != null && authentication.getPrincipal() instanceof OAuth2User) {
+            OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+            String email = oauth2User.getAttribute("email");
+            String name = oauth2User.getAttribute("name");
+            user = User.builder()
+                    .email(email)
+                    .username(name)
+                    .provider("GOOGLE")
+                    .build();
+            user = userRepository.save(user);
         }
         if (user != null) {
             model.addAttribute("user", user);

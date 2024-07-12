@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,11 +27,13 @@ public class UserService {
             throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
 
+//        RoleType role = RoleType.ROLE_USER;
         return userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
+                .role("USER") // todo admin과 어떻게 나눌지
                 .build()).getId();
     }
 
@@ -66,4 +69,13 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public Optional<User> findByUsernameAndPassword(String username, String password) {
+        return userRepository.findByUsernameAndPassword(username, password);
+    }
+    @Transactional(readOnly = true)
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+    }
 }

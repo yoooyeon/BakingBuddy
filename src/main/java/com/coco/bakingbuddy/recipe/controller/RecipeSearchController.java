@@ -2,12 +2,10 @@ package com.coco.bakingbuddy.recipe.controller;
 
 import com.coco.bakingbuddy.ranking.service.RankingService;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
-import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeSearchService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.redis.service.RedisService;
 import com.coco.bakingbuddy.user.domain.User;
-import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

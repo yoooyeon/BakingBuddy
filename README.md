@@ -8,13 +8,14 @@
 ### 기술적 TODO
 - 테스트코드
 - 태그 검색, 재료 검색, 필터 등 - 디비, 검색 관련 속도 고민
-- validation (중복 체크, 프론트 메세지 전달)
 - Batch 알림
 - es 구현 후 redis 와 비교해보기
 - 모니터링 네이버 툴 (오픈소스)
 - 운영/검증 환경 따로 구성 (profile 활용, 테스트 환경 구축)
-- 알림 전송 (Spring Batch, Socket)
-
+- 알림 전송, (Spring Batch)
+- 성능 테스트, 부하 테스트
+- 검색, 클릭 등 이벤트 수집 -> 취향 파악, 쿠폰 발급
+- 좋아요, 게시글을 보고있는 회원 수 등 (Socket)
 - 
 ### 기능적 TODO
 - 친구, 채팅 기능 고려
@@ -26,12 +27,16 @@
 - 
 # 주요 기능
 - 검색 자동완성 기능: Redis 구현
+- 인기 검색어 기능: 1시간마다 인기 검색어 배치로 캐싱 
+- 특정 API 호출 등 이벤트 발행 - ApplicationEventPublisher 활용
 - JPA, QueryDSL: 자바 코드로 동적 쿼리 작성 (조인, 검색, 페이징 등)
 - CI/CD: 깃허브 & Cloud Run으로 자동 배포
 - Spring Security를 활용한 로그인 기능
 - 
 - Spring Actuator, Prometheus 모니터링
 
+## 부수적인 것
+- validation (중복 체크, 프론트 메세지 전달)
 
 # Library
 - Spring Boot: 3.2.5

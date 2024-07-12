@@ -1,4 +1,15 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1000199336931-ttf2apdad8hk3fs0m932qhkmt5ehmvc3.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: /login/oauth2/code/google
+            scope:
+              - email
+              - profile
   redis:
     host: "34.47.125.174"
     port: 6379
@@ -30,10 +41,10 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect
 
-#  servlet:
-#    multipart:
-#      max-file-size: 10MB
-#      max-request-size: 10MB
+  #  servlet:
+  #    multipart:
+  #      max-file-size: 10MB
+  #      max-request-size: 10MB
   thymeleaf:
     prefix: classpath:/templates/
     cache: false
@@ -51,12 +62,16 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: always
+
+jwt:
+  secret: aHdhbmd5b295ZW9uand0c2VjcmV0a2V5YmFraW5nYnVkZHluZXdqZWFuc2J1bm5pZXNoYW5uaWh3YW5neW9veWVvbmp3dHNlY3JldGtleWJha2lu
+  expiration_time: 86400 # ttl (초) 24시간
 logging:
   level:
     org:
       springframework:
-        security: DEBUG
-        web: DEBUG
+        security: INFO
+        web: INFO
       hibernate: ERROR
 
 management:

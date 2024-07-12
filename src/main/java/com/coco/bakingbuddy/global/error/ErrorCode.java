@@ -31,7 +31,13 @@ public enum ErrorCode {
 
 
     //recipe
-    RECIPE_NOT_FOUND(NOT_FOUND, "존재하지 않는 레시피")
+    RECIPE_NOT_FOUND(NOT_FOUND, "존재하지 않는 레시피"),
+
+    // auth
+    AUTH_NOT_FOUND(NOT_FOUND, "인증 정보를 찾을 수 없습니다."),
+    INVALID_AUTH(BAD_REQUEST, "인증 정보가 잘못되었습니다."),
+    LOGIN_FAILED(BAD_REQUEST, "비밀번호가 맞지 않습니다.")
+
     ;
 
     private final HttpStatus status;

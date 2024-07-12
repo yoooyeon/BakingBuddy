@@ -6,19 +6,17 @@ import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
 
 @Builder
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class User extends BaseTime implements UserDetails {
+public class User extends BaseTime {
     @Id
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +28,11 @@ public class User extends BaseTime implements UserDetails {
     private String username;
     private String password;
     private String profileImageUrl;
+    //    @Enumerated(EnumType.STRING)
+    private String role;
+    private String picture;
+    private String profile;
+    private String email;
     // 관심 태그
 //    private List<Tag> tags = new ArrayList<>();
     @Builder.Default
@@ -44,42 +47,10 @@ public class User extends BaseTime implements UserDetails {
     private List<Alarm> alarms = new ArrayList<>();
 
     private boolean alarmYn; // 알림 설정
+    private boolean activated;
+    private String provider; //어떤 OAuth인지(google, naver 등)
+    private String provideId; // 해당 OAuth 의 key(id)
 
-    // 권한 관련 작업을 하기 위한 role return
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collections = new ArrayList<>();
-//        collections.add(() -> {
-//            return user.getRole().name();
-//        });
-
-        return collections;
-    }
-
-
-    // 계정이 만료 되었는지 (true: 만료X)
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    // 계정이 잠겼는지 (true: 잠기지 않음)
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    // 비밀번호가 만료되었는지 (true: 만료X)
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    // 계정이 활성화(사용가능)인지 (true: 활성화)
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
     public static User register(String username, String password) {
         // 사용자 객체 생성
@@ -106,3 +77,4 @@ public class User extends BaseTime implements UserDetails {
 
 
 }
+

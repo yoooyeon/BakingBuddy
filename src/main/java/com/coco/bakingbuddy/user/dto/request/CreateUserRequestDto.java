@@ -2,7 +2,6 @@ package com.coco.bakingbuddy.user.dto.request;
 
 import com.coco.bakingbuddy.global.validator.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

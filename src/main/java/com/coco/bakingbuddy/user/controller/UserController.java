@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,11 @@ public class UserController {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    @GetMapping("hello")
+    public Object sayHello(Authentication authentication) {
 
+        return authentication.getPrincipal();
+    }
     @GetMapping
     public String allUsers(Model model) {
         List<SelectUserResponseDto> dto = userService.selectAll();

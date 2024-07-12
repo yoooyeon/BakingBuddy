@@ -19,7 +19,6 @@ import com.coco.bakingbuddy.tag.repository.TagRecipeRepository;
 import com.coco.bakingbuddy.tag.repository.TagRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
-import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -40,6 +40,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    // jakarta.servlet-api 추가
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+
     // google sql
     implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:4.1.4')
     implementation 'com.google.cloud:spring-cloud-gcp-starter-sql-mysql'
@@ -56,9 +60,9 @@ dependencies {
     // 쿼리파라미터 로그 남기기
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
@@ -80,14 +84,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
-
-    // Security
-    // 스프링 시큐리티를 사용하기 위한 스타터 추가
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    // 타임리프에서 스프링 시큐리티를 사용하기 위한 의존성 추가
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    // 스프링 시큐리티를 테스트하기 위한 의존성 추가
-    testImplementation 'org.springframework.security:spring-security-test'
 
     // Spring Batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
