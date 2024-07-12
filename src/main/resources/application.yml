@@ -81,3 +81,5 @@ management:
         include: "*"
         exclude: env, beans
       base-path: "/manage"
+server:
+  port: 8080
