@@ -1,3 +1,4 @@
+
 spring:
   security:
     oauth2:
@@ -70,8 +71,8 @@ logging:
   level:
     org:
       springframework:
-        security: INFO
-        web: INFO
+        security: DEBUG
+        web: DEBUG
       hibernate: ERROR
 
 management:

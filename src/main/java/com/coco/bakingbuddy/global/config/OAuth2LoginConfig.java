@@ -24,8 +24,8 @@ public class OAuth2LoginConfig {
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     String redirectUri;
     //    private final Oredirect-uriAuth2ClientProperties properties;
-    private String baseUrl = "https://baking-buddy-image-6q5ymuc2ha-du.a.run.app";
-//    private String baseUrl = "http://localhost:8080";
+//    private String baseUrl = "https://baking-buddy-image-6q5ymuc2ha-du.a.run.app";
+    private String baseUrl = "http://localhost:8080";
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
