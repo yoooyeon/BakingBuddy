@@ -4,19 +4,28 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+//    private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+
                 .authorizeRequests((requests) -> requests
                         .requestMatchers(antMatcher("/")).permitAll()
                         .requestMatchers(antMatcher("/signup")).permitAll()
@@ -32,7 +41,7 @@ public class SecurityConfig {
                                 .invalidateHttpSession(true) // 세션 무효화
                                 .deleteCookies("JSESSIONID") // 쿠키 삭제
                 )
-                .csrf().disable(); // CSRF 보호 비활성화 (필요에 따라 활성화 가능)
+        ;
 
         return http.build();
     }
