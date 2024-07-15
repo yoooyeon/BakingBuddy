@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/default}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,26 +13,28 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container" style="max-width: 800px; margin-top: 50px;">
-    <button class="btn btn-secondary" onclick="editUser()">사용자 정보 수정</button>
+<div layout:fragment="content">
 
-    <!-- User Info Section -->
-    <div class="card mb-4">
-        <div class="card-header text-center">
-            <h2 class="my-2">사용자 정보</h2>
+    <div class="container" style="max-width: 800px; margin-top: 50px;">
+        <button class="btn btn-secondary" onclick="editUser()">사용자 정보 수정</button>
+
+        <!-- User Info Section -->
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h2 class="my-2">사용자 정보</h2>
+            </div>
+            <div class="card-body text-center">
+                <img th:src="${user.profileImageUrl}" alt="Profile Picture" class="img-thumbnail rounded-circle"
+                     style="width: 150px; height: 150px;">
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>아이디:</strong> <span th:text="${user.id}">아이디</span></li>
+                <li class="list-group-item"><strong>이름:</strong> <span th:text="${user.username}">이름</span></li>
+                <li class="list-group-item"><strong>닉네임:</strong> <span th:text="${user.nickname}">닉네임</span></li>
+            </ul>
         </div>
-        <div class="card-body text-center">
-            <img th:src="${user.profileImageUrl}" alt="Profile Picture" class="img-thumbnail rounded-circle"
-                 style="width: 150px; height: 150px;">
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>아이디:</strong> <span th:text="${user.id}">아이디</span></li>
-            <li class="list-group-item"><strong>이름:</strong> <span th:text="${user.username}">이름</span></li>
-            <li class="list-group-item"><strong>닉네임:</strong> <span th:text="${user.nickname}">닉네임</span></li>
-        </ul>
+
     </div>
-
-
 </div>
 <script th:inline="javascript">
     function editUser() {

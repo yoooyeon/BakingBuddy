@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,56 +52,58 @@
         }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
+<div layout:fragment="content">
 
-<div class="container">
-    <div class="py-5 text-center">
-        <h2>Recipe Detail</h2>
-    </div>
-    <div>
-        <div id="userCountDisplay">현재 보고있는 사용자 수</div>
-    </div>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Recipe Detail</h2>
+        </div>
+        <div>
+            <div id="userCountDisplay">현재 보고있는 사용자 수</div>
+        </div>
 
-    <div class="card recipe-card">
-        <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture" class="card-img-top">
-        <div class="card-body">
-            <h2 th:text="${recipe.name}">Recipe Name</h2>
-            <hr>
-            <div>
-                <label>ID: </label>
-                <span th:text="${recipe.id}">1</span>
-            </div>
-            <div>
-                <label>Ingredients: </label>
-                <span th:text="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}"></span>
-            </div>
-            <div>
-                <label>Memo: </label>
-                <span th:text="${recipe.memo}"></span>
-            </div>
-            <div>
-                <label>Time: </label>
-                <span th:text="${recipe.time}"></span> minutes
-            </div>
-            <div>
-                <label>Tags: </label>
-                <span th:text="${#strings.arrayJoin(recipe.tags.![name], ', ')}"></span>
-            </div>
-            <hr class="my-4">
-            <div class="row">
-                <div class="col">
-                    <button class="w-50 btn btn-primary btn-lg"
-                            onclick="location.href='editForm.html'"
-                            th:onclick="|location.href='@{/api/recipes/{recipeId}/edit(recipeId=${recipe.id})}'|"
-                            type="button">Edit Recipe
-                    </button>
+        <div class="card recipe-card">
+            <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture" class="card-img-top">
+            <div class="card-body">
+                <h2 th:text="${recipe.name}">Recipe Name</h2>
+                <hr>
+                <div>
+                    <label>ID: </label>
+                    <span th:text="${recipe.id}">1</span>
                 </div>
-                <div class="col">
-                    <button class="w-50 btn btn-secondary btn-lg"
-                            onclick="location.href='recipe-list.html'"
-                            th:onclick="|location.href='@{/api/recipes}'|"
-                            type="button">Back to List
-                    </button>
+                <div>
+                    <label>Ingredients: </label>
+                    <span th:text="${#strings.arrayJoin(recipe.ingredients.![name], ', ')}"></span>
+                </div>
+                <div>
+                    <label>Memo: </label>
+                    <span th:text="${recipe.memo}"></span>
+                </div>
+                <div>
+                    <label>Time: </label>
+                    <span th:text="${recipe.time}"></span> minutes
+                </div>
+                <div>
+                    <label>Tags: </label>
+                    <span th:text="${#strings.arrayJoin(recipe.tags.![name], ', ')}"></span>
+                </div>
+                <hr class="my-4">
+                <div class="row">
+                    <div class="col">
+                        <button class="w-50 btn btn-primary btn-lg"
+                                onclick="location.href='editForm.html'"
+                                th:onclick="|location.href='@{/api/recipes/{recipeId}/edit(recipeId=${recipe.id})}'|"
+                                type="button">Edit Recipe
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button class="w-50 btn btn-secondary btn-lg"
+                                onclick="location.href='recipe-list.html'"
+                                th:onclick="|location.href='@{/api/recipes}'|"
+                                type="button">Back to List
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,7 +119,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         var socket = new SockJS('/ws');
         var stompClient = Stomp.over(socket);
-        var header={
+        var header = {
             Authorization: token
         };
         stompClient.connect(header, function (frame) {
