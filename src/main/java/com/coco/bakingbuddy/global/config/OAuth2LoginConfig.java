@@ -15,17 +15,14 @@ import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 @Configuration
 @RequiredArgsConstructor
 public class OAuth2LoginConfig {
-    //    client-id: 1000199336931-ttf2apdad8hk3fs0m932qhkmt5ehmvc3.apps.googleusercontent.com
-//    client-secret: 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
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     String clientId;
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     String secretId;
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     String redirectUri;
-    //    private final Oredirect-uriAuth2ClientProperties properties;
-    private String baseUrl = "https://baking-buddy-image-6q5ymuc2ha-du.a.run.app";
-//    private String baseUrl = "http://localhost:8080";
+//    private String baseUrl = "https://baking-buddy-image-6q5ymuc2ha-du.a.run.app";
+    private String baseUrl = "http://localhost:8080";
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
@@ -33,10 +30,6 @@ public class OAuth2LoginConfig {
     }
 
     private ClientRegistration googleClientRegistration() {
-//        OAuth2ClientProperties.Registration googleRegistration = this.properties.getRegistration().get("google");
-        log.info("client={}", clientId);
-        log.info("secretId={}", secretId);
-        log.info("redirectUri={}", redirectUri);
         return ClientRegistration.withRegistrationId("google")
                 .clientId(clientId)
                 .clientSecret(secretId)
