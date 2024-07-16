@@ -14,6 +14,10 @@
                         <a class="nav-link" href="/login">로그인</a>
                     </li>
                     <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
+                        <a class="nav-link" th:href="@{/api/search}">
+                            <img src="/finder.png" alt="검색 아이콘" style="width: 24px; height: 24px;"></a>
+                    </li>
+                    <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
                         <a class="nav-link" th:href="@{/api/alarms/users/{userId}(userId=${user.id})}">
                             <img src="/notification.png" alt="알림 아이콘" style="width: 24px; height: 24px;"></a>
                     </li>
