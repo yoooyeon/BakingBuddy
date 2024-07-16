@@ -20,13 +20,27 @@ public class AuthController {
         model.addAttribute("createUserRequestDto", new CreateUserRequestDto());
         return "user/signup";
     }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response,
-                SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/";
+    @GetMapping("test")
+    public String test(Model model) {
+        model.addAttribute("user", null);
+        model.addAttribute("loggedIn", false);
+        return "index";
     }
+    @GetMapping("autocomplete")
+    public String autocomplete(Model model) {
+        return "recipe/autocomplete";
+    }
+
+//    @GetMapping("/logout")
+//    public String logout(HttpServletRequest request, HttpServletResponse response, Model model) {
+//        log.info(">>>> LOGOUT");
+//        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+//        securityContextLogoutHandler.logout(request, response,
+//                SecurityContextHolder.getContext().getAuthentication());
+//        model.addAttribute("user", null);
+//        model.addAttribute("loggedIn", false);
+//        return "recipe/recipe-list";
+//    }
 
 
 }
