@@ -1,7 +1,10 @@
 package com.coco.bakingbuddy.recipe.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
+import com.coco.bakingbuddy.search.AutoCompletePreviewDto;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +94,18 @@ public class RecipeQueryDslRepository {
 
     public List<String> findByName(String term) {
         return queryFactory.select(recipe.name)
+                .from(recipe)
+                .where(recipe.name.containsIgnoreCase(term))
+                .fetch();
+    }
+
+    public List<RedisAutoCompletePreviewDto> findPreviewByTerm(String term) {
+        return queryFactory
+                .select(Projections.constructor(RedisAutoCompletePreviewDto.class,
+                        recipe.name,
+                        recipe.id,
+                        recipe.recipeImageUrl
+                ))
                 .from(recipe)
                 .where(recipe.name.containsIgnoreCase(term))
                 .fetch();
