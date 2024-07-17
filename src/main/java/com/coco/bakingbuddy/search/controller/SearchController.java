@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.search;
+package com.coco.bakingbuddy.search.controller;
 
 import com.coco.bakingbuddy.ranking.dto.response.SelectRankingTermsCacheResponseDto;
 import com.coco.bakingbuddy.ranking.service.RankingService;
@@ -7,10 +7,14 @@ import com.coco.bakingbuddy.recipe.service.RecipeSearchService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
 import com.coco.bakingbuddy.redis.service.RedisService;
+import com.coco.bakingbuddy.search.service.SearchService;
+import com.coco.bakingbuddy.user.domain.PrincipalDetails;
+import com.coco.bakingbuddy.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +31,7 @@ public class SearchController {
     private final RedisService redisService;
     private final RankingService rankingService;
     private final RecipeSearchService recipeSearchService;
+    private final SearchService searchService;
 
     @GetMapping
     public String search() {
@@ -40,8 +45,9 @@ public class SearchController {
         // todo
         return result;
     }
+
     @ResponseBody
-    @GetMapping("/popular")
+    @GetMapping("popular")
     public List<SelectRankingTermsCacheResponseDto> popular() {
         return rankingService.selectTop10CachedRankingTerm();
     }
@@ -54,7 +60,12 @@ public class SearchController {
             @RequestParam(name = "level", required = false) String level,
             @RequestParam(name = "time", required = false) Integer time,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "6") int size) {
+            @RequestParam(name = "size", defaultValue = "6") int size
+            , @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        log.info(">>>principalDetails" + principalDetails);
+
+        User user = principalDetails != null ? principalDetails.getUser() : null;
+
         // 키워드, 필터 조건을 기반으로 검색한 결과를 페이징하여 가져옴
 //        Page<Recipe> recipePage = recipeService.findRecipes(keyword, difficulty, time, PageRequest.of(page, size));
 //        log.info("user=" + user.toString());
@@ -66,6 +77,10 @@ public class SearchController {
             recipePage = recipeSearchService.selectByTerm(term, PageRequest.of(page, size));
             redisService.saveSearchTerm(term);
             rankingService.incrementSearchCount(term); // ranking counter
+            log.info(">>>user" + user);
+            if (user != null) {
+                searchService.addRecentSearch(user.getId(), term);
+            }
         } else {
             recipePage = recipeService.selectAll(PageRequest.of(page, size));
         }
