@@ -1,8 +1,12 @@
 package com.coco.bakingbuddy.global.config;
 
+import com.coco.bakingbuddy.user.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,34 +20,40 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-//    private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
+    private final PrincipalService principalService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
-
-                .authorizeRequests((requests) -> requests
-                        .requestMatchers(antMatcher("/")).permitAll()
-                        .requestMatchers(antMatcher("/signup")).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2Login ->
-                        oauth2Login
-                                .loginPage("/oauth2/authorization/google") // 구글 로그인 페이지로 리디렉션
-                )
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/login")
+                                .loginProcessingUrl("/login")
+                                .defaultSuccessUrl("/")
+                                .permitAll())
                 .logout(logout ->
                         logout
-                                .logoutSuccessUrl("/") // 로그아웃 후 리디렉션할 URL
-                                .invalidateHttpSession(true) // 세션 무효화
-                                .deleteCookies("JSESSIONID") // 쿠키 삭제
-                )
-        ;
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID"))
+                .authorizeRequests((requests) -> requests
+                        .requestMatchers(HttpMethod.GET,"/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/recipes").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/signup").permitAll()
+                        .requestMatchers(antMatcher("/api/recipes")).permitAll()
+                        .anyRequest().authenticated());
+
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class).build();
     }
 
     @Bean
