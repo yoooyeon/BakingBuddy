@@ -7,9 +7,11 @@ import com.coco.bakingbuddy.recipe.service.RecipeSearchService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
 import com.coco.bakingbuddy.redis.service.RedisService;
+import com.coco.bakingbuddy.search.dto.RecentSearchResponseDto;
 import com.coco.bakingbuddy.search.service.SearchService;
 import com.coco.bakingbuddy.user.domain.PrincipalDetails;
 import com.coco.bakingbuddy.user.domain.User;
+import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,7 @@ public class SearchController {
     private final RankingService rankingService;
     private final RecipeSearchService recipeSearchService;
     private final SearchService searchService;
+    private final UserService userService;
 
     @GetMapping
     public String search() {
@@ -40,10 +43,8 @@ public class SearchController {
 
     @ResponseBody
     @GetMapping("recent")
-    public List<String> recent() {
-        List<String> result = new ArrayList<>();
-        // todo
-        return result;
+    public List<RecentSearchResponseDto> recent(@AuthenticationPrincipal User user) {
+        return userService.findRecentSearchesByUserId(user.getId());
     }
 
     @ResponseBody
@@ -57,21 +58,9 @@ public class SearchController {
     public String search(
             Model model,
             @RequestParam(name = "term", required = false) String term,
-            @RequestParam(name = "level", required = false) String level,
-            @RequestParam(name = "time", required = false) Integer time,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "6") int size
-            , @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info(">>>principalDetails" + principalDetails);
-
-        User user = principalDetails != null ? principalDetails.getUser() : null;
-
-        // 키워드, 필터 조건을 기반으로 검색한 결과를 페이징하여 가져옴
-//        Page<Recipe> recipePage = recipeService.findRecipes(keyword, difficulty, time, PageRequest.of(page, size));
-//        log.info("user=" + user.toString());
-//        if (user != null) {
-//            model.addAttribute("user", user);
-//        }
+            , @AuthenticationPrincipal User user) {
         Page<SelectRecipeResponseDto> recipePage;
         if (term != null && !term.isEmpty()) {
             recipePage = recipeSearchService.selectByTerm(term, PageRequest.of(page, size));

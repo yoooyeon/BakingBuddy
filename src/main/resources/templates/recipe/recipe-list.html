@@ -190,47 +190,6 @@
 <body>
 <div layout:fragment="content">
 
-    <div class="container" style="max-width: 1000px">
-        <div class="container">
-            <ul id="popularSearches" class="list-group"></ul>
-            <div class="py-3">
-                <form id="searchForm" th:action="@{/api/search/recipes}" method="get" accept-charset="UTF-8"
-                      autocomplete="off" class="row align-items-center">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="search-container position-relative">
-                                    <input type="text" class="form-control search-input" id="term" name="term"
-                                           placeholder="레시피 이름, 재료명, 태그로 검색하세요">
-                                    <div id="searchResults" class="autocomplete-results"></div>
-
-                                    <div class="searched-lists-container" id="searchedListsContainer">
-                                        <div class="container">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h4>최근 검색어</h4>
-                                                    <ul id="recentSearchesList"></ul>
-                                                </div>
-                                                <div class="col">
-                                                    <h4>인기 검색어</h4>
-                                                    <ul id="popularSearchesList"></ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <button type="submit" class="btn btn-primary w-100 btn-fixed-height">검색</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <div th:if="${not #lists.isEmpty(recipes)}">
         <div class="container">
             <div class="row" id="recipe-container">

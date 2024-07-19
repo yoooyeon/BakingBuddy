@@ -14,7 +14,7 @@ $(document).ready(function () {
     var $searchInput = $('#term'); // 검색어 입력창
 
     // 검색어 입력 상태 감지
-    $searchInput.on('input', function() {
+    $searchInput.on('input', function () {
         var term = $(this).val().trim();
         console.log(term); // 디버깅용
         if (term.length > 0) {
@@ -31,7 +31,7 @@ $(document).ready(function () {
     });
 
     // 포커스 이벤트 처리
-    $searchInput.on('focus', function() {
+    $searchInput.on('focus', function () {
         var term = $(this).val().trim();
         if (term.length === 0) {
             $('#searchResults').html('');
@@ -41,13 +41,14 @@ $(document).ready(function () {
     });
 
     // 포커스 아웃 이벤트 처리
-    $searchInput.on('blur', function() {
+    $searchInput.on('blur', function () {
         var term = $(this).val().trim();
         if (term.length === 0) {
             $('#searchedListsContainer').hide();
             $('#searchResults').hide();
         }
     });
+
     // 자동완성 요청
     function fetchAutocompleteResults(term) {
         $.ajax({
@@ -161,8 +162,8 @@ $(document).ready(function () {
     }
 
     // [html] 최근 검색어 데이터 추가
-    function addRecentSearch(term, timestamp) {
-        var listItem = '<li>' + term + ' (' + timestamp + ')</li>';
+    function addRecentSearch(term) {
+        var listItem = '<li>' + term + '</li>';
         $('#recentSearchesList').append(listItem);
     }
 
@@ -180,7 +181,7 @@ $(document).ready(function () {
             success: function (data) {
                 $('#recentSearchesList').empty(); // 기존 데이터 삭제
                 $.each(data, function (index, item) {
-                    addRecentSearch(item.term, item.timestamp);
+                    addRecentSearch(item.search, item.timestamp);
                 });
             },
             error: function (e) {
