@@ -8,17 +8,105 @@
     <!-- css -->
     <div layout:fragment="css">
         <style>
-            #rankingContainer {
-                margin-bottom: 10px;
-                padding: 5px;
-                border: 1px solid #ced4da;
-                border-radius: 5px;
+            .container {
+                max-width: 100%;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .recipe-card {
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                transition: box-shadow 0.3s ease-in-out;
+                cursor: pointer;
+                height: auto;
+            }
+
+            .recipe-card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            .recipe-card img {
+                max-width: 200px; /* Set your desired max width */
+                width: 100%;
+                height: auto;
+                display: block;
+                object-fit: contain;
+                border-radius: 8px 0 0 8px;
+                background-color: white;
+            }
+
+            .recipe-details {
+                padding: 1.25rem;
+                flex: 1;
+            }
+
+            .recipe-details h5.card-title {
+                font-size: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .recipe-details p.card-text {
+                color: #6c757d;
+            }
+
+            .recipe-details .meta-info {
+                margin-top: 1rem;
+            }
+
+            .recipe-details .meta-info span {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: bold;
+            }
+
+            .recipe-details .recipe-steps {
+                margin-top: 1.5rem;
+            }
+
+            #loading {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            /* Search styles */
+            .autocomplete-list {
+                list-style-type: none;
+                padding-left: 0;
+            }
+
+            .autocomplete-item {
+                position: relative; /* Ensure relative positioning for absolute positioning of image */
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+                overflow: hidden;
+            }
+
+            .autocomplete-image {
+                position: absolute;
+                top: 50%; /* Position at the vertical center of the list item */
+                transform: translateY(-50%); /* Adjust to vertically center properly */
+                right: 15px; /* Position on the right side with a small margin */
+                max-width: 60px; /* Adjust the maximum width of the image */
+                height: auto;
+            }
+
+            .autocomplete-details {
+                margin-right: 70px; /* Ensure space for the image on the right */
             }
 
             #popularSearches {
                 list-style-type: none;
                 padding-left: 0;
                 padding-top: 5px;
+            }
+
+            @media (max-width: 768px) {
+                .search-input {
+                    font-size: 14px; /* Example: Adjust font size for smaller screens */
+                }
             }
 
             #searchForm {
@@ -55,48 +143,47 @@
                 height: calc(100% - 2px);
             }
 
-            .container {
-                max-width: 100%;
-                padding-left: 15px;
-                padding-right: 15px;
+            .search-container {
+                position: relative;
+                width: 100%; /* Ensures it takes full width of parent column */
             }
 
-            .rank {
-                font-weight: bold;
-                margin-right: 10px;
+            .search-input {
+                width: 100%; /* Take full width of parent container */
+                padding: 10px; /* Adjust padding as needed */
+                font-size: 16px; /* Adjust font size as needed */
             }
 
-            .recipe-card {
-                margin-bottom: 20px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                transition: box-shadow 0.3s ease-in-out;
-                cursor: pointer;
-                height: 100%;
+            .autocomplete-results {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1000;
+                width: 100%; /* Match width of search input */
+                max-height: 300px;
+                overflow-y: auto;
+                border: 1px solid #ccc;
+                background-color: white;
             }
 
-            .recipe-card:hover {
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            .searched-lists-container {
+                display: none;
+                justify-content: space-between;
+                padding: 10px;
+                margin-top: 10px;
             }
 
-            .recipe-card img {
-                max-width: 100%;
-                height: auto;
-                border-radius: 8px 8px 0 0;
+            .searched-lists-container.visible {
+                display: flex;
             }
 
-            .recipe-card .card-body {
-                padding: 1.25rem;
+            .searched-lists-container > div {
+                flex: 1;
             }
 
-            .recipe-card h5.card-title {
-                font-size: 1.25rem;
-                margin-bottom: 0.75rem;
+            .searched-lists-container h4 {
+                margin-bottom: 10px;
             }
-
-            .recipe-card .card-text {
-                color: #6c757d;
-            }
-
         </style>
     </div>
 </head>
@@ -105,111 +192,73 @@
 
     <div class="container" style="max-width: 1000px">
         <div class="container">
-            <!-- 인기 검색어 -->
-            <h5>인기 검색어</h5>
-            <ul id="popularSearches" class="list-group">
-            </ul>
+            <ul id="popularSearches" class="list-group"></ul>
             <div class="py-3">
-                <!-- 검색 폼 -->
-                <form id="searchForm" th:action="@{/api/search/recipes}" method="get" accept-charset="UTF-8" autocomplete="off"
-                      class="row align-items-center">
-                    <div class="col-lg-8 position-relative">
-                        <input type="text" class="form-control" id="term" name="term"
-                               placeholder="레시피 이름, 재료명, 태그로 검색하세요">
-                        <div id="searchResults" class="list-group"></div>
-                    </div>
-                    <div class="col-lg-2">
-                        <button type="submit" class="btn btn-primary w-100">검색</button>
-                    </div>
-                    <div class="col-lg-2">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
-                                data-bs-target="#filterModal">필터
-                        </button>
+                <form id="searchForm" th:action="@{/api/search/recipes}" method="get" accept-charset="UTF-8"
+                      autocomplete="off" class="row align-items-center">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="search-container position-relative">
+                                    <input type="text" class="form-control search-input" id="term" name="term"
+                                           placeholder="레시피 이름, 재료명, 태그로 검색하세요">
+                                    <div id="searchResults" class="autocomplete-results"></div>
+
+                                    <div class="searched-lists-container" id="searchedListsContainer">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h4>최근 검색어</h4>
+                                                    <ul id="recentSearchesList"></ul>
+                                                </div>
+                                                <div class="col">
+                                                    <h4>인기 검색어</h4>
+                                                    <ul id="popularSearchesList"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <button type="submit" class="btn btn-primary w-100 btn-fixed-height">검색</button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
+    </div>
 
-        <!-- 필터 모달 -->
-        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="filterModalLabel">검색 필터</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- 필터 옵션들을 여기에 추가 -->
-                        <form th:action="@{/api/search/recipes}" method="get" accept-charset="UTF-8">
-                            <div class="mb-3">
-                                <label for="difficulty" class="form-label">난이도</label>
-                                <select class="form-select" id="difficulty" name="difficulty">
-                                    <option value="">선택하세요</option>
-                                    <option value="easy">쉬움</option>
-                                    <option value="medium">보통</option>
-                                    <option value="hard">어려움</option>
-                                </select>
+    <div th:if="${not #lists.isEmpty(recipes)}">
+        <div class="container">
+            <div class="row" id="recipe-container">
+                <div class="col-12 mb-4" th:each="recipe : ${recipes}">
+                    <a th:href="@{|/api/recipes/${recipe.id}|}" class="card recipe-card"
+                       th:attr="data-url=@{/api/recipes/{recipeId}(recipeId=${recipe.id})}">
+                        <img th:src="${recipe.recipeImageUrl}" class="card-img-left img-fluid" alt="Recipe Image">
+                        <div class="recipe-details">
+                            <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                            <div class="meta-info">
+                                <span>Ingredients: <span th:text="${recipe.ingredients}">Ingredients</span></span>
+                                <span>Time: <span th:text="${recipe.time}">Time</span></span>
+                                <span>Difficulty: <span th:text="${recipe.level}">Difficulty</span></span>
                             </div>
-                            <div class="mb-3">
-                                <label for="time" class="form-label">소요 시간</label>
-                                <input type="text" class="form-control" id="time" name="time"
-                                       placeholder="소요 시간을 분 단위로 입력하세요">
+                            <div class="recipe-steps">
+                                <!--                                <p class="card-text" th:text="${recipe.steps}">Recipe Steps</p>-->
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">적용</button>
-                        </form>
-                    </div>
+                            <div class="card-footer">
+                                <small class="text-muted">Last updated 3 mins ago</small>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
-
-        <div th:if="${not #lists.isEmpty(recipes)}">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 col-lg-4 mb-4" th:each="recipe : ${recipes}">
-                        <a th:href="@{|/api/recipes/${recipe.id}|}" class="card recipe-card"
-                           th:attr="data-url=@{/api/recipes/{recipeId}(recipeId=${recipe.id})}">
-                            <div class="card border-light h-100 d-flex flex-column">
-                                <img th:src="${recipe.recipeImageUrl}" class="card-img-top img-fluid" alt="Recipe Image"
-                                     style="object-fit: contain;">
-                                <div class="card-body d-flex flex-column justify-content-end p-3">
-                                    <h5 class="card-title mb-0" th:text="${recipe.name}">Recipe Name</h5>
-                                    <p class="card-text" th:text="${recipe.memo}">Recipe Memo</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">Last updated 3 mins ago</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div id="loading">
+            <p>Loading more recipes...</p>
         </div>
-
-        <!-- 페이지네이션 -->
-        <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
-            <ul class="pagination" th:if="${totalPages != null and totalPages > 0}">
-                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a th:href="@{/api/search/recipes(keyword=${keyword},page=0)}" class="page-link">First</a>
-                </li>
-                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a th:if="${currentPage > 0}"
-                       th:href="@{/api/search/recipes(keyword=${keyword},page=${currentPage - 1})}" class="page-link">Previous</a>
-                </li>
-                <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:class="${pageNum == currentPage} ? 'page-item active' : 'page-item'">
-                    <a th:href="@{/api/search/recipes(keyword=${keyword},page=${pageNum})}" class="page-link"
-                       th:text="${pageNum + 1}"></a>
-                </li>
-                <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
-                    <a th:href="@{/api/search/recipes(keyword=${keyword},page=${currentPage + 1})}"
-                       class="page-link">Next</a>
-                </li>
-                <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
-                    <a th:href="@{/api/search/recipes(keyword=${keyword},page=${totalPages - 1})}"
-                       class="page-link">Last</a>
-                </li>
-            </ul>
-        </nav>
     </div>
 
     <!-- 검색 결과가 없을 때 -->
@@ -218,8 +267,6 @@
     </div>
 </div>
 
-<!-- 검색어 자동완성을 위한 JavaScript 코드 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 </body>
 </html>
