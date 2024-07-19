@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.search;
+package com.coco.bakingbuddy.search.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
