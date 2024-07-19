@@ -29,6 +29,8 @@ public class SelectRecipeResponseDto {
 
     private Integer time; // 소요시간
     private String level; // 난이도
+    private Integer viewCount; // 조회 수
+    private Integer hearts; // 좋아요 수
 
     public static SelectRecipeResponseDto fromEntity(Recipe recipe) {
         return SelectRecipeResponseDto.builder()
@@ -40,6 +42,8 @@ public class SelectRecipeResponseDto {
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
+                .viewCount(recipe.getViewCount())
+                .hearts(recipe.getHearts())
                 .build();
     }
 }

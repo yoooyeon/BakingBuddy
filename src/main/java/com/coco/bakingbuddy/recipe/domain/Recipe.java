@@ -30,6 +30,8 @@ public class Recipe extends BaseTime {
 
     private Integer time; // 소요시간
     private String level; // 난이도
+    private Integer viewCount; // 조회 수 todo userid 관리해야함
+    private Integer hearts; // 좋아요 수 todo userid 관리해야함
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -53,5 +55,15 @@ public class Recipe extends BaseTime {
 
     public void updateImage(String imageUrl) {
         this.recipeImageUrl = imageUrl;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.viewCount == null) {
+            this.viewCount = 0;
+        }
+        if (this.hearts == null) {
+            this.hearts = 0;
+        }
     }
 }

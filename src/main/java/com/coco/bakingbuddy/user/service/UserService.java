@@ -1,5 +1,7 @@
 package com.coco.bakingbuddy.user.service;
 
+import com.coco.bakingbuddy.auth.controller.LoginRequestDto;
+import com.coco.bakingbuddy.auth.controller.LoginResponseDto;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.user.domain.User;
@@ -7,6 +9,7 @@ import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -72,10 +75,22 @@ public class UserService {
     public Optional<User> findByUsernameAndPassword(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
     }
-    @Transactional(readOnly = true)
 
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+    }
+
+    public LoginResponseDto validateUserForLogin(LoginRequestDto dto) {
+        Optional<User> user = findByUsernameAndPassword(dto.getUsername(), passwordEncoder.encode(dto.getPassword()));
+        if (user.isPresent()) {
+            log.info(">>> user 있음");
+            return LoginResponseDto.builder().success(true).build();
+        } else {
+            log.info(">>> user 없음");
+            return LoginResponseDto.builder().success(false).build();
+        }
 
     }
 }

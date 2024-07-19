@@ -7,10 +7,10 @@
             <a class="navbar-brand" href="/">Baking Buddy</a>
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
-                    <li class="nav-item" th:if="${loggedIn == null or !loggedIn and user != null}">
+                    <li class="nav-item" th:if="${loggedIn == null or !loggedIn and user == null}">
                         <a class="nav-link" href="/signup">회원가입</a>
                     </li>
-                    <li class="nav-item" th:if="${loggedIn == null or !loggedIn and user != null}">
+                    <li class="nav-item" th:if="${loggedIn == null or !loggedIn and user == null}">
                         <a class="nav-link" href="/login">로그인</a>
                     </li>
                     <li class="nav-item" th:if="${loggedIn != null and loggedIn and user != null}">
@@ -32,7 +32,7 @@
                         <a class="nav-link" href="/logout">로그아웃</a>
                     </li>
                     <li class="nav-item" th:if="${loggedIn == null or !loggedIn and user == null}">
-                        <a class="nav-link" href="#">Login with Google</a>
+                        <a class="nav-link" href="/oauth2/authorization/google">Login with Google</a>
                     </li>
                 </ul>
             </div>

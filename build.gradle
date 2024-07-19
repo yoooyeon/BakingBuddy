@@ -45,14 +45,12 @@ dependencies {
     implementation 'org.webjars:stomp-websocket:2.3.4'
     implementation 'org.testng:testng:7.1.0'
 
-    compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // jakarta.servlet-api 추가
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
-
-
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -94,6 +92,8 @@ dependencies {
 
     // Spring Batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+
 }
 //dependencyManagement {
 //    imports {

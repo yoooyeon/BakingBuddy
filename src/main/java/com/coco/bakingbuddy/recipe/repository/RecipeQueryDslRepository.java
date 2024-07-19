@@ -2,7 +2,6 @@ package com.coco.bakingbuddy.recipe.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
-import com.coco.bakingbuddy.search.AutoCompletePreviewDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
