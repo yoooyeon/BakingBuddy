@@ -21,10 +21,9 @@ public class User extends BaseTime {
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column
     private String nickname;
     @Column(nullable = false)
-
     private String username;
     private String password;
     private String profileImageUrl;

@@ -9,12 +9,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mariadb://baking-buddy-428009:asia-northeast3:baking-buddy-sql
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      SPRING_REDIS_HOST: "34.47.125.174"
+      SPRING_REDIS_HOST: 34.47.125.174
       SPRING_REDIS_PORT: 6379
     depends_on:
       - db
       - redis
-
+#  volumes:
+#    - cloudsql: jdbc:mariadb://baking-buddy-428009:asia-northeast3:baking-buddy-sql
   db:
     image: mariadb:latest
     ports:

@@ -1,10 +1,11 @@
 package com.coco.bakingbuddy.global.advice;
 import com.coco.bakingbuddy.user.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
+@Slf4j
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
@@ -15,6 +16,7 @@ public class GlobalControllerAdvice {
             model.addAttribute("user", user);
         } else {
             model.addAttribute("loggedIn", false);
+            model.addAttribute("user", null);
         }
     }
 }
