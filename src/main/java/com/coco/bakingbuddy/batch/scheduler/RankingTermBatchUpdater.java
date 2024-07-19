@@ -25,7 +25,9 @@ public class RankingTermBatchUpdater {
      * 매 시간 실행되는 배치
      * 검색어 카운트를 내림차순 정렬하여 상위 10개를 캐시 테이블에 저장
      */
-    @Scheduled(cron = "0 0 * * * *") // 매 시간마다 실행
+//    @Scheduled(cron = "0 0 * * * *") // 매 시간마다 실행
+    @Scheduled(cron = "0 */10 * * * *") // 10분마다 실행
+
     public void updateRankingTermCache() {
         List<TermCounter> topTerms = termCounterQueryDslRepository.selectTop10RankingTerms();
         List<RankingTermCache> cacheTerms = topTerms.stream()

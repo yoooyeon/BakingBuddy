@@ -25,7 +25,7 @@ public class BatchScheduler {
 
     //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
 //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
-    @Scheduled(cron = "0 */10 * * * *")
+//    @Scheduled(cron = "0 */10 * * * *")
     public void runJob() {
         String time = LocalDateTime.now().toString();
         try {
