@@ -4,10 +4,10 @@ import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.search.domain.RecentSearch;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import java.util.List;
 
 
 @Builder
+@Setter
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +39,21 @@ public class User extends BaseTime implements UserDetails {
     private String email;
     // 관심 태그
 //    private List<Tag> tags = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecentSearch> recentSearches = new ArrayList<>();
+
+    // 기존 메서드들
+
+    public void addRecentSearch(String term) {
+        RecentSearch recentSearch = RecentSearch.create(term, this);
+        this.recentSearches.add(recentSearch);
+    }
+
+    public void clearRecentSearches() {
+        this.recentSearches.clear();
+    }
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();

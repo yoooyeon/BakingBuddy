@@ -54,6 +54,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath provider = createString("provider");
 
+    public final ListPath<com.coco.bakingbuddy.search.domain.RecentSearch, com.coco.bakingbuddy.search.domain.QRecentSearch> recentSearches = this.<com.coco.bakingbuddy.search.domain.RecentSearch, com.coco.bakingbuddy.search.domain.QRecentSearch>createList("recentSearches", com.coco.bakingbuddy.search.domain.RecentSearch.class, com.coco.bakingbuddy.search.domain.QRecentSearch.class, PathInits.DIRECT2);
+
     public final ListPath<com.coco.bakingbuddy.recipe.domain.Recipe, com.coco.bakingbuddy.recipe.domain.QRecipe> recipes = this.<com.coco.bakingbuddy.recipe.domain.Recipe, com.coco.bakingbuddy.recipe.domain.QRecipe>createList("recipes", com.coco.bakingbuddy.recipe.domain.Recipe.class, com.coco.bakingbuddy.recipe.domain.QRecipe.class, PathInits.DIRECT2);
 
     public final StringPath role = createString("role");
