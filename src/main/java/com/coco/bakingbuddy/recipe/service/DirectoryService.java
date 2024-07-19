@@ -39,6 +39,11 @@ public class DirectoryService {
 
     @Transactional
     public CreateDirectoryResponseDto create(CreateDirectoryRequestDto dto) {
+        // 디렉토리 이름이 중복되는지 확인
+        boolean directoryExists = directoryRepository.existsByName(dto.getName());
+        if (directoryExists) {
+            throw new CustomException(ErrorCode.DUPLICATE_DIRECTORY);
+        }
         Directory directory = Directory.builder()
                 .name(dto.getName())
                 .build();

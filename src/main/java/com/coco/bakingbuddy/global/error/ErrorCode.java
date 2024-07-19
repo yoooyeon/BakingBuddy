@@ -27,7 +27,8 @@ public enum ErrorCode {
     INVALID_PASSWORD(BAD_REQUEST, "패스워드가 일치하지 않습니다."),
 
     //dir
-    DIR_NOT_FOUND(NOT_FOUND,"존재하지 않는 디렉토리"),
+    DIRECTORY_NOT_FOUND(NOT_FOUND,"존재하지 않는 디렉토리"),
+    DUPLICATE_DIRECTORY(BAD_REQUEST, "중복된 디렉토리명이 존재합니다."),
 
 
     //recipe

@@ -105,6 +105,7 @@
     function collectItems(container) {
         return Array.from(container.children).map(item => item.textContent.slice(0, -1).trim());
     }
+
     document.getElementById("recipeForm").addEventListener("submit", function (event) {
         event.preventDefault(); // 폼 제출 방지
 
@@ -120,7 +121,7 @@
             level: document.getElementById("level").value
         };
 
-        formData.append("dto", new Blob([JSON.stringify(data)], { type: "application/json" }));
+        formData.append("dto", new Blob([JSON.stringify(data)], {type: "application/json"}));
         formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
 
         $.ajax({
@@ -214,9 +215,13 @@
                         text: response.name
                     }));
                 },
-                error: function (error) {
-                    alert('디렉토리 저장 중 오류가 발생했습니다.');
-                    console.log(error);
+                error: function (xhr) {
+                    let errorMessage = '디렉토리 저장 중 오류가 발생했습니다.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    alert(errorMessage);
+                    console.log(xhr.responseText);
                 }
             });
         });
