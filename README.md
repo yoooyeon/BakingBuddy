@@ -82,6 +82,22 @@
 - MacOS
 
 
+# 기술 선택 시 고민한 내 
+## JWT, Session
+JWT는 속도 측면, 비용 측면에서 유리하다.
+반면 세션은 데이터베이스에서 관리하니 여러 기기 로그인 등 관리 측면, 안정성 측면에서 유리하다.
+JWT로 개발하다보니 불편한 점이 생겼다. tymeleaf에서 `recipe/{id}` 와 같이 링크로 태워 보낼 때 헤더에 토큰을 보내기가 번거롭다.
+매번 api 요청, 화면 변경 시 토큰을 보내야한다. 그래서 쿠키를 사용할 수 있다. 쿠키를 사용하면 매번 토큰을 보내지 않아도 된다.
+하지만 쿠키리스로 나아가는 만큼 대안이 필요할 것 같다.
+생각해본 대안은 다음과 같다.
+1. 세션 사용
+2. requestParam으로 토큰 전송
+3. Authorization 헤더로 토큰 전송
+4. Auth0, Firebase Authentication, AWS Cognito 같은 클라우드 서비스 사용
+
+## Socket, Polling, ServerSent
+## Redis, ElasticSearch
+
 # 참고 문서
 - ![스프링 레디스](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/#cloud-memorystore-for-redis)
 - ![Spring Security](https://velog.io/@suhyun_zip/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8%EB%A1%9C%EA%B7%B8%EC%95%84%EC%9B%83-%ED%9A%8C%EC%9B%90-%EA%B0%80%EC%9E%85-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0)
