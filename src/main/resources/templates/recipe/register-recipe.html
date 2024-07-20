@@ -1,22 +1,49 @@
-<!doctype html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/default}">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Baking Buddy</title>
+
+    <!-- JavaScript file -->
+    <script type="text/javascript" th:src="@{/js/recipe/register-recipe.js}"></script>
+
     <div layout:fragment="css">
         <style>
             .container {
-                max-width: 50%; /* 화면 크기에 따라 컨테이너 폭 조정 */
-                margin: 0 auto; /* 중앙 정렬 */
+                max-width: 50%;
+                margin: 0 auto;
             }
 
-            /* 추가적인 여백 설정 */
             .form-submit {
                 margin-bottom: 30px;
             }
 
-            /* 반응형 디자인을 위한 예시 (Bootstrap 5 유틸리티 클래스 사용) */
+            .step-container {
+                margin-bottom: 15px;
+                padding: 15px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                background-color: #f9f9f9;
+            }
+
+            .step-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .step-header h5 {
+                margin: 0;
+            }
+
+            .remove-step-btn {
+                color: #dc3545;
+                cursor: pointer;
+            }
+
             @media (max-width: 576px) {
                 .container {
                     max-width: 100%;
@@ -32,64 +59,78 @@
             <h2>레시피 등록</h2>
         </div>
 
-        <div>
-            <form id="recipeForm">
-                <div class="mb-3">
-                    <label for="userId" class="form-label">User ID</label>
-                    <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}" readonly>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">디렉토리</label>
-                    <button id="addDirBtn" type="button" class="btn btn-secondary">디렉토리 추가</button>
-                    <select class="form-select mt-2" id="directory" name="directory">
-                        <div th:each="dir : ${dirs}">
-                            <option th:value="${dir.id}" th:text="${dir.name}"></option>
-                        </div>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="name" class="form-label">레시피 이름</label>
-                    <input type="text" class="form-control" id="name" name="name">
-                </div>
-                <div class="mb-3">
-                    <label for="recipeImage" class="form-label">레시피 이미지 업로드</label>
-                    <input type="file" class="form-control" id="recipeImage" name="recipeImage">
-                </div>
-                <div class="mb-3">
-                    <label for="memo" class="form-label">메모</label>
-                    <input type="text" class="form-control" id="memo" name="memo">
-                </div>
-                <div class="mb-3">
-                    <label for="ingredients" class="form-label">재료</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="ingredientsInput" placeholder="재료를 입력하세요">
-                        <button class="btn btn-outline-secondary" type="button" id="addIngredientBtn">추가</button>
+        <form id="recipeForm">
+            <div class="mb-3">
+                <label for="userId" class="form-label">User ID</label>
+                <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">디렉토리</label>
+                <button id="addDirBtn" type="button" class="btn btn-secondary">디렉토리 추가</button>
+                <select class="form-select mt-2" id="directory" name="directory">
+                    <div th:each="dir : ${dirs}">
+                        <option th:value="${dir.id}" th:text="${dir.name}"></option>
                     </div>
-                    <div id="ingredientList" class="mt-2"></div>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">레시피 이름</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
+
+            <div class="mb-3">
+                <label for="recipeImage" class="form-label">레시피 이미지 업로드</label>
+                <input type="file" class="form-control" id="recipeImage" name="recipeImage">
+            </div>
+
+            <div class="mb-3">
+                <label for="memo" class="form-label">메모</label>
+                <input type="text" class="form-control" id="memo" name="memo">
+            </div>
+
+            <div class="mb-3">
+                <label for="ingredientList" class="form-label">재료</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="ingredientsInput" placeholder="재료를 입력하세요">
+                    <button class="btn btn-outline-secondary" type="button" id="addIngredientBtn">추가</button>
                 </div>
-                <div class="mb-3">
-                    <label for="tags" class="form-label">태그</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="tagsInput" placeholder="태그를 입력하세요">
-                        <button class="btn btn-outline-secondary" type="button" id="addTagBtn">추가</button>
-                    </div>
-                    <div id="tagList" class="mt-2"></div>
+                <div id="ingredientList" class="mt-2"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="recipeStepList" class="form-label">조리 순서</label>
+                <button type="button" class="btn btn-outline-secondary" id="addRecipeStepBtn">단계 추가</button>
+                <div id="recipeStepList" class="mt-2"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="tagList" class="form-label">태그</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="tagsInput" placeholder="태그를 입력하세요">
+                    <button class="btn btn-outline-secondary" type="button" id="addTagBtn">추가</button>
                 </div>
-                <div class="mb-3">
-                    <label for="time" class="form-label">소요시간(분 단위)</label>
-                    <input type="number" class="form-control" id="time" name="time">
-                </div>
-                <div class="mb-3">
-                    <label for="level" class="form-label">난이도</label>
-                    <select class="form-select" id="level" name="level">
-                        <option value="Easy">쉬움</option>
-                        <option value="Medium">보통</option>
-                        <option value="Hard">어려움</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary form-submit">등록하기</button>
-            </form>
-        </div>
+                <div id="tagList" class="mt-2"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="time" class="form-label">소요시간(분 단위)</label>
+                <input type="number" class="form-control" id="time" name="time">
+            </div>
+
+            <div class="mb-3">
+                <label for="level" class="form-label">난이도</label>
+                <select class="form-select" id="level" name="level">
+                    <option value="Easy">쉬움</option>
+                    <option value="Medium">보통</option>
+                    <option value="Hard">어려움</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary form-submit">등록하기</button>
+        </form>
+        <!--디렉토리 생성 모달-->
         <div class="modal" tabindex="-1" id="createDirModal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -108,135 +149,6 @@
             </div>
         </div>
     </div>
-</div>
-<div layout:fragment="script">
-    <script>
-        let ingredientList = document.getElementById("ingredientList");
-        let tagList = document.getElementById("tagList");
-
-        function collectItems(container) {
-            return Array.from(container.children).map(item => item.textContent.slice(0, -1).trim());
-        }
-
-        document.getElementById("recipeForm").addEventListener("submit", function (event) {
-            event.preventDefault(); // 폼 제출 방지
-
-            let formData = new FormData();
-            const data = {
-                userId: document.getElementById("userId").value,
-                dirId: document.getElementById("directory").value,
-                name: document.getElementById("name").value,
-                memo: document.getElementById("memo").value,
-                ingredients: collectItems(ingredientList),
-                tags: collectItems(tagList),
-                time: document.getElementById("time").value,
-                level: document.getElementById("level").value
-            };
-
-            formData.append("dto", new Blob([JSON.stringify(data)], {type: "application/json"}));
-            formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
-
-            $.ajax({
-                url: '/api/recipes',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    console.log(response);
-                    alert('레시피가 성공적으로 등록되었습니다!');
-                    window.location.href = '/api/recipes/' + response.id;
-                },
-                error: function (error) {
-                    alert('레시피 등록 중 오류가 발생했습니다.');
-                    console.log(error);
-                }
-            });
-        });
-
-        function addItemToList(inputId, listContainer) {
-            let input = document.getElementById(inputId);
-            let inputValue = input.value.trim();
-            if (inputValue) {
-                const existingItems = Array.from(listContainer.children).map(item => item.textContent.slice(0, -1).trim());
-                if (!existingItems.includes(inputValue)) {
-                    const itemContainer = document.createElement("div");
-                    itemContainer.className = "badge bg-secondary me-2";
-                    itemContainer.textContent = inputValue;
-                    const closeButton = document.createElement("span");
-                    closeButton.className = "badge bg-danger ms-1";
-                    closeButton.textContent = "x";
-                    closeButton.style.cursor = "pointer";
-                    closeButton.addEventListener("click", function () {
-                        itemContainer.remove();
-                    });
-                    itemContainer.appendChild(closeButton);
-                    listContainer.appendChild(itemContainer);
-                    input.value = ""; // 추가 후 입력 비우기
-                } else {
-                    alert("이 항목은 이미 목록에 있습니다.");
-                }
-            } else {
-                alert("유효한 값을 입력하세요.");
-            }
-        }
-
-        document.getElementById("addIngredientBtn").addEventListener("click", function () {
-            addItemToList("ingredientsInput", ingredientList);
-        });
-
-        document.getElementById("addTagBtn").addEventListener("click", function () {
-            addItemToList("tagsInput", tagList);
-        });
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            let modal = document.getElementById("createDirModal");
-            let btn = document.getElementById("addDirBtn");
-            let span = document.getElementsByClassName("btn-close")[0];
-
-            btn.onclick = function () {
-                modal.style.display = "block";
-            };
-            span.onclick = function () {
-                modal.style.display = "none";
-            };
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            };
-        });
-
-        // 디렉토리 추가 POST 요청
-        $(document).ready(function () {
-            $('#saveDir').click(function () {
-                let dirName = document.getElementById("newDirName").value;
-                let userId = document.getElementById("userId").value;
-
-                $.ajax({
-                    url: '/api/directories',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({name: dirName, userId: userId}),
-                    success: function (response) {
-                        $('#createDirModal').modal('hide');
-                        $('#directory').append($('<option>', {
-                            value: response.id,
-                            text: response.name
-                        }));
-                    },
-                    error: function (xhr) {
-                        let errorMessage = '디렉토리 저장 중 오류가 발생했습니다.';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        }
-                        alert(errorMessage);
-                        console.log(xhr.responseText);
-                    }
-                });
-            });
-        });
-    </script>
 </div>
 </body>
 </html>

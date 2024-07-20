@@ -18,8 +18,14 @@ public class RecipeStep {
 
     private Integer stepNumber; // 단계 번호
     private String description; // 단계 설명
+    private String stepImage; // 단계 이미지
 
     @ManyToOne
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;
+
+
+    public void updateImage(String imageUrl) {
+        this.stepImage = imageUrl;
+    }
 }

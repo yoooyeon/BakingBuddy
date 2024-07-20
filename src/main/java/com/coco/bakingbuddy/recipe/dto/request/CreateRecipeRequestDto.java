@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.dto.request;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,8 @@ public class CreateRecipeRequestDto {
     @NotEmpty(message = "ingredients가 빈 값일 수 없습니다.")
     private List<String> ingredients; // JPA
 
+
+    private List<RecipeStep> recipeSteps;
     @NotNull(message = "time이 빈 값일 수 없습니다.")
     @Positive(message = "time은 양수여야 합니다.")
     private Integer time; // 소요시간
@@ -50,6 +53,7 @@ public class CreateRecipeRequestDto {
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())
                 .recipeImageUrl(dto.getRecipeImageUrl())
+                .recipeSteps(dto.getRecipeSteps())
                 .build();
     }
 }

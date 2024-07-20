@@ -3,10 +3,7 @@ package com.coco.bakingbuddy.recipe.service;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.recipe.domain.Directory;
-import com.coco.bakingbuddy.recipe.domain.Ingredient;
-import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
-import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.*;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -85,7 +82,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile) {
+    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile,List<MultipartFile> stepImages) {
         Directory directory = directoryRepository.findById(dto.getDirId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DIRECTORY_NOT_FOUND));
         User user = userRepository.findById(dto.getUserId())
@@ -93,7 +90,17 @@ public class RecipeService {
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);
+        recipe.setRecipeSteps(dto.getRecipeSteps());
         fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
+
+        // 업로드된 단계별 이미지 파일 처리
+        List<RecipeStep> recipeSteps = dto.getRecipeSteps();
+        for (int i = 0; i < recipeSteps.size(); i++) {
+            RecipeStep recipeStep = recipeSteps.get(i);
+            MultipartFile stepImage = stepImages.get(i);
+            fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
+        }
+
         List<String> tags = dto.getTags();
         Tag tag = null;
         TagRecipe tagRecipe = new TagRecipe();

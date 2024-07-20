@@ -46,7 +46,7 @@ public class QRecipe extends EntityPathBase<Recipe> {
 
     public final StringPath recipeImageUrl = createString("recipeImageUrl");
 
-    public final ListPath<RecipeStep, QRecipeStep> steps = this.<RecipeStep, QRecipeStep>createList("steps", RecipeStep.class, QRecipeStep.class, PathInits.DIRECT2);
+    public final ListPath<RecipeStep, QRecipeStep> recipeSteps = this.<RecipeStep, QRecipeStep>createList("recipeSteps", RecipeStep.class, QRecipeStep.class, PathInits.DIRECT2);
 
     public final SetPath<com.coco.bakingbuddy.tag.domain.TagRecipe, com.coco.bakingbuddy.tag.domain.QTagRecipe> tagRecipes = this.<com.coco.bakingbuddy.tag.domain.TagRecipe, com.coco.bakingbuddy.tag.domain.QTagRecipe>createSet("tagRecipes", com.coco.bakingbuddy.tag.domain.TagRecipe.class, com.coco.bakingbuddy.tag.domain.QTagRecipe.class, PathInits.DIRECT2);
 

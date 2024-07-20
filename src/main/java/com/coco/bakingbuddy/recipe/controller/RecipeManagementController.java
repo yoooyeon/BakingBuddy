@@ -69,8 +69,9 @@ public class RecipeManagementController {
     @ResponseBody
     @PostMapping
     public CreateRecipeResponseDto create(@Valid @RequestPart("dto") CreateRecipeRequestDto dto,
-                                          @RequestParam("recipeImage") MultipartFile recipeImage) {
-        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage);
+                                          @RequestParam("recipeImage") MultipartFile recipeImage,
+                                          @RequestParam("stepImages") List<MultipartFile> stepImages) {
+        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage,stepImages);
         return save;
     }
 

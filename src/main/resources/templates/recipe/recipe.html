@@ -80,6 +80,24 @@
                     <label>Memo: </label>
                     <span th:text="${recipe.memo}"></span>
                 </div>
+
+                <div>
+                    <label>Steps:</label>
+                    <div th:each="step, iterStat : ${recipe.recipeSteps}" class="step-container">
+                        <div class="step-header">
+                            <h5 th:text="${iterStat.index + 1}">Step 1</h5>
+                            <span class="remove-step-btn" style="display: none;">x</span>
+                        </div>
+                        <div class="step-description">
+                            <p th:text="${step.stepNumber}">Step description here...</p>
+                            <p th:text="${step.description}">Step description here...</p>
+                            <div th:if="${step.getStepImage}">
+                                <img th:src="${step.getStepImage}" alt="Step Image" class="img-fluid mt-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div>
                     <label>Time: </label>
                     <span th:text="${recipe.time}"></span> minutes

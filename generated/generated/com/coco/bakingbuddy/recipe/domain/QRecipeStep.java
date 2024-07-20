@@ -28,6 +28,8 @@ public class QRecipeStep extends EntityPathBase<RecipeStep> {
 
     public final QRecipe recipe;
 
+    public final StringPath stepImage = createString("stepImage");
+
     public final NumberPath<Integer> stepNumber = createNumber("stepNumber", Integer.class);
 
     public QRecipeStep(String variable) {

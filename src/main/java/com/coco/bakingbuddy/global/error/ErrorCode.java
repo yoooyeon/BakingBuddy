@@ -37,9 +37,10 @@ public enum ErrorCode {
     // auth
     AUTH_NOT_FOUND(NOT_FOUND, "인증 정보를 찾을 수 없습니다."),
     INVALID_AUTH(BAD_REQUEST, "인증 정보가 잘못되었습니다."),
-    LOGIN_FAILED(BAD_REQUEST, "비밀번호가 맞지 않습니다.")
+    LOGIN_FAILED(BAD_REQUEST, "비밀번호가 맞지 않습니다."),
 
-    ;
+    // recipeStep
+    RECIPE_STEP_NOT_FOUND(NOT_FOUND,"레시피 조리 단계를 찾을 수 없습니다." );
 
     private final HttpStatus status;
     private final String message;

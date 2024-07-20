@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.dto.request;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +45,9 @@ public class EditRecipeRequestDto {
 
     @NotEmpty(message = "tags가 빈 값일 수 없습니다.")
     private List<String> tags;
+
+    private List<RecipeStep> recipeSteps;
+
 
     public static Recipe toEntity(EditRecipeRequestDto dto) {
         return Recipe.builder()

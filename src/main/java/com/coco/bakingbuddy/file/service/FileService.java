@@ -2,13 +2,17 @@ package com.coco.bakingbuddy.file.service;
 
 import com.coco.bakingbuddy.file.dto.request.ImageFileCreateRequestDto;
 import com.coco.bakingbuddy.file.dto.request.RecipeImageFileCreateRequestDto;
+import com.coco.bakingbuddy.file.dto.request.RecipeStepImageFileCreateRequestDto;
 import com.coco.bakingbuddy.file.dto.response.ImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
+import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
+import com.coco.bakingbuddy.file.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.UserService;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -29,12 +34,15 @@ import java.util.UUID;
 public class FileService {
     private final String UPLOAD_PATH = "UserProfile/";
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
+    private final String RECIPE_STEP_UPLOAD_PATH = "RecipeProfile/";
     private final String BUCKET_NAME = "baking-buddy-bucket";
     private final Storage storage;
     private final ImageFileRepository imageFileRepository;
     private final UserService userService;
     private final RecipeRepository recipeRepository;
     private final RecipeImageFileRepository recipeImageFileRepository;
+    private final RecipeStepRepository recipeStepRepository;
+    private final RecipeStepImageFileRepository recipeStepImageFileRepository;
 
 
     @Transactional
@@ -111,6 +119,43 @@ public class FileService {
             // 파일 업로드 중 오류 발생 시 처리
             e.printStackTrace();
             throw new RuntimeException("Failed to save profile image: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void uploadRecipeStepImage(Long recipeStepId, MultipartFile stepImageFile) {
+        String originalName = stepImageFile.getOriginalFilename();
+        String ext = stepImageFile.getContentType();
+        String uuid = UUID.randomUUID().toString();
+        String fileName = RECIPE_STEP_UPLOAD_PATH + uuid + "_" + originalName;
+        String uploadPath = RECIPE_STEP_UPLOAD_PATH + uuid;
+
+        try {
+            // Upload image file to GCS
+            BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, fileName)
+                    .setContentType(ext)
+                    .build();
+            storage.create(blobInfo, stepImageFile.getInputStream());
+
+            // Save image file metadata
+            RecipeStepImageFileCreateRequestDto dto = RecipeStepImageFileCreateRequestDto.builder()
+                    .originalName(originalName)
+                    .ext(ext)
+                    .uuid(uuid)
+                    .fileName(fileName)
+                    .recipeStepId(recipeStepId)
+                    .uploadPath(uploadPath)
+                    .build();
+
+            // Update RecipeStep entity with image URL
+            RecipeStep recipeStep = recipeStepRepository.findById(recipeStepId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_STEP_NOT_FOUND));
+            recipeStep.updateImage("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+            recipeStepRepository.save(recipeStep);
+            recipeStepImageFileRepository.save(dto.toEntity());
+            log.info("Uploaded step image: " + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save step image: " + e.getMessage());
         }
     }
 
