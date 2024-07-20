@@ -194,8 +194,8 @@
         <div class="container">
             <div class="row" id="recipe-container">
                 <div class="col-12 mb-4" th:each="recipe : ${recipes}">
-                    <a href="#" class="card recipe-card"
-                       th:attr="data-recipe-id=${recipe.id}">
+                    <a th:href="@{|/api/recipes/${recipe.id}|}" class="card recipe-card"
+                       th:attr="data-url=@{/api/recipes/{recipeId}(recipeId=${recipe.id})}">
                         <img th:src="${recipe.recipeImageUrl}" class="card-img-left img-fluid" alt="Recipe Image">
                         <div class="recipe-details">
                             <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
@@ -225,7 +225,6 @@
         <p>검색 결과가 없습니다.</p>
     </div>
 </div>
-
 
 
 </body>
