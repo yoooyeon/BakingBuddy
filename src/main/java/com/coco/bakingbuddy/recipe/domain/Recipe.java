@@ -19,10 +19,13 @@ public class Recipe extends BaseTime {
     @Column(name = "RECIPE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @ManyToOne
     @JoinColumn(name = "DIRECTORY_ID")
     private Directory directory;
+
     private boolean useYn;
     private String memo;
     private String openYn; // 공개 여부 True - Open
@@ -30,14 +33,17 @@ public class Recipe extends BaseTime {
 
     private Integer time; // 소요시간
     private String level; // 난이도
+
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeStep> steps; // 조리 단계
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Set<TagRecipe> tagRecipes;
+
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private List<IngredientRecipe> ingredientRecipes;
 
@@ -52,7 +58,6 @@ public class Recipe extends BaseTime {
     public void setUser(User user) {
         this.user = user;
     }
-
 
     public void updateImage(String imageUrl) {
         this.recipeImageUrl = imageUrl;
