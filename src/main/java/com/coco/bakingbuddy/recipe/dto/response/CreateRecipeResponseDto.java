@@ -1,10 +1,13 @@
 package com.coco.bakingbuddy.recipe.dto.response;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +24,7 @@ public class CreateRecipeResponseDto {
     private String ingredients; // JPA
     private String tags; // JPA
     private String recipeImageUrl;
-
+    private List<RecipeStep> recipeSteps;
     private Integer time; // 소요시간
     private String level; // 난이도
 
@@ -33,6 +36,7 @@ public class CreateRecipeResponseDto {
                 .userId(recipe.getUser().getId())
                 .memo(recipe.getMemo())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
+                .recipeSteps(recipe.getRecipeSteps())
 //                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())

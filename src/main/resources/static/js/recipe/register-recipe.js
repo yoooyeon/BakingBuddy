@@ -1,41 +1,49 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Caching DOM elements
     const ingredientList = document.getElementById("ingredientList");
     const recipeStepList = document.getElementById("recipeStepList");
     const tagList = document.getElementById("tagList");
 
-    // Collect items from a container
     function collectItems(container) {
         return Array.from(container.children).map(item => item.textContent.slice(0, -1).trim());
+    }
+
+    function collectRecipeSteps(container) {
+        return Array.from(container.children).map(step => ({
+            stepNumber: parseInt(step.querySelector('.step-number').value, 10),
+            description: step.querySelector('.step-description').value,
+            stepImage: step.querySelector('.step-image').files[0] ? step.querySelector('.step-image').files[0] : null
+        }));
     }
 
     document.getElementById("recipeForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent form submission
 
         const formData = new FormData();
+        const recipeSteps = collectRecipeSteps(document.getElementById('recipeStepList'));
+
         const data = {
             userId: document.getElementById("userId").value,
             dirId: document.getElementById("directory").value,
             name: document.getElementById("name").value,
             memo: document.getElementById("memo").value,
             ingredients: collectItems(ingredientList),
-            recipeSteps: Array.from(recipeStepList.children).map(step => ({
-                stepNumber: parseInt(step.querySelector('.step-number').value, 10),
-                description: step.querySelector('.step-description').value
-            })),
+            recipeSteps: recipeSteps,
             tags: collectItems(tagList),
             time: document.getElementById("time").value,
             level: document.getElementById("level").value
         };
 
-        formData.append("dto", new Blob([JSON.stringify(data)], {type: "application/json"}));
-        formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
+        // Add JSON data as a blob
+        formData.append("dto", new Blob([JSON.stringify(data)], { type: "application/json" }));
 
-        // Add each step image to FormData
-        Array.from(recipeStepList.children).forEach((step, index) => {
-            const stepImage = step.querySelector('.step-image').files[0];
-            if (stepImage) {
-                formData.append('stepImages', stepImage);  // Use 'stepImages' as key for List<MultipartFile>
+        formData.append('recipeSteps', JSON.stringify(recipeSteps));
+        // Add recipe image
+        formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
+        // Step Images
+        const stepImages = document.querySelectorAll('.step-image');
+        stepImages.forEach((fileInput, index) => {
+            if (fileInput.files[0]) {
+                formData.append('stepImages', fileInput.files[0]);
             }
         });
 
@@ -56,8 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-
-    // Add a new step to the list
+        // Add new step to list
     function addStepToList() {
         const stepContainer = document.createElement('div');
         stepContainer.className = 'step-container';
@@ -97,11 +104,10 @@ document.addEventListener('DOMContentLoaded', function () {
         stepContainer.appendChild(stepNumberInput);
         stepContainer.appendChild(stepDescription);
         stepContainer.appendChild(stepImageInput);
-
+        console.log(stepContainer)
         recipeStepList.appendChild(stepContainer);
     }
 
-    // Update step numbers
     function updateStepNumbers() {
         Array.from(recipeStepList.children).forEach((step, index) => {
             step.querySelector('.step-number-title').textContent = `단계 ${index + 1}`;
@@ -111,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('addRecipeStepBtn').addEventListener('click', addStepToList);
 
-    // Add item to list (ingredients or tags)
     function addItemToList(inputId, listContainer) {
         const input = document.getElementById(inputId);
         const inputValue = input.value.trim();

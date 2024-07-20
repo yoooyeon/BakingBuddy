@@ -9,7 +9,6 @@ import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
-
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -69,9 +68,11 @@ public class RecipeManagementController {
     @ResponseBody
     @PostMapping
     public CreateRecipeResponseDto create(@Valid @RequestPart("dto") CreateRecipeRequestDto dto,
-                                          @RequestParam("recipeImage") MultipartFile recipeImage,
-                                          @RequestParam("stepImages") List<MultipartFile> stepImages) {
-        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage,stepImages);
+                                          @RequestParam("recipeImage") MultipartFile recipeImage
+//            , @RequestParam("stepImages") MultipartFile[] stepImages
+    ) {
+        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage);
+//        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage, stepImages);
         return save;
     }
 

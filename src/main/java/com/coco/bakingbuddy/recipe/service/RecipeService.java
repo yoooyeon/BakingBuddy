@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.service;
 
+import com.coco.bakingbuddy.file.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
@@ -49,6 +50,7 @@ public class RecipeService {
     private final IngredientRecipeRepository ingredientRecipeRepository;
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
+    private final RecipeStepRepository recipeStepRepository;
 
     @Transactional(readOnly = true)
     public Page<SelectRecipeResponseDto> selectAll(Pageable pageable) {
@@ -82,7 +84,8 @@ public class RecipeService {
     }
 
     @Transactional
-    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile,List<MultipartFile> stepImages) {
+//    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile,MultipartFile[] stepImages) {
+    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile) {
         Directory directory = directoryRepository.findById(dto.getDirId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DIRECTORY_NOT_FOUND));
         User user = userRepository.findById(dto.getUserId())
@@ -90,15 +93,21 @@ public class RecipeService {
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);
-        recipe.setRecipeSteps(dto.getRecipeSteps());
+        List<RecipeStep> savedRecipeSteps = new ArrayList<>();
+        for (RecipeStep recipeStep : dto.getRecipeSteps()) {
+            RecipeStep save = recipeStepRepository.save(recipeStep);
+            savedRecipeSteps.add(save);
+        }
+        recipe.setRecipeSteps(savedRecipeSteps);
+
         fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
 
         // 업로드된 단계별 이미지 파일 처리
         List<RecipeStep> recipeSteps = dto.getRecipeSteps();
         for (int i = 0; i < recipeSteps.size(); i++) {
-            RecipeStep recipeStep = recipeSteps.get(i);
-            MultipartFile stepImage = stepImages.get(i);
-            fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
+            RecipeStep recipeStep = savedRecipeSteps.get(i);
+//            MultipartFile stepImage = stepImages[i];
+//            fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
         }
 
         List<String> tags = dto.getTags();
