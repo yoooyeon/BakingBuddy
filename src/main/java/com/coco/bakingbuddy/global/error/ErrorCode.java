@@ -40,7 +40,16 @@ public enum ErrorCode {
     LOGIN_FAILED(BAD_REQUEST, "비밀번호가 맞지 않습니다."),
 
     // recipeStep
-    RECIPE_STEP_NOT_FOUND(NOT_FOUND,"레시피 조리 단계를 찾을 수 없습니다." );
+    RECIPE_STEP_NOT_FOUND(NOT_FOUND,"레시피 조리 단계를 찾을 수 없습니다." ),
+    USERNAME_NOT_FOUND(NOT_FOUND,"가입되지 않은 USERNAME 입니다." ),
+    JWT_INVALID(BAD_REQUEST, "정보가 맞지 않습니다."),
+    JWT_EXPIRED(BAD_REQUEST, "정보가 맞지 않습니다."),
+    JWT_UNSUPPORTED(BAD_REQUEST, "정보가 맞지 않습니다."),
+    JWT_INVALID_SIGNATURE(BAD_REQUEST, "정보가 맞지 않습니다."),
+    JWT_NO_VALID(BAD_REQUEST, "정보가 맞지 않습니다.")
+
+
+    ;
 
     private final HttpStatus status;
     private final String message;

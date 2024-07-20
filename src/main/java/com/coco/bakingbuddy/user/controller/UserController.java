@@ -1,21 +1,19 @@
 package com.coco.bakingbuddy.user.controller;
 
-import com.coco.bakingbuddy.batch.event.UserRegistrationEvent;
-import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
-import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.request.UpdateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -29,11 +27,12 @@ public class UserController {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    @ResponseBody
     @GetMapping("hello")
     public Object sayHello(Authentication authentication) {
-
         return authentication.getPrincipal();
     }
+
     @GetMapping
     public String allUsers(Model model) {
         List<SelectUserResponseDto> dto = userService.selectAll();
@@ -54,8 +53,6 @@ public class UserController {
         model.addAttribute("updateUserRequestDto", new UpdateUserRequestDto());
         return "user/edit-user";
     }
-
-
 
 
 }

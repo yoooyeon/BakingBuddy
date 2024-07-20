@@ -1,6 +1,18 @@
 // 타임리프 사용 시 [[${...}]]
 
 $(document).ready(function () {
+    // 토큰을 로컬 스토리지에서 가져오기
+    const accessToken = localStorage.getItem('accessToken');
+
+    // 모든 AJAX 요청 전에 Authorization 헤더에 토큰을 추가
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            if (accessToken) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            }
+        }
+    });
+
     // 레시피 클릭 시 작동하는 함수
     $('.recipe-card').on('click', function () {
         var recipeUrl = $(this).data('url');
@@ -23,6 +35,7 @@ $(document).ready(function () {
             $('#searchResults').html('');
         }
     });
+    localStorage.getItem('token')
 
     // 자동완성 요청
     function fetchAutocompleteResults(term) {
@@ -90,51 +103,4 @@ $(document).ready(function () {
         return html;
     }
 
-    // // 인기 검색어 요청
-    // function fetchPopularSearches() {
-    //     $.ajax({
-    //         type: "GET",
-    //         url: "/api/ranking/terms",
-    //         success: function (data) {
-    //             displayPopularSearches(data);
-    //             rollRanking();
-    //         },
-    //         error: function (e) {
-    //             console.error("Error fetching popular searches: ", e);
-    //         }
-    //     });
-    // }
-    //
-    // // 인기 검색어 결과 프론트 코드 작성 함수
-    // function displayPopularSearches(data) {
-    //     var popularSearches = $('#popularSearches');
-    //     popularSearches.empty();
-    //     $.each(data, function (index, item) {
-    //         var rank = index + 1;
-    //         var listItem = '<li id="rank_' + rank + '" class="list-group-item">' + rank + '. ' + item.term + '</li>';
-    //         popularSearches.append(listItem);
-    //     });
-    // }
-    //
-    // // Function to implement rolling ranks
-    // function rollRanking() {
-    //     var currentRank = 1;
-    //     var totalRanks = $('#popularSearches').children().length;
-    //
-    //     setInterval(function () {
-    //         $('#rank_' + currentRank).fadeOut('fast', function () {
-    //             currentRank++;
-    //             if (currentRank > totalRanks) {
-    //                 currentRank = 1;
-    //             }
-    //             $('#rank_' + currentRank).appendTo('#popularSearches').fadeIn('fast');
-    //         });
-    //     }, 3000); // 3-second interval
-    // }
-    //
-    // // Initial fetch of popular searches on page load
-    // fetchPopularSearches();
-    //
-    // // Fetch popular searches every 5 minutes
-    // setInterval(fetchPopularSearches, 300000); // 5-minute interval
 });

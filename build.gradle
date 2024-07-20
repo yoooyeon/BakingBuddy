@@ -52,7 +52,6 @@ dependencies {
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
 
-
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -94,6 +93,20 @@ dependencies {
 
     // Spring Batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+//    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+    // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core
+    implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
+
+    // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
+    implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
+
 }
 //dependencyManagement {
 //    imports {

@@ -14,7 +14,7 @@
 <div class="container" style="max-width: 600px; margin-top: 50px;">
 
     <h2 class="text-center">회원가입</h2>
-    <form th:action="@{/api/users/signup}" th:object="${createUserRequestDto}" method="post">
+    <form th:action="@{/signup}" th:object="${createUserRequestDto}" method="post">
         <div class="mb-3">
             <label for="username" class="form-label">사용자명</label>
             <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="사용자명을 입력하세요"

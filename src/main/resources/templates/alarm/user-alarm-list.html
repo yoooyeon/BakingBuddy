@@ -59,6 +59,7 @@
 <div layout:fragment="script">
 
     <script>
+
         const socket = new WebSocket('ws://localhost:8080/websocket');
 
         socket.onmessage = function (event) {
