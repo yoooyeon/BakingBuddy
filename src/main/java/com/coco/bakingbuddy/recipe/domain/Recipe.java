@@ -30,6 +30,9 @@ public class Recipe extends BaseTime {
 
     private Integer time; // 소요시간
     private String level; // 난이도
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeStep> steps; // 조리 단계
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -53,5 +56,17 @@ public class Recipe extends BaseTime {
 
     public void updateImage(String imageUrl) {
         this.recipeImageUrl = imageUrl;
+    }
+
+    public void setSteps(List<RecipeStep> steps) {
+        if (this.steps != null) {
+            this.steps.clear();
+            this.steps.addAll(steps);
+        } else {
+            this.steps = steps;
+        }
+        for (RecipeStep step : steps) {
+            step.setRecipe(this);
+        }
     }
 }
