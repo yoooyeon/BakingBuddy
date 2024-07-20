@@ -109,6 +109,17 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // 토큰을 로컬 스토리지에서 가져오기
+    const accessToken = localStorage.getItem('accessToken');
+
+    // 모든 AJAX 요청 전에 Authorization 헤더에 토큰을 추가
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            if (accessToken) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            }
+        }
+    });
     // 기존 태그와 재료 목록에서 항목 삭제
     function removeItem(element) {
         element.parentNode.remove();

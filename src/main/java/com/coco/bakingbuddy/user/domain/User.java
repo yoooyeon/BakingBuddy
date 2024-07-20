@@ -119,5 +119,7 @@ public class User extends BaseTime implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }
 

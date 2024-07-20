@@ -1,4 +1,17 @@
 $(document).ready(function () {
+
+    // 토큰을 로컬 스토리지에서 가져오기
+    const accessToken = localStorage.getItem('accessToken');
+
+    // 모든 AJAX 요청 전에 Authorization 헤더에 토큰을 추가
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            if (accessToken) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            }
+        }
+    });
+
     // 레시피 클릭 시 작동하는 함수
     $('.recipe-card').on('click', function () {
         var recipeUrl = $(this).data('url');
