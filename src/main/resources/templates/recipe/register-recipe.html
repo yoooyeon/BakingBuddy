@@ -60,7 +60,7 @@
         </div>
 
         <form id="recipeForm">
-            <div class="mb-3">
+            <div class="mb-3" style="display: none">
                 <label for="userId" class="form-label">User ID</label>
                 <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}" readonly>
             </div>
@@ -85,9 +85,10 @@
                 <input type="file" class="form-control" id="recipeImage" name="recipeImage">
             </div>
 
-            <div class="mb-3">
-                <label for="memo" class="form-label">메모</label>
-                <input type="text" class="form-control" id="memo" name="memo">
+            <div class="mb-3 textarea-container">
+                <label for="description" class="form-label">요리 설명</label>
+                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+                <div id="charCount" class="char-count">0 글자</div>
             </div>
 
             <div class="mb-3">

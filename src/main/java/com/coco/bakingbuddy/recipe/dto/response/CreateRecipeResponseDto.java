@@ -20,7 +20,7 @@ public class CreateRecipeResponseDto {
     private Long userId;
     private String profileImageUrl;
 
-    private String memo;
+    private String description;
     private boolean openYn; // 공개 여부 True - Open
 
     private String ingredients; // JPA
@@ -36,7 +36,7 @@ public class CreateRecipeResponseDto {
                 .dirId(recipe.getDirectory().getId())
                 .name(recipe.getName())
                 .userId(recipe.getUser().getId())
-                .memo(recipe.getMemo())
+                .description(recipe.getDescription())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
                 .recipeSteps(recipe.getRecipeSteps())
 //                .ingredients(recipe.getIngredients())

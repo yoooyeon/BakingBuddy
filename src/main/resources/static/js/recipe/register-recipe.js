@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
             userId: document.getElementById("userId").value,
             dirId: document.getElementById("directory").value,
             name: document.getElementById("name").value,
-            memo: document.getElementById("memo").value,
+            description: document.getElementById("description").value,
             ingredients: collectItems(ingredientList),
             recipeSteps: recipeSteps,
             tags: collectItems(tagList),
@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputValue) {
             const existingItems = Array.from(listContainer.children).map(item => item.textContent.slice(0, -1).trim());
             if (!existingItems.includes(inputValue)) {
-                const itemContainer = document.createElement("div");
-                itemContainer.className = "badge bg-secondary me-2";
+                const itemContainer = document.createElement("h3");
+                itemContainer.className = "badge bg-dark me-2";
                 itemContainer.textContent = inputValue;
 
                 const closeButton = document.createElement("span");
@@ -144,6 +144,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById("addIngredientBtn").addEventListener("click", () => addItemToList("ingredientsInput", ingredientList));
     document.getElementById("addTagBtn").addEventListener("click", () => addItemToList("tagsInput", tagList));
+
+    // Enter key event listeners for inputs
+    document.getElementById("ingredientsInput").addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            addItemToList("ingredientsInput", ingredientList);
+        }
+    });
+
+    document.getElementById("tagsInput").addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            addItemToList("tagsInput", tagList);
+        }
+    });
 
     // Modal handling
     const modal = document.getElementById("createDirModal");
@@ -169,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contentType: 'application/json',
             data: JSON.stringify({name: dirName, userId: userId}),
             success: function (response) {
-                $('#createDirModal').modal('hide');
+                $('#createDirModal').hide();
                 $('#directory').append($('<option>', {
                     value: response.id,
                     text: response.name
@@ -181,5 +196,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error(xhr.responseText);
             }
         });
+    });
+
+    const descriptionInput = document.getElementById('description');
+    const charCount = document.getElementById('charCount');
+
+    descriptionInput.addEventListener('input', function () {
+        charCount.textContent = `${descriptionInput.value.length} 글자`;
     });
 });

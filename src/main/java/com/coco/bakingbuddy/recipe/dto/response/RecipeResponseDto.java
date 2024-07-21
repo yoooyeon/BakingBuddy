@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class RecipeResponseDto {
     private String name;
     private Long id;
-    private String memo;
+    private String description;
     private boolean openYn; // 공개 여부 True - Open
     private String profileImageUrl;
 
@@ -29,7 +29,7 @@ public class RecipeResponseDto {
                 .id(recipe.getId())
                 .name(recipe.getName())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
-                .memo(recipe.getMemo())
+                .description(recipe.getDescription())
 //                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())

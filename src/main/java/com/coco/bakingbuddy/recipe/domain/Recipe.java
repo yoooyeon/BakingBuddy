@@ -27,7 +27,8 @@ public class Recipe extends BaseTime {
     private Directory directory;
 
     private boolean useYn;
-    private String memo;
+    @Column(length = 600)  // 최대 길이 설정 // @Lob
+    private String description;
     private String openYn; // 공개 여부 True - Open
     private String recipeImageUrl;
 

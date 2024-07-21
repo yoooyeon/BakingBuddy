@@ -20,7 +20,7 @@ public class SelectRecipeResponseDto {
     private Long dirId;
     private Long id;
     private Long userId;
-    private String memo;
+    private String description;
     private String username;
     private String profileImageUrl;
     private boolean openYn; // 공개 여부 True - Open
@@ -39,7 +39,7 @@ public class SelectRecipeResponseDto {
                 .dirId(recipe.getDirectory().getId())
                 .name(recipe.getName())
                 .userId(recipe.getUser().getId())
-                .memo(recipe.getMemo())
+                .description(recipe.getDescription())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .recipeImageUrl(recipe.getRecipeImageUrl())

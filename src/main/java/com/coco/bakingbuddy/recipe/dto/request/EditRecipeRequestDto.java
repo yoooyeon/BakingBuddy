@@ -28,7 +28,7 @@ public class EditRecipeRequestDto {
     private Long userId;
     private String recipeImageUrl;
 
-    private String memo;
+    private String description;
 
     @Pattern(regexp = "^[yYnN]$", message = "openYn은 y, Y, n, N 중 하나여야 합니다.")
     private String openYn; // 공개 여부 True - Open
@@ -52,7 +52,7 @@ public class EditRecipeRequestDto {
     public static Recipe toEntity(EditRecipeRequestDto dto) {
         return Recipe.builder()
                 .name(dto.getName())
-                .memo(dto.getMemo())
+                .description(dto.getDescription())
                 .time(dto.getTime())
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())

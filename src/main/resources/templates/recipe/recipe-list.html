@@ -18,7 +18,7 @@
             }
 
             .container {
-                max-width: 90%;
+                max-width: 80%;
                 margin: 0 auto;
                 padding: 20px;
             }
@@ -210,7 +210,7 @@
                                 </span>
                                 <span>소요시간: <span th:text="${recipe.time}+'분'">Time</span></span>
                                 <span>난이도: <span th:text="${recipe.level}">Difficulty</span></span>
-                                <span>설명: <span th:text="${recipe.memo}">Description</span></span>
+                                <span>설명: <span th:text="${recipe.description}">Description</span></span>
                             </div>
                             <div class="recipe-steps">
                                 <!-- <p class="card-text" th:text="${recipe.steps}">Recipe Steps</p> -->

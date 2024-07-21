@@ -24,7 +24,7 @@ public class CreateRecipeRequestDto {
     @NotNull(message = "userId가 빈 값일 수 없습니다.")
     private Long userId;
 
-    private String memo;
+    private String description;
 
     @Pattern(regexp = "^[yYnN]$", message = "openYn은 y, Y, n, N 중 하나여야 합니다.")
     private String openYn; // 공개 여부 True - Open
@@ -48,7 +48,7 @@ public class CreateRecipeRequestDto {
     public static Recipe toEntity(CreateRecipeRequestDto dto) {
         return Recipe.builder()
                 .name(dto.getName())
-                .memo(dto.getMemo())
+                .description(dto.getDescription())
                 .time(dto.getTime())
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())
