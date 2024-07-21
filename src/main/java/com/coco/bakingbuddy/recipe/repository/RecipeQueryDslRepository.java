@@ -52,12 +52,11 @@ public class RecipeQueryDslRepository {
     public Page<Recipe> findAll(Pageable pageable) {
         QueryResults<Recipe> queryResults = queryFactory
                 .selectFrom(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe)
-                .leftJoin(recipe.tagRecipes, tagRecipe)
+                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag)
-                .offset(pageable.getOffset()) // 페이지 시작 위치 설정
-                .limit(pageable.getPageSize()) // 페이지 크기 설정
-//                .orderBy(recipe.createdDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetchResults();
 
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());

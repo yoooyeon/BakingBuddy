@@ -8,44 +8,56 @@
     <!-- css -->
     <div layout:fragment="css">
         <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f8f9fa;
+                margin: 0;
+                padding: 0;
+            }
+
             .container {
-                max-width: 100%;
-                padding-left: 15px;
-                padding-right: 15px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
             }
 
             .recipe-card {
                 display: flex;
-                flex-direction: column; /* Changed to column for vertical alignment */
+                flex-direction: column;
                 margin-bottom: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                transition: box-shadow 0.3s ease-in-out;
-                cursor: pointer;
-                height: auto;
+                overflow: hidden;
+                background-color: #fff;
+                transition: box-shadow 0.3s ease, transform 0.3s ease;
                 text-decoration: none;
                 color: inherit;
-                border-radius: 8px;
-                overflow: hidden; /* Ensure no overflow from child elements */
             }
 
             .recipe-card:hover {
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                transform: scale(1.02);
             }
 
             .recipe-card img {
                 width: 100%;
-                height: auto;
+                height: 200px;
                 object-fit: cover;
-                border-bottom: 2px solid #ddd; /* Border to separate image from details */
+                border-bottom: 2px solid #ddd;
             }
 
             .recipe-details {
-                padding: 1.25rem;
+                padding: 15px;
             }
 
             .recipe-details h5.card-title {
                 font-size: 1.5rem;
-                margin-bottom: 0.75rem;
+                margin-bottom: 10px;
+                font-weight: bold;
+                color: #333;
             }
 
             .recipe-details p.card-text {
@@ -53,124 +65,43 @@
             }
 
             .recipe-details .meta-info {
-                margin-top: 1rem;
+                margin-top: 10px;
+                font-size: 0.9rem;
             }
 
             .recipe-details .meta-info span {
                 display: block;
-                margin-bottom: 0.5rem;
-                font-weight: bold;
+                margin-bottom: 5px;
+                font-weight: 600;
+                color: #555;
             }
 
-            .recipe-details .recipe-steps {
-                margin-top: 1.5rem;
+            .recipe-details .meta-info span span {
+                font-weight: normal;
+                color: #777;
             }
 
             #loading {
                 text-align: center;
                 margin-top: 20px;
+                font-size: 1.2rem;
+                color: #888;
             }
 
             /* Search styles */
-            .autocomplete-list {
-                list-style-type: none;
-                padding-left: 0;
-            }
-
-            .autocomplete-item {
-                position: relative; /* Ensure relative positioning for absolute positioning of image */
-                padding: 10px;
-                border-bottom: 1px solid #ccc;
-                overflow: hidden;
-            }
-
-            .autocomplete-image {
-                position: absolute;
-                top: 50%; /* Position at the vertical center of the list item */
-                transform: translateY(-50%); /* Adjust to vertically center properly */
-                right: 15px; /* Position on the right side with a small margin */
-                max-width: 60px; /* Adjust the maximum width of the image */
-                height: auto;
-            }
-
-            .autocomplete-details {
-                margin-right: 70px; /* Ensure space for the image on the right */
-            }
-
-            #popularSearches {
-                list-style-type: none;
-                padding-left: 0;
-                padding-top: 5px;
-            }
-
-            @media (max-width: 768px) {
-                .search-input {
-                    font-size: 14px; /* Example: Adjust font size for smaller screens */
-                }
-
-                .recipe-card {
-                    flex-direction: column; /* Stack elements vertically on smaller screens */
-                }
-
-                .recipe-card img {
-                    height: 200px; /* Fixed height for images on smaller screens */
-                    object-fit: cover;
-                }
-            }
-
-            @media (min-width: 769px) {
-                .recipe-card {
-                    flex-direction: row; /* Align elements horizontally on larger screens */
-                }
-
-                .recipe-card img {
-                    max-width: 300px; /* Adjust maximum width for larger screens */
-                }
-            }
-
-            #searchForm {
-                position: relative;
-            }
-
-            #searchResults {
-                position: absolute;
-                z-index: 1000;
-                background-color: white;
-                width: 100%;
-                border: 1px solid #ccc;
-                max-height: 300px;
-                overflow-y: auto;
-            }
-
-            #searchResults ul {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-            }
-
-            #searchResults li {
-                padding: 10px;
-                border-bottom: 1px solid #eee;
-                cursor: pointer;
-            }
-
-            #searchResults li:hover {
-                background-color: #f0f0f0;
-            }
-
-            #searchForm .btn {
-                height: calc(100% - 2px);
-            }
-
             .search-container {
                 position: relative;
-                width: 100%; /* Ensures it takes full width of parent column */
+                margin-bottom: 20px;
             }
 
             .search-input {
-                width: 100%; /* Take full width of parent container */
-                padding: 10px; /* Adjust padding as needed */
-                font-size: 16px; /* Adjust font size as needed */
+                width: 100%;
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+                background-color: #fff;
             }
 
             .autocomplete-results {
@@ -178,30 +109,63 @@
                 top: 100%;
                 left: 0;
                 z-index: 1000;
-                width: 100%; /* Match width of search input */
+                width: 100%;
                 max-height: 300px;
                 overflow-y: auto;
                 border: 1px solid #ccc;
-                background-color: white;
+                background-color: #fff;
+                border-radius: 4px;
             }
 
-            .searched-lists-container {
-                display: none;
-                justify-content: space-between;
+            .autocomplete-results ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+            .autocomplete-results li {
                 padding: 10px;
-                margin-top: 10px;
-            }
-
-            .searched-lists-container.visible {
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
                 display: flex;
+                align-items: center;
             }
 
-            .searched-lists-container > div {
+            .autocomplete-results li:hover {
+                background-color: #f0f0f0;
+            }
+
+            .autocomplete-image {
+                width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                object-fit: cover;
+                border-radius: 4px;
+            }
+
+            .autocomplete-details {
                 flex: 1;
             }
 
-            .searched-lists-container h4 {
-                margin-bottom: 10px;
+            @media (max-width: 768px) {
+                .recipe-card img {
+                    height: 150px;
+                }
+            }
+
+            @media (min-width: 769px) {
+                .recipe-card {
+                    flex-direction: row;
+                }
+
+                .recipe-card img {
+                    width: 40%;
+                    height: auto;
+                }
+
+                .recipe-details {
+                    width: 60%;
+                }
             }
         </style>
     </div>
@@ -211,32 +175,27 @@
 
     <div th:if="${not #lists.isEmpty(recipes)}">
         <div class="container">
+
             <div class="row" id="recipe-container">
                 <div class="col-12 mb-4" th:each="recipe : ${recipes}">
-                    <a th:href="@{|/api/recipes/${recipe.id}|}" class="card recipe-card"
+                    <a th:href="@{|/api/recipes/${recipe.id}|}" class="recipe-card"
                        th:attr="data-url=@{/api/recipes/{recipeId}(recipeId=${recipe.id})}">
-                        <img th:src="${recipe.recipeImageUrl}" class="card-img-left img-fluid" alt="Recipe Image">
+                        <img th:src="${recipe.recipeImageUrl}" alt="Recipe Image">
                         <div class="recipe-details">
                             <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
                             <div class="meta-info">
-                                <span>재료
-                                    <span th:if="${not #lists.isEmpty(recipe.ingredients)}">
-                                        <span th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient.name}">Ingredient Name</span>
-                                    </span>
+                                <span>재료: <span th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient.name}">Ingredient Name</span>
                                     <span th:if="${#lists.isEmpty(recipe.ingredients)}">재료가 없습니다.</span>
                                 </span>
-                                <span>태그
-                                    <span th:if="${not #lists.isEmpty(recipe.tags)}">
-                                        <span th:each="tag : ${recipe.tags}" th:text="${tag.name}">Tag Name</span>
-                                    </span>
+                                <span>태그: <span th:each="tag : ${recipe.tags}" th:text="${tag.name}">Tag Name</span>
                                     <span th:if="${#lists.isEmpty(recipe.tags)}">태그가 없습니다.</span>
                                 </span>
-                                <span>소요시간 <span th:text="${recipe.time}+'분'">Time</span></span>
-                                <span>난이도 <span th:text="${recipe.level}">Difficulty</span></span>
-                                <span>설명 <span th:text="${recipe.memo}"></span></span>
+                                <span>소요시간: <span th:text="${recipe.time}+'분'">Time</span></span>
+                                <span>난이도: <span th:text="${recipe.level}">Difficulty</span></span>
+                                <span>설명: <span th:text="${recipe.memo}">Description</span></span>
                             </div>
                             <div class="recipe-steps">
-                                <!--                                <p class="card-text" th:text="${recipe.steps}">Recipe Steps</p>-->
+                                <!-- <p class="card-text" th:text="${recipe.steps}">Recipe Steps</p> -->
                             </div>
                             <div class="card-footer">
                                 <small class="text-muted">Last updated 3 mins ago</small>

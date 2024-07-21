@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
@@ -52,28 +53,28 @@ public class RecipeService {
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
     private final RecipeStepRepository recipeStepRepository;
-
     @Transactional(readOnly = true)
     public Page<SelectRecipeResponseDto> selectAll(Pageable pageable) {
         Page<Recipe> recipePage = recipeQueryDslRepository.findAll(pageable);
         if (recipePage.isEmpty()) {
-            return Page.empty(); // 빈 페이지 객체를 반환
+            return Page.empty();
         }
+
+        List<Long> recipeIds = recipePage.getContent().stream()
+                .map(Recipe::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, List<Ingredient>> ingredientsMap = ingredientRecipeQueryDslRepository.findIngredientsByRecipeIds(recipeIds);
+        Map<Long, List<Tag>> tagsMap = tagRecipeQueryDslRepository.findTagsByRecipeIds(recipeIds);
+
         List<SelectRecipeResponseDto> resultList = new ArrayList<>();
         for (Recipe recipe : recipePage) {
             SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
-            List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
-            List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipe.getId());
-            result.setIngredients(ingredients);
-            result.setTags(tags);
+            result.setIngredients(ingredientsMap.get(recipe.getId()));
+            result.setTags(tagsMap.get(recipe.getId()));
             resultList.add(result);
-            for (Ingredient ingredient : ingredients) {
-                log.info(">>>ingredient name{}", ingredient.getName());
-            }
-            for (Tag tag : tags) {
-                log.info(">>>tag name{}", tag.getName());
-            }
         }
+
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
     }
 

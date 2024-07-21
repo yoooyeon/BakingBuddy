@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.tag.domain.QTag.tag;
 import static com.coco.bakingbuddy.tag.domain.QTagRecipe.tagRecipe;
@@ -37,5 +39,18 @@ public class TagRecipeQueryDslRepository {
                 .join(tagRecipe.tag, tag)
                 .where(tagRecipe.recipe.id.eq(recipeId))
                 .fetch();
+    }
+
+    public Map<Long, List<Tag>> findTagsByRecipeIds(List<Long> recipeIds) {
+
+        List<TagRecipe> tagRecipes = queryFactory
+                .selectFrom(tagRecipe)
+                .leftJoin(tagRecipe.tag, tag).fetchJoin()
+                .where(tagRecipe.recipe.id.in(recipeIds))
+                .fetch();
+
+        return tagRecipes.stream()
+                .collect(Collectors.groupingBy(tr -> tr.getRecipe().getId(),
+                        Collectors.mapping(TagRecipe::getTag, Collectors.toList())));
     }
 }
