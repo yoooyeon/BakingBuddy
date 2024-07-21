@@ -29,9 +29,7 @@ public class AuthService {
     public String getRefreshToken(LoginRequestDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
         String token = jwtTokenProvider.createRefreshToken(user.getUsername());
-        log.info(">>>token={}", token);
         return token;
     }
 
@@ -39,7 +37,6 @@ public class AuthService {
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         String token = jwtTokenProvider.createToken(user.getUsername(), user.getRole());
-        log.info(">>>token={}", token);
         return token;
     }
 }

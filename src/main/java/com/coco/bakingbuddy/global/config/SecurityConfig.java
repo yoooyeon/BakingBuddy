@@ -41,12 +41,14 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/signup").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/data").authenticated()
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .authenticationEntryPoint((request, response, authException) ->
+                                        response.sendRedirect("/login")))
 //                .userDetailsService(principalService)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 

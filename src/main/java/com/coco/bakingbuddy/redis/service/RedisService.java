@@ -61,12 +61,8 @@ public class RedisService {
                 Set<Object> values = redisTemplate.opsForSet().members(key);
                 if (values != null) {
                     for (Object value : values) {
-                        log.info("value={}", value);
                         RedisAutoCompletePreviewDto dto = mapper.convertValue(value, RedisAutoCompletePreviewDto.class);
                         autocompleteResults.add(dto);
-                        log.info(dto.getImageUrl());
-                        log.info(dto.getName());
-                        log.info(""+dto.getRecipeId());
                     }
                 }
             }
