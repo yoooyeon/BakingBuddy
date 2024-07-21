@@ -20,6 +20,7 @@ import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,18 +59,19 @@ public class RecipeService {
         if (recipePage.isEmpty()) {
             return Page.empty(); // 빈 페이지 객체를 반환
         }
-        return recipePage.map(SelectRecipeResponseDto::fromEntity); // Recipe를 SelectRecipeResponseDto로 매핑하여 반환
-
-
-//    List<Recipe> recipes = recipeQueryDslRepository.findAll();
-//        for (Recipe recipe : recipes) {
-//            log.info("recipe:", recipe, recipes.isEmpty(), recipes == null);
-//
-//        }
-//        if (recipes.isEmpty() || recipes == null) {
-//            return null;
-//        }
-//        return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
+        List<SelectRecipeResponseDto> resultList = new ArrayList<>();
+        for (Recipe recipe : recipePage) {
+            SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
+            List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
+            List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipe.getId());
+            result.setIngredients(ingredients);
+            result.setTags(tags);
+            resultList.add(result);
+            for (Ingredient ingredient : ingredients) {
+                log.info(">>>ingredient name{}", ingredient.getName());
+            }
+        }
+        return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
     }
 
     @Transactional(readOnly = true)
@@ -128,21 +130,22 @@ public class RecipeService {
 
         List<String> ingredients = dto.getIngredients();
         Ingredient ingredient = null;
-        if (ingredients != null) {
-            IngredientRecipe ingredientRecipe = new IngredientRecipe();
+        if (ingredients != null && ingredients.size() > 0) {
             for (String name : ingredients) {
+                IngredientRecipe ingredientRecipe = new IngredientRecipe();
                 if (ingredientRepository.findByName(name).isPresent()) {
                     ingredient = ingredientRepository.findByName(name).get();
+                    ingredientRecipe.addRecipe(recipe);
+                    ingredientRecipe.addIngredient(ingredient);
+                    ingredientRecipeRepository.save(ingredientRecipe);
                 } else {
                     ingredient = ingredientRepository.save(Ingredient.builder().name(name).build());
+                    ingredientRecipe.addRecipe(recipe);
+                    ingredientRecipe.addIngredient(ingredient);
+                    ingredientRecipeRepository.save(ingredientRecipe);
                 }
-                ingredientRecipe.addRecipe(recipe);
-                ingredientRecipe.addIngredient(ingredient);
-                ingredientRecipeRepository.save(ingredientRecipe);
             }
-
         }
-
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
 
@@ -211,8 +214,6 @@ public class RecipeService {
         }
         return result;
     }
-
-
 
 
 }

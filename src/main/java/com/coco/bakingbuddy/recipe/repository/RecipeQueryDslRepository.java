@@ -48,15 +48,6 @@ public class RecipeQueryDslRepository {
                 .fetch();
     }
 
-    public List<Recipe> findAll() {
-        return queryFactory
-                .select(recipe)
-                .from(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe)
-                .leftJoin(recipe.tagRecipes, tagRecipe)
-                .leftJoin(tagRecipe.tag, tag)
-                .fetch();
-    }
 
     public Page<Recipe> findAll(Pageable pageable) {
         QueryResults<Recipe> queryResults = queryFactory
@@ -87,16 +78,9 @@ public class RecipeQueryDslRepository {
                 .limit(pageable.getPageSize()) // 페이지 크기 설정
                 .fetchResults();
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
-
-//        return recipes;
     }
 
-    public List<String> findByName(String term) {
-        return queryFactory.select(recipe.name)
-                .from(recipe)
-                .where(recipe.name.containsIgnoreCase(term))
-                .fetch();
-    }
+
 
     public List<RedisAutoCompletePreviewDto> findPreviewByTerm(String term) {
         return queryFactory

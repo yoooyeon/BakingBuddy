@@ -5,12 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
-//@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class IngredientRecipe extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "INGREDIENT_RECIPE_ID")
     private Long id;
 

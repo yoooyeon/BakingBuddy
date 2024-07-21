@@ -32,7 +32,7 @@ public class CreateRecipeRequestDto {
     @NotEmpty(message = "ingredients가 빈 값일 수 없습니다.")
     private List<String> ingredients; // JPA
 
-    @NotEmpty(message = "조리 단계가 빈 값일 수 없습니다.")
+//    @NotEmpty(message = "조리 단계가 빈 값일 수 없습니다.")
     private List<RecipeStep> recipeSteps;
     @NotNull(message = "time이 빈 값일 수 없습니다.")
     @Positive(message = "time은 양수여야 합니다.")
@@ -41,7 +41,7 @@ public class CreateRecipeRequestDto {
     @NotBlank(message = "level이 빈 값일 수 없습니다.")
     private String level; // 난이도
 
-    @NotEmpty(message = "tags가 빈 값일 수 없습니다.")
+//    @NotEmpty(message = "tags가 빈 값일 수 없습니다.")
     private List<String> tags;
     private String recipeImageUrl;
 

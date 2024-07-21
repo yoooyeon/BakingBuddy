@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DirectoryRepository extends JpaRepository<Directory, Long> {
     boolean existsByName(String name);
+
+    boolean existsByNameAndUserId(String name, Long userId);
 }

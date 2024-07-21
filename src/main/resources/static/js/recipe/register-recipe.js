@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData();
         const recipeSteps = collectRecipeSteps(document.getElementById('recipeStepList'));
 
+        // Collect all data
         const data = {
             userId: document.getElementById("userId").value,
             dirId: document.getElementById("directory").value,
@@ -33,15 +34,14 @@ document.addEventListener('DOMContentLoaded', function () {
             level: document.getElementById("level").value
         };
 
-        // Add JSON data as a blob
+        // Convert data object to JSON string
         formData.append("dto", new Blob([JSON.stringify(data)], {type: "application/json"}));
 
-        formData.append('recipeSteps', JSON.stringify(recipeSteps));
         // Add recipe image
         formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
-        // Step Images
+
         const stepImages = document.querySelectorAll('.step-image');
-        stepImages.forEach((fileInput, index) => {
+        stepImages.forEach((fileInput) => {
             if (fileInput.files[0]) {
                 formData.append('stepImages', fileInput.files[0]);
             }
@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Add new step to list
     function addStepToList() {
         const stepContainer = document.createElement('div');
         stepContainer.className = 'step-container';
@@ -104,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
         stepContainer.appendChild(stepNumberInput);
         stepContainer.appendChild(stepDescription);
         stepContainer.appendChild(stepImageInput);
-        console.log(stepContainer)
         recipeStepList.appendChild(stepContainer);
     }
 

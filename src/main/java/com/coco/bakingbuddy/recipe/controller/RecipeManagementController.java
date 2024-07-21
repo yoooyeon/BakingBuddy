@@ -71,6 +71,9 @@ public class RecipeManagementController {
                                           @RequestParam("recipeImage") MultipartFile recipeImage
 //            , @RequestParam("stepImages") MultipartFile[] stepImages
     ) {
+        for (String ingredient : dto.getIngredients()) {
+            log.info(">>>CreateRecipeResponseDto{}",ingredient);
+        }
         CreateRecipeResponseDto save = recipeService.create(dto, recipeImage);
 //        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage, stepImages);
         return save;

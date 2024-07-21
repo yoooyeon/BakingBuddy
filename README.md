@@ -1,9 +1,9 @@
 # Baking Buddy
 
 - 운영: https://baking-buddy-image-6q5ymuc2ha-du.a.run.app/
+- 운영 스웨거: https://baking-buddy-image-6q5ymuc2ha-du.a.run.app/swagger-ui/index.html#/
 - 로컬 스웨거: http://localhost:8080/swagger-ui/index.html#/
 - 로컬 Actuator: http://localhost:8080/manage
-- 운영 스웨거: https://baking-buddy-image-6q5ymuc2ha-du.a.run.app/swagger-ui/index.html#/
 
 ### 기술적 TODO
 - 테스트코드
@@ -16,16 +16,10 @@
 - 성능 테스트, 부하 테스트
 - 검색, 클릭 등 이벤트 수집 -> 취향 파악, 쿠폰 발급
 - 좋아요, 게시글을 보고있는 회원 수 등 (Socket)
-<<<<<<< HEAD
 - 권한에 따른 처리 /admin, /public, /private
 
 ### 수정해야할 것
-- Refresh Token Test, Token Redis로 전환
-=======
-
-### 수정해야할 것
-- Refresh Token Test
->>>>>>> jwt
+- Refresh Token Test, Token Redis로 전환 Test
 - 자동완성 검색어 중복 저장
 
 
