@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.global.config;
+package com.coco.bakingbuddy.auth.config;
 
 import com.coco.bakingbuddy.jwt.filter.JwtAuthenticationFilter;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
