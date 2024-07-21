@@ -12,7 +12,6 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute
     public void addAttributes(@AuthenticationPrincipal User user, Model model) {
-        log.info(">>>GlobalControllerAdvice User{}",user);
         if (user != null) {
             model.addAttribute("loggedIn", true);
             model.addAttribute("user", user);

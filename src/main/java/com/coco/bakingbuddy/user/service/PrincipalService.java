@@ -14,16 +14,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PrincipalService implements UserDetailsService {
-
     private final UserRepository userRepository;
-
-    //시큐리티 session => Authentication => UserDetails
-    // 여기서 리턴 된 값이 Authentication 안에 들어간다.(리턴될때 들어간다.)
-    // 그리고 시큐리티 session 안에 Authentication 이 들어간다.
-    //함수 종료시 @AuthenticationPrincipal 어노테이션이 만들어진다.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info(">>>PrincipalService loadUserByUsername");
         return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 

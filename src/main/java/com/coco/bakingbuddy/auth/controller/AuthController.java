@@ -5,6 +5,7 @@ import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.jwt.JwtTokenProvider;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +68,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto user) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
         String accessToken = authService.getAccessToken(user);
         String refreshToken = authService.getRefreshToken(user);
+        jwtTokenProvider.addTokenToCookie(response, accessToken, "accessToken");
+        jwtTokenProvider.addTokenToCookie(response, refreshToken, "refreshToken");
         return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
     }
 

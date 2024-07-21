@@ -48,20 +48,6 @@ public class UserService {
         return false;
     }
 
-//    public LoginUserResponseDto authenticate(LoginUserRequestDto user) {
-//        Optional<User> registered = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
-//        if (registered.isPresent()) {
-//            return LoginUserResponseDto.builder()
-//                    .success(true)
-//                    .userId(registered.get().getId())
-//                    .build();
-//        }
-//        return LoginUserResponseDto.builder()
-//                .success(false)
-//                .userId(null)
-//                .build();
-//    }
-
     @Transactional(readOnly = true)
     public List<SelectUserResponseDto> selectAll() {
         return userRepository.findAll().stream().map(SelectUserResponseDto::fromEntity).collect(Collectors.toList());
