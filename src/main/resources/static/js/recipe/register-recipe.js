@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     const ingredientList = document.getElementById("ingredientList");
     const recipeStepList = document.getElementById("recipeStepList");
     const tagList = document.getElementById("tagList");

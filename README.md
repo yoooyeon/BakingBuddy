@@ -16,10 +16,16 @@
 - 성능 테스트, 부하 테스트
 - 검색, 클릭 등 이벤트 수집 -> 취향 파악, 쿠폰 발급
 - 좋아요, 게시글을 보고있는 회원 수 등 (Socket)
+<<<<<<< HEAD
 - 권한에 따른 처리 /admin, /public, /private
 
 ### 수정해야할 것
 - Refresh Token Test, Token Redis로 전환
+=======
+
+### 수정해야할 것
+- Refresh Token Test
+>>>>>>> jwt
 - 자동완성 검색어 중복 저장
 
 
