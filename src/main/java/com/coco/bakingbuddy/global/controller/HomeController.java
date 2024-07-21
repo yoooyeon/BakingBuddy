@@ -12,6 +12,5 @@ public class HomeController {
     @GetMapping("/")
     public String home() {
         return "redirect:/api/recipes";
-//        return "recipe/recipe-list";
     }
 }

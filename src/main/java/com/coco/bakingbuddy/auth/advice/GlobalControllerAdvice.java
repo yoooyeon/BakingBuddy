@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.global.advice;
+package com.coco.bakingbuddy.auth.advice;
 import com.coco.bakingbuddy.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
