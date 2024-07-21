@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -33,15 +30,7 @@ public class AuthController {
         model.addAttribute("createUserRequestDto", new CreateUserRequestDto());
         return "user/signup";
     }
-    @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(@RequestBody String refreshToken) {
-        if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
-            String newToken = jwtTokenProvider.createAccessTokenFromRefreshToken(refreshToken);
-            return ResponseEntity.ok(newToken);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
-        }
-    }
+
     @PostMapping("signup")
     public String register(@Valid @ModelAttribute CreateUserRequestDto user, Model model) {
         try {
@@ -62,11 +51,13 @@ public class AuthController {
     public String login() {
         return "user/login";
     }
+
     @GetMapping("/test")
     public String test() {
         return "user/test";
     }
 
+    @ResponseBody
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
         String accessToken = authService.getAccessToken(user);
@@ -76,4 +67,14 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
     }
 
+    @ResponseBody
+    @PostMapping("/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestBody String refreshToken) {
+        if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
+            String newToken = jwtTokenProvider.createAccessTokenFromRefreshToken(refreshToken);
+            return ResponseEntity.ok(newToken);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
+        }
+    }
 }
