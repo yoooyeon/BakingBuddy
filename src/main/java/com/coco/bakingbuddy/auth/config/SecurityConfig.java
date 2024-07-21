@@ -2,7 +2,6 @@ package com.coco.bakingbuddy.auth.config;
 
 import com.coco.bakingbuddy.jwt.filter.JwtAuthenticationFilter;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
-import com.coco.bakingbuddy.auth.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final PrincipalService principalService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -35,10 +33,9 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
+                        .deleteCookies("accessToken", "refreshToken"))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers( "/login").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/refresh-token").authenticated()
@@ -50,7 +47,6 @@ public class SecurityConfig {
                         exceptionHandling
                                 .authenticationEntryPoint((request, response, authException) ->
                                         response.sendRedirect("/login")))
-//                .userDetailsService(principalService)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
