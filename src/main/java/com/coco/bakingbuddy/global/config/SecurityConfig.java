@@ -1,8 +1,8 @@
 package com.coco.bakingbuddy.global.config;
 
-import com.coco.bakingbuddy.jwt.JwtAuthenticationFilter;
-import com.coco.bakingbuddy.jwt.JwtTokenProvider;
-import com.coco.bakingbuddy.user.service.PrincipalService;
+import com.coco.bakingbuddy.jwt.filter.JwtAuthenticationFilter;
+import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
+import com.coco.bakingbuddy.auth.service.PrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

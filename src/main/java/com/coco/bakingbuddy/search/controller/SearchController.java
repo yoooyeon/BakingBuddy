@@ -7,9 +7,8 @@ import com.coco.bakingbuddy.recipe.service.RecipeSearchService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
 import com.coco.bakingbuddy.redis.service.RedisService;
-import com.coco.bakingbuddy.search.dto.RecentSearchResponseDto;
+import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
 import com.coco.bakingbuddy.search.service.SearchService;
-import com.coco.bakingbuddy.user.domain.PrincipalDetails;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
