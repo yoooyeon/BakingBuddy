@@ -27,7 +27,14 @@
 
 <div layout:fragment="content" class="content"></div>
 
-<div th:replace="~{fragments/footer::footer}"></div>
+<script>
+    function logout() {
+        alert("logout")
+        // 로그아웃 처리
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+    }</script>
 
+<div th:replace="~{fragments/footer::footer}"></div>
 </body>
 </html>

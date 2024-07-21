@@ -52,12 +52,6 @@ public class AuthController {
     public String login() {
         return "user/login";
     }
-
-    @GetMapping("/test")
-    public String test() {
-        return "user/test";
-    }
-
     @ResponseBody
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
@@ -78,4 +72,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
         }
     }
+
 }
