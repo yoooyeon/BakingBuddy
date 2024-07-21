@@ -7,6 +7,7 @@ import com.coco.bakingbuddy.recipe.repository.IngredientRecipeQueryDslRepository
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
+import com.coco.bakingbuddy.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,9 @@ public class RecipeSearchService {
             List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipe.getId());
             result.setIngredients(ingredients);
             result.setTags(tags);
+            User user = recipe.getUser();
+            result.setUsername(user.getUsername());
+            result.setProfileImageUrl(user.getProfileImageUrl());
             resultList.add(result);
             for (Ingredient ingredient : ingredients) {
                 log.info(">>>ingredient name{}", ingredient.getName());

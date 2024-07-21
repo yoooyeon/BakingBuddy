@@ -15,6 +15,7 @@ public class RecipeResponseDto {
     private Long id;
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
+    private String profileImageUrl;
 
     private String ingredients; // JPA
     private String tags; // JPA

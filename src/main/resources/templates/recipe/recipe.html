@@ -14,6 +14,12 @@
             background-color: #f8f9fa;
         }
 
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .recipe-card {
             background-color: #ffffff;
             border: 1px solid #e1e4e8;
@@ -59,6 +65,17 @@
         .label-description {
             font-size: 1rem;
             color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-image {
+            width: 30px !important; /* 조정할 크기 */
+            height: 30px !important; /* 조정할 크기 */
+            object-fit: contain !important;
+            border-radius: 10% !important;
+            margin-left: 10px !important;
+            margin-right: 10px !important;
         }
 
         .step-container {
@@ -104,6 +121,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 <div layout:fragment="content">
+
     <div class="container">
         <div class="recipe-card">
             <img th:src="${recipe.recipeImageUrl}" alt="Recipe Picture" class="card-img-top">
@@ -114,6 +132,13 @@
                     <label class="label-large" style="display: none"></label>
                     <div class="label-description" style="display: none">
                         <span th:text="${recipe.id}">1</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="label-large">작성자</label>
+                    <div class="label-description">
+                        <img th:src="${recipe.profileImageUrl}" alt="User Profile" class="profile-image">
+                        <span th:text="${recipe.username}"></span>
                     </div>
                 </div>
                 <div>

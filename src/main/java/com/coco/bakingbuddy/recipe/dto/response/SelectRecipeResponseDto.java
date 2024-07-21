@@ -22,6 +22,7 @@ public class SelectRecipeResponseDto {
     private Long userId;
     private String memo;
     private String username;
+    private String profileImageUrl;
     private boolean openYn; // 공개 여부 True - Open
 
     private List<Ingredient> ingredients; // JPA

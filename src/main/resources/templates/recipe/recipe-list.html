@@ -18,7 +18,7 @@
             }
 
             .container {
-                max-width: 1200px;
+                max-width: 90%;
                 margin: 0 auto;
                 padding: 20px;
             }
@@ -167,6 +167,16 @@
                     width: 60%;
                 }
             }
+
+            .profile-image {
+                width: 30px !important; /* 조정할 크기 */
+                height: 30px !important; /* 조정할 크기 */
+                object-fit: contain !important;
+                border-radius: 10% !important;
+                margin-left: 10px !important;
+                margin-right: 10px !important;
+            }
+
         </style>
     </div>
 </head>
@@ -183,8 +193,16 @@
                         <img th:src="${recipe.recipeImageUrl}" alt="Recipe Image">
                         <div class="recipe-details">
                             <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                            <div>
+                                <label class="label-large">작성자</label>
+                                <div class="label-description">
+                                    <img th:src="${recipe.profileImageUrl}" alt="User Profile" class="profile-image">
+                                    <span th:text="${recipe.username}"></span>
+                                </div>
+                            </div>
                             <div class="meta-info">
-                                <span>재료: <span th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient.name}">Ingredient Name</span>
+                                <span>재료: <span th:each="ingredient : ${recipe.ingredients}"
+                                                th:text="${ingredient.name}">Ingredient Name</span>
                                     <span th:if="${#lists.isEmpty(recipe.ingredients)}">재료가 없습니다.</span>
                                 </span>
                                 <span>태그: <span th:each="tag : ${recipe.tags}" th:text="${tag.name}">Tag Name</span>

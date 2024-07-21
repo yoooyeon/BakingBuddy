@@ -18,6 +18,8 @@ public class CreateRecipeResponseDto {
     private Long dirId;
     private Long id;
     private Long userId;
+    private String profileImageUrl;
+
     private String memo;
     private boolean openYn; // 공개 여부 True - Open
 

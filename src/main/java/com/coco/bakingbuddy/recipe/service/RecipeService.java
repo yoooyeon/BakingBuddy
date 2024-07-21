@@ -53,6 +53,7 @@ public class RecipeService {
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
     private final RecipeStepRepository recipeStepRepository;
+
     @Transactional(readOnly = true)
     public Page<SelectRecipeResponseDto> selectAll(Pageable pageable) {
         Page<Recipe> recipePage = recipeQueryDslRepository.findAll(pageable);
@@ -72,6 +73,9 @@ public class RecipeService {
             SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
             result.setIngredients(ingredientsMap.get(recipe.getId()));
             result.setTags(tagsMap.get(recipe.getId()));
+            User user = recipe.getUser();
+            result.setUsername(user.getUsername());
+            result.setProfileImageUrl(user.getProfileImageUrl());
             resultList.add(result);
         }
 
@@ -88,6 +92,9 @@ public class RecipeService {
         }
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
+        User user = userRepository.findById(recipe.getUserId()).orElseThrow(()->new CustomException(USER_NOT_FOUND));
+        recipe.setUsername(user.getUsername());
+        recipe.setProfileImageUrl(user.getProfileImageUrl());
         return recipe;
 
     }
