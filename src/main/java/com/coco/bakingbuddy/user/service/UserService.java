@@ -59,16 +59,6 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
-    public Optional<User> findByUsernameAndPassword(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
-    }
-    @Transactional(readOnly = true)
-
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-    }
-
     public List<RecentSearchResponseDto> findRecentSearchesByUserId(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return user.getRecentSearches().stream()

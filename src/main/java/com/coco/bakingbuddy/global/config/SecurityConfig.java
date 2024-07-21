@@ -41,6 +41,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/refresh-token").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement ->

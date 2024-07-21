@@ -66,7 +66,6 @@ public class SearchController {
             recipePage = recipeSearchService.selectByTerm(term, PageRequest.of(page, size));
             redisService.saveSearchTerm(term);
             rankingService.incrementSearchCount(term); // ranking counter
-            log.info(">>>user" + user);
             if (user != null) {
                 searchService.addRecentSearch(user.getId(), term);
             }

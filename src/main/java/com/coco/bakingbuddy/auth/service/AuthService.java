@@ -36,7 +36,7 @@ public class AuthService {
     public String getAccessToken(LoginRequestDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        String token = jwtTokenProvider.createToken(user.getUsername(), user.getRole());
+        String token = jwtTokenProvider.createAccessToken(user.getUsername(), user.getRole());
         return token;
     }
 }
