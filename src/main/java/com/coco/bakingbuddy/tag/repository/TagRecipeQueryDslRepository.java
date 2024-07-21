@@ -34,7 +34,7 @@ public class TagRecipeQueryDslRepository {
         return queryFactory
                 .select(tag)
                 .from(tagRecipe)
-                .leftJoin(tagRecipe.tag, tag)
+                .join(tagRecipe.tag, tag)
                 .where(tagRecipe.recipe.id.eq(recipeId))
                 .fetch();
     }

@@ -70,6 +70,9 @@ public class RecipeService {
             for (Ingredient ingredient : ingredients) {
                 log.info(">>>ingredient name{}", ingredient.getName());
             }
+            for (Tag tag : tags) {
+                log.info(">>>tag name{}", tag.getName());
+            }
         }
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
     }
@@ -79,6 +82,9 @@ public class RecipeService {
         SelectRecipeResponseDto recipe = fromEntity(recipeQueryDslRepository.findById(id));
         List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(id);
         List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(id);
+        for (Tag tag : tags) {
+            log.info(">>>tags={}", tag.getName());
+        }
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
         return recipe;
@@ -114,9 +120,9 @@ public class RecipeService {
 
         List<String> tags = dto.getTags();
         Tag tag = null;
-        TagRecipe tagRecipe = new TagRecipe();
         if (tags != null) {
             for (String tagName : tags) {
+                TagRecipe tagRecipe = new TagRecipe();
                 if (tagRepository.findByName(tagName).isPresent()) {
                     tag = tagRepository.findByName(tagName).get();
                 } else {

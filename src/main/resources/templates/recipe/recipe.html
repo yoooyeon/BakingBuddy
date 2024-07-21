@@ -99,11 +99,11 @@
                 </div>
 
                 <div>
-                    <label>Time: </label>
-                    <span th:text="${recipe.time}"></span> minutes
+                    <label>소요시간 </label>
+                    <span th:text="${recipe.time}"></span> 분
                 </div>
                 <div>
-                    <label>Tags: </label>
+                    <label>태그 </label>
                     <span th:text="${#strings.arrayJoin(recipe.tags.![name], ', ')}"></span>
                 </div>
                 <hr class="my-4">

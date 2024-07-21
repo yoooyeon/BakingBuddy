@@ -225,6 +225,12 @@
                                     </span>
                                     <span th:if="${#lists.isEmpty(recipe.ingredients)}">재료가 없습니다.</span>
                                 </span>
+                                <span>태그
+                                    <span th:if="${not #lists.isEmpty(recipe.tags)}">
+                                        <span th:each="tag : ${recipe.tags}" th:text="${tag.name}">Tag Name</span>
+                                    </span>
+                                    <span th:if="${#lists.isEmpty(recipe.tags)}">태그가 없습니다.</span>
+                                </span>
                                 <span>소요시간 <span th:text="${recipe.time}+'분'">Time</span></span>
                                 <span>난이도 <span th:text="${recipe.level}">Difficulty</span></span>
                                 <span>설명 <span th:text="${recipe.memo}"></span></span>
