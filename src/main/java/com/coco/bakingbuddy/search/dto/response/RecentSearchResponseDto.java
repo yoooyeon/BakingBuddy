@@ -1,6 +1,5 @@
-package com.coco.bakingbuddy.search.dto;
+package com.coco.bakingbuddy.search.dto.response;
 
-import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

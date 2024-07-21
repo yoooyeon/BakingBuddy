@@ -2,8 +2,7 @@ package com.coco.bakingbuddy.user.service;
 
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.search.domain.RecentSearch;
-import com.coco.bakingbuddy.search.dto.RecentSearchResponseDto;
+import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;

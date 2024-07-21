@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.user.service;
+package com.coco.bakingbuddy.auth.service;
 
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;

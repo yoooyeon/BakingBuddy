@@ -1,5 +1,6 @@
-package com.coco.bakingbuddy.jwt;
+package com.coco.bakingbuddy.jwt.repository;
 
+import com.coco.bakingbuddy.jwt.domain.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

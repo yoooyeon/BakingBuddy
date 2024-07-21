@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.jwt;
+package com.coco.bakingbuddy.jwt.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QRefreshToken extends EntityPathBase<RefreshToken> {
 
-    private static final long serialVersionUID = 874395372L;
+    private static final long serialVersionUID = -675238342L;
 
     public static final QRefreshToken refreshToken = new QRefreshToken("refreshToken");
 

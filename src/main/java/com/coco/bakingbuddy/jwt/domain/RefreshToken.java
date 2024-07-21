@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.jwt;
+package com.coco.bakingbuddy.jwt.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

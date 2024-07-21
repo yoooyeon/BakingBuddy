@@ -1,8 +1,9 @@
 package com.coco.bakingbuddy.auth.controller;
 
+import com.coco.bakingbuddy.auth.dto.request.LoginRequestDto;
 import com.coco.bakingbuddy.auth.service.AuthService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.jwt.JwtTokenProvider;
+import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;

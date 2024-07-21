@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.auth.controller;
+package com.coco.bakingbuddy.auth.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

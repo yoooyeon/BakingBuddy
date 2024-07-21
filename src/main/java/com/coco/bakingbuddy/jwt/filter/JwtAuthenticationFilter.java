@@ -1,5 +1,6 @@
-package com.coco.bakingbuddy.jwt;
+package com.coco.bakingbuddy.jwt.filter;
 
+import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
