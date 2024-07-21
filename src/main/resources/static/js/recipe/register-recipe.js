@@ -1,17 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // 토큰을 로컬 스토리지에서 가져오기
-    const accessToken = localStorage.getItem('accessToken');
-
-    // 모든 AJAX 요청 전에 Authorization 헤더에 토큰을 추가
-    $.ajaxSetup({
-        beforeSend: function(xhr) {
-            if (accessToken) {
-                xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-            }
-        }
-    });
-
     const ingredientList = document.getElementById("ingredientList");
     const recipeStepList = document.getElementById("recipeStepList");
     const tagList = document.getElementById("tagList");
@@ -47,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Add JSON data as a blob
-        formData.append("dto", new Blob([JSON.stringify(data)], { type: "application/json" }));
+        formData.append("dto", new Blob([JSON.stringify(data)], {type: "application/json"}));
 
         formData.append('recipeSteps', JSON.stringify(recipeSteps));
         // Add recipe image
@@ -77,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-        // Add new step to list
+    // Add new step to list
     function addStepToList() {
         const stepContainer = document.createElement('div');
         stepContainer.className = 'step-container';
