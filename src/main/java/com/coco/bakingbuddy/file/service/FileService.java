@@ -12,7 +12,6 @@ import com.coco.bakingbuddy.file.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
-import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.UserService;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -34,7 +32,7 @@ import java.util.UUID;
 public class FileService {
     private final String UPLOAD_PATH = "UserProfile/";
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
-    private final String RECIPE_STEP_UPLOAD_PATH = "RecipeProfile/";
+    private final String RECIPE_STEP_UPLOAD_PATH = "RecipeStep/";
     private final String BUCKET_NAME = "baking-buddy-bucket";
     private final Storage storage;
     private final ImageFileRepository imageFileRepository;
@@ -123,7 +121,7 @@ public class FileService {
     }
 
     @Transactional
-    public void uploadRecipeStepImage(Long recipeStepId, MultipartFile stepImageFile) {
+    public String uploadRecipeStepImage(MultipartFile stepImageFile) {
         String originalName = stepImageFile.getOriginalFilename();
         String ext = stepImageFile.getContentType();
         String uuid = UUID.randomUUID().toString();
@@ -143,17 +141,12 @@ public class FileService {
                     .ext(ext)
                     .uuid(uuid)
                     .fileName(fileName)
-                    .recipeStepId(recipeStepId)
+//                    .recipeStepId(recipeStepId)
                     .uploadPath(uploadPath)
                     .build();
-
-            // Update RecipeStep entity with image URL
-            RecipeStep recipeStep = recipeStepRepository.findById(recipeStepId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_STEP_NOT_FOUND));
-            recipeStep.updateImage("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-            recipeStepRepository.save(recipeStep);
-            recipeStepImageFileRepository.save(dto.toEntity());
             log.info("Uploaded step image: " + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+            return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName;
+
         } catch (IOException e) {
             throw new RuntimeException("Failed to save step image: " + e.getMessage());
         }

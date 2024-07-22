@@ -43,7 +43,7 @@ public class SelectRecipeResponseDto {
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
-                .recipeSteps(recipe.getRecipeSteps())
+//                .recipeSteps(recipe.getRecipeSteps())
                 .build();
     }
 }

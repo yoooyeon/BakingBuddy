@@ -26,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
@@ -92,7 +89,11 @@ public class RecipeService {
         }
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
-        User user = userRepository.findById(recipe.getUserId()).orElseThrow(()->new CustomException(USER_NOT_FOUND));
+        Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeId(id);
+        if (recipeStep.isPresent()){
+            recipe.setRecipeSteps(recipeStep.get());
+        }
+        User user = userRepository.findById(recipe.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         recipe.setUsername(user.getUsername());
         recipe.setProfileImageUrl(user.getProfileImageUrl());
         return recipe;
@@ -100,7 +101,6 @@ public class RecipeService {
     }
 
     @Transactional
-//    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile,MultipartFile[] stepImages) {
     public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile) {
         Directory directory = directoryRepository.findById(dto.getDirId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DIRECTORY_NOT_FOUND));
@@ -109,22 +109,15 @@ public class RecipeService {
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);
-        List<RecipeStep> savedRecipeSteps = new ArrayList<>();
-        for (RecipeStep recipeStep : dto.getRecipeSteps()) {
-            RecipeStep save = recipeStepRepository.save(recipeStep);
-            savedRecipeSteps.add(save);
-        }
-        recipe.setRecipeSteps(savedRecipeSteps);
-
+//        List<RecipeStep> savedRecipeSteps = new ArrayList<>();
+//        if (!dto.getRecipeSteps().isEmpty() && dto.getRecipeSteps().size() > 0) {
+//            for (RecipeStep recipeStep : dto.getRecipeSteps()) {
+//                RecipeStep save = recipeStepRepository.save(recipeStep);
+//                savedRecipeSteps.add(save);
+//            }
+//            recipe.setRecipeSteps(savedRecipeSteps);
+//        }
         fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
-
-        // 업로드된 단계별 이미지 파일 처리
-        List<RecipeStep> recipeSteps = dto.getRecipeSteps();
-        for (int i = 0; i < recipeSteps.size(); i++) {
-            RecipeStep recipeStep = savedRecipeSteps.get(i);
-//            MultipartFile stepImage = stepImages[i];
-//            fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
-        }
 
         List<String> tags = dto.getTags();
         Tag tag = null;

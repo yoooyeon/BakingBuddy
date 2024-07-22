@@ -38,8 +38,6 @@ public class CreateRecipeResponseDto {
                 .userId(recipe.getUser().getId())
                 .description(recipe.getDescription())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
-                .recipeSteps(recipe.getRecipeSteps())
-//                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .build();

@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -67,16 +69,17 @@ public class RecipeManagementController {
 
     @ResponseBody
     @PostMapping
-    public CreateRecipeResponseDto create(@Valid @RequestPart("dto") CreateRecipeRequestDto dto,
-                                          @RequestParam("recipeImage") MultipartFile recipeImage
-//            , @RequestParam("stepImages") MultipartFile[] stepImages
-    ) {
-        for (String ingredient : dto.getIngredients()) {
-            log.info(">>>CreateRecipeResponseDto{}",ingredient);
+    public ResponseEntity<CreateRecipeResponseDto> create(@Valid @RequestPart("dto") CreateRecipeRequestDto dto,
+                                                          @RequestPart("recipeImage") MultipartFile recipeImage) {
+        try {
+            CreateRecipeResponseDto savedRecipe = recipeService.create(dto, recipeImage);
+            ResponseEntity<CreateRecipeResponseDto> ok = ResponseEntity.ok(savedRecipe);
+            log.info(">>>ok{}",ok.getBody());
+            return ok;
+        } catch (Exception e) {
+            // 예외 처리 및 적절한 응답 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage);
-//        CreateRecipeResponseDto save = recipeService.create(dto, recipeImage, stepImages);
-        return save;
     }
 
     @ResponseBody

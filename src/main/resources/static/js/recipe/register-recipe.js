@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOM fully loaded and parsed");
+
     const ingredientList = document.getElementById("ingredientList");
     const recipeStepList = document.getElementById("recipeStepList");
     const tagList = document.getElementById("tagList");
@@ -15,54 +17,95 @@ document.addEventListener('DOMContentLoaded', function () {
         }));
     }
 
-    document.getElementById("recipeForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent form submission
+    document.getElementById('recipeForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        console.log("Form submit event triggered");
 
         const formData = new FormData();
-        const recipeSteps = collectRecipeSteps(document.getElementById('recipeStepList'));
 
-        // Collect all data
-        const data = {
-            userId: document.getElementById("userId").value,
-            dirId: document.getElementById("directory").value,
-            name: document.getElementById("name").value,
-            description: document.getElementById("description").value,
-            ingredients: collectItems(ingredientList),
-            recipeSteps: recipeSteps,
-            tags: collectItems(tagList),
-            time: document.getElementById("time").value,
-            level: document.getElementById("level").value
+        // Collect form data
+        const name = document.getElementById('name').value;
+        const description = document.getElementById('description').value;
+        const ingredients = collectItems(ingredientList);
+        const tags = collectItems(tagList);
+        const recipeImage = document.getElementById('recipeImage').files[0];
+        const level = document.getElementById('level').value;
+        const time = document.getElementById('time').value;
+        const userId = document.getElementById('userId').value;
+        const dirId = document.getElementById('directory').value;
+        console.log("Collected data", {name, description, ingredients, tags, recipeImage});
+
+        // Create the DTO object
+        const dto = {
+            name: name,
+            description: description,
+            ingredients: ingredients,
+            tags: tags,
+            level: level,
+            time: time,
+            userId: userId,
+            dirId: dirId,
         };
 
-        // Convert data object to JSON string
-        formData.append("dto", new Blob([JSON.stringify(data)], {type: "application/json"}));
+        // Append DTO and recipe image to FormData
+        formData.append('dto', new Blob([JSON.stringify(dto)], {type: 'application/json'}));
+        if (recipeImage) {
+            formData.append('recipeImage', recipeImage);
+        }
 
-        // Add recipe image
-        formData.append("recipeImage", document.getElementById("recipeImage").files[0]);
+        try {
+            // 1. 레시피 저장
+            const response = await fetch('/api/recipes', {
+                method: 'POST',
+                body: formData
+            });
 
-        const stepImages = document.querySelectorAll('.step-image');
-        stepImages.forEach((fileInput) => {
-            if (fileInput.files[0]) {
-                formData.append('stepImages', fileInput.files[0]);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        });
+            // Ensure the response is in JSON format
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                const savedRecipe = await response.json();
+                console.log("Saved Recipe:", savedRecipe);
+                const recipeId = savedRecipe.id;
+                console.log("recipeId=", recipeId)
+                // 2. 단계 추가
+                const steps = collectRecipeSteps(recipeStepList);
+                console.log("Collected steps", steps);
 
-        $.ajax({
-            url: '/api/recipes',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                alert('레시피가 성공적으로 등록되었습니다!');
-                window.location.href = `/api/recipes/${response.id}`;
-            },
-            error: function (error) {
-                alert('레시피 등록 중 오류가 발생했습니다.');
-                console.error(error);
+                for (const step of steps) {
+                    const stepData = new FormData();
+                    stepData.append('stepNumber', step.stepNumber);
+                    stepData.append('description', step.description);
+                    stepData.append('stepImage', step.stepImage);
+                    stepData.append('recipeId', recipeId);
+
+                    try {
+                        const stepResponse = await fetch(`/api/recipes/${recipeId}/steps`, {
+                            method: 'POST',
+                            body: stepData
+                        });
+
+                        if (!stepResponse.ok) {
+                            throw new Error(`HTTP error! status: ${stepResponse.status}`);
+                        }
+
+                        const stepResult = await stepResponse.json();
+                        console.log('Step added:', stepResult);
+
+                        // Update the UI with the new step
+                        addStepToList(stepResult); // Implement this function to update the UI
+                    } catch (error) {
+                        console.error('Error adding step:', error);
+                    }
+                }
             }
-        });
+        } catch (error) {
+            console.error('Error saving recipe:', error);
+        }
     });
+
 
     function addStepToList() {
         const stepContainer = document.createElement('div');

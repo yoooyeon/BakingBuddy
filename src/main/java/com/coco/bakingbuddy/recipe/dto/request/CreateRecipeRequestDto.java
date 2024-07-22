@@ -53,7 +53,7 @@ public class CreateRecipeRequestDto {
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())
                 .recipeImageUrl(dto.getRecipeImageUrl())
-                .recipeSteps(dto.getRecipeSteps())
+//                .recipeSteps(dto.getRecipeSteps())
                 .build();
     }
 }
