@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.file.controller;
 
+import com.coco.bakingbuddy.file.dto.request.ImageDeleteRequestDto;
 import com.coco.bakingbuddy.file.dto.response.ImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
@@ -25,6 +26,13 @@ public class FileController {
             @RequestParam("profileImage") MultipartFile profileImage) {
         return toResponseEntity("프로필 수정 완료", fileService.uploadImageFile(userId, nickname, profileImage));
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteImage(@RequestBody ImageDeleteRequestDto request) {
+        fileService.deleteImages(request.getImageIds());
+        return ResponseEntity.ok("이미지 삭제 성공");
+    }
+
 
 //    @ResponseBody
 //    @PostMapping("/recipes/{recipeId}")

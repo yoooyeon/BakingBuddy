@@ -1,5 +1,3 @@
-// 타임리프 사용 시 [[${...}]]
-
 $(document).ready(function () {
     // 레시피 클릭 시 작동하는 함수
     $('.recipe-card').on('click', function () {
@@ -23,7 +21,6 @@ $(document).ready(function () {
             $('#searchResults').html('');
         }
     });
-    localStorage.getItem('token')
 
     // 자동완성 요청
     function fetchAutocompleteResults(term) {

@@ -1,145 +1,227 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
 <head>
     <meta charset="utf-8">
+    <script type="text/javascript" th:src="@{/js/recipe/edit-recipe.js}"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>레시피 수정</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+    <div layout:fragment="css">
+        <style>
+            /* Step Container Styling */
+            .step-container {
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: #f9f9f9;
+                font-size: 14px;
+                position: relative;
+                height: auto; /* Height should adjust based on content */
+            }
+
+            .step-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .step-number-title {
+                margin: 0;
+                font-size: 16px;
+            }
+
+            .remove-step-btn {
+                color: #ff0000;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .step-image-preview {
+                width: 100%; /* Full width for better responsiveness */
+                height: auto; /* Maintain aspect ratio */
+            }
+
+            /* Textarea Character Count */
+            .char-count {
+                font-size: 12px;
+                color: #666;
+                margin-top: 5px;
+            }
+
+            /* Other Form Styling */
+            .form-label {
+                font-weight: bold;
+            }
+
+            .form-control {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+
+            .btn-outline-secondary {
+                border-radius: 5px;
+            }
+
+            .input-group .form-control {
+                border-radius: 0;
+            }
+
+            .modal-content {
+                border-radius: 5px;
+            }
+
+            .modal-header .btn-close {
+                background-color: transparent;
+            }
+
+            .badge {
+                border-radius: 5px;
+            }
+
+            /* Responsive Adjustments */
+            @media (max-width: 768px) {
+                .step-container {
+                    height: auto; /* Adjust height for small screens */
+                }
+
+                .step-image-preview {
+                    width: 100%;
+                }
+            }
+        </style>
+    </div>
 </head>
 <body>
+<div layout:fragment="content">
+    <div class="container" style="max-width: 600px">
+        <h3>레시피 수정</h3>
 
-<div class="container" style="max-width: 600px">
-    <div class="py-5 text-center">
-        <h2>레시피 수정</h2>
-    </div>
-
-    <hr class="my-4">
-    <div>
-        <form id="recipeForm">
-            <div class="mb-3">
-                <label for="recipeId" class="form-label">Recipe ID</label>
-                <input type="text" class="form-control" id="recipeId" name="recipeId" th:value="${recipe.id}" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="userId" class="form-label">User ID</label>
-                <input type="text" class="form-control" id="userId" name="userId" th:value="${recipe.userId}" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="category" class="form-label">디렉토리</label>
-                <button id="addDirBtn" type="button">디렉토리 추가</button>
-                <select class="form-select" id="directory" name="directory">
-                    <option th:each="dir : ${directories}" th:value="${dir.id}" th:text="${dir.name}"
-                            th:selected="${dir.id eq recipe.dirId}"></option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">레시피 이름</label>
-                <input type="text" class="form-control" id="name" name="name" th:value="${recipe.name}">
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">설명</label>
-                <input type="text" class="form-control" id="description" name="description" th:value="${recipe.description}">
-            </div>
-            <div class="mb-3">
-                <label for="ingredients" class="form-label">재료</label>
-                <input type="text" class="form-control" id="ingredientsInput"
-                       placeholder="각 항목을 입력하고 엔터 키를 눌러 구분하세요">
-                <div id="ingredientList" class="mt-2">
-                    <!-- 기존 재료 목록 -->
-                    <div th:each="ingredient : ${recipe.ingredients}">
-                        <div class="badge bg-secondary me-2" th:text="${ingredient}"><span class="badge bg-danger ms-1"
-                                                                                           style="cursor: pointer"
-                                                                                           onclick="removeItem(this)">x</span>
+        <div class="py-5 text-center">
+            <h4 th:text="${recipe.name}"></h4>
+        </div>
+        <div>
+            <form id="recipeForm">
+                <div class="mb-3" style="display:none;">
+                    <label for="recipeId" class="form-label">Recipe ID</label>
+                    <input type="text" class="form-control" id="recipeId" name="recipeId" th:value="${recipe.id}"
+                           readonly>
+                </div>
+                <div class="mb-3" style="display:none;">
+                    <label for="userId" class="form-label">User ID</label>
+                    <input type="text" class="form-control" id="userId" name="userId" th:value="${recipe.userId}"
+                           readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="directory" class="form-label">디렉토리</label>
+                    <button id="addDirBtn" type="button" class="btn btn-secondary">디렉토리 추가</button>
+                    <select class="form-select mt-2" id="directory" name="directory">
+                        <option th:each="dir : ${dirs}" th:value="${dir.id}" th:text="${dir.name}"
+                                th:selected="${recipe.getDirId() eq recipe.dirId}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">레시피 이름</label>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${recipe.name}">
+                </div>
+                <div class="mb-3">
+                    <label for="recipeImage" class="form-label">레시피 이미지 업로드</label>
+                    <input type="file" class="form-control" id="recipeImage" name="recipeImage">
+                    <img th:src="${recipe.recipeImageUrl}" alt="Step Image" class="step-image-preview"/>
+                </div>
+                <div class="mb-3 textarea-container">
+                    <label for="description" class="form-label">요리 설명</label>
+                    <textarea class="form-control" id="description" name="description" rows="4"
+                              th:text="${recipe.description}"></textarea>
+                    <div id="charCount" class="char-count">0 글자</div>
+                </div>
+                <div class="mb-3">
+                    <label for="ingredientsInput" class="form-label">재료</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="ingredientsInput" placeholder="재료를 입력하세요">
+                        <button class="btn btn-outline-secondary" type="button" id="addIngredientBtn">추가</button>
+                    </div>
+                    <div id="ingredientList" class="mt-2">
+                        <div th:each="ingredient : ${recipe.ingredients}">
+                            <div class="badge bg-secondary me-2" th:text="${ingredient.name}">
+                                <span class="badge bg-danger ms-1" style="cursor: pointer"
+                                      onclick="removeItem(this)">x</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="tags" class="form-label">태그</label>
-                <input type="text" class="form-control" id="tagsInput"
-                       placeholder="각 항목을 입력하고 엔터 키를 눌러 구분하세요">
-                <div id="tagList" class="mt-2">
-                    <!-- 기존 태그 목록 -->
-                    <div th:each="tag : ${recipe.tags}">
-                        <div class="badge bg-secondary me-2" th:text="${tag}"><span class="badge bg-danger ms-1"
-                                                                                    style="cursor: pointer"
-                                                                                    onclick="removeItem(this)">x</span>
+                <div class="mb-3">
+                    <label for="recipeStepList" class="form-label">조리 순서</label>
+                    <button type="button" class="btn btn-outline-secondary" id="addRecipeStepBtn">단계 추가</button>
+                    <div id="recipeStepList" class="mt-2">
+                        <div th:if="${recipe.recipeSteps != null and not #lists.isEmpty(recipe.recipeSteps)}">
+                            <!-- Iterate over steps if they are not null or empty -->
+                            <div th:each="step, iterStat : ${recipe.recipeSteps}" class="step-container">
+                                <div class="step-header">
+                                    <h5 class="step-number-title" th:text="'단계 ' + ${step.stepNumber}"></h5>
+                                    <span class="remove-step-btn" onclick="removeItem(this)">x</span>
+                                </div>
+                                <input type="hidden" class="step-number" th:value="${step.stepNumber}">
+                                <textarea class="form-control step-description" th:text="${step.description}"></textarea>
+                                <input type="file" class="form-control step-image">
+                                <img th:src="${step.stepImage}" alt="Step Image" class="step-image-preview" />
+                                <button type="button" class="btn btn-danger mt-2 delete-step-image-btn"
+                                        data-image-id="${step.id}">이미지 삭제
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="time" class="form-label">소요시간(분 단위)</label>
-                <input type="number" class="form-control" id="time" name="time" th:value="${recipe.time}">
-            </div>
-            <div class="mb-3">
-                <label for="level" class="form-label">난이도</label>
-                <select class="form-select" id="level" name="level">
-                    <option value="Easy" th:selected="${recipe.level == 'Easy'}">쉬움</option>
-                    <option value="Medium" th:selected="${recipe.level == 'Medium'}">보통</option>
-                    <option value="Hard" th:selected="${recipe.level == 'Hard'}">어려움</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">수정하기</button>
-        </form>
-    </div>
-    <div class="modal" tabindex="-1" id="createDirModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">디렉토리 추가</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="mb-3">
+                    <label for="tagList" class="form-label">태그</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="tagsInput" placeholder="태그를 입력하세요">
+                        <button class="btn btn-outline-secondary" type="button" id="addTagBtn">추가</button>
+                    </div>
+                    <div id="tagList" class="mt-2">
+                        <div th:each="tag : ${recipe.tags}">
+                            <div class="badge bg-secondary me-2" th:text="${tag.name}">
+                                <span class="badge bg-danger ms-1" style="cursor: pointer"
+                                      onclick="removeItem(this)">x</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <input id="newDirName" class="form-control" placeholder="새로운 디렉토리 이름을 입력하세요.">
+                <div class="mb-3">
+                    <label for="time" class="form-label">소요시간(분 단위)</label>
+                    <input type="number" class="form-control" id="time" name="time" th:value="${recipe.time}">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary" id="saveDir">저장</button>
+                <div class="mb-3">
+                    <label for="level" class="form-label">난이도</label>
+                    <select class="form-select" id="level" name="level">
+                        <option value="Easy" th:selected="${recipe.level == 'Easy'}">쉬움</option>
+                        <option value="Medium" th:selected="${recipe.level == 'Medium'}">보통</option>
+                        <option value="Hard" th:selected="${recipe.level == 'Hard'}">어려움</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="saveButton">수정하기</button>
+            </form>
+        </div>
+        <div class="modal" tabindex="-1" id="createDirModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">디렉토리 추가</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="newDirName" class="form-control" placeholder="새로운 디렉토리 이름을 입력하세요.">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-primary" id="saveDir">저장</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-
-    // 기존 태그와 재료 목록에서 항목 삭제
-    function removeItem(element) {
-        element.parentNode.remove();
-    }
-
-    // AJAX로 디렉토리 추가
-    $(document).ready(function () {
-        $('#saveDir').click(function () {
-            let dirName = $('#newDirName').val();
-            let userId = $('#userId').val();
-            $.ajax({
-                url: '/api/directories',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({name: dirName, userId: userId}),
-                success: function (response) {
-                    $('#createDirModal').modal('hide');
-                    $('#directory').append($('<option>', {
-                        value: response.id,
-                        text: response.name
-                    }));
-                },
-                error: function (error) {
-                    alert('디렉토리 추가 중 오류가 발생했습니다.');
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
-
 </body>
 </html>

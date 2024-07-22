@@ -56,8 +56,8 @@ $(document).ready(function () {
             type: "GET",
             url: "/api/search/autocomplete",
             data: {prefix: term},
-            success: function (data) {
-                console.log("data")
+            success: function (response) {
+                let data = response.data
                 var html = generateAutocompleteHTML(data);
                 $('#searchResults').html(html);
                 resultsCount = data.length; // 결과 개수 업데이트
@@ -125,7 +125,8 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             url: "/api/ranking/terms",
-            success: function (data) {
+            success: function (response) {
+                let data = response.data;
                 displayPopularSearches(data);
                 rollRanking();
             },
@@ -179,9 +180,10 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             url: "/api/search/recent",
-            success: function (data) {
+            success: function (response) {
+                let items = response.data
                 $('#recentSearchesList').empty(); // 기존 데이터 삭제
-                $.each(data, function (index, item) {
+                $.each(items, function (index, item) {
                     addRecentSearch(item.search, item.timestamp);
                 });
             },
@@ -196,7 +198,8 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             url: "/api/search/popular",
-            success: function (data) {
+            success: function (response) {
+                const data = response.data;
                 $('#popularSearchesList').empty(); // 기존 데이터 삭제
                 displayPopularSearches(data)
             },

@@ -37,6 +37,8 @@ public class RecipeManagementController {
     @GetMapping("{recipeId}/edit") // 레시피 수정 화면 조회
     public String editRecipe(@PathVariable("recipeId") Long recipeId, Model model) {
         SelectRecipeResponseDto recipe = recipeService.selectById(recipeId);
+        List<SelectDirectoryResponseDto> dirs = directoryService.selectByUserId(recipe.getUserId());
+        model.addAttribute("dirs", dirs);
         model.addAttribute("recipe", recipe);
         return "recipe/edit-recipe";
     }

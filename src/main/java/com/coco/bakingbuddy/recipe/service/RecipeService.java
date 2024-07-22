@@ -80,13 +80,14 @@ public class RecipeService {
     }
 
     @Transactional(readOnly = true)
-    public SelectRecipeResponseDto selectById(Long id) {
-        SelectRecipeResponseDto recipe = fromEntity(recipeQueryDslRepository.findById(id));
-        List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(id);
-        List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(id);
+    public SelectRecipeResponseDto selectById(Long recipeId) {
+        Recipe savedRecipe = recipeQueryDslRepository.findById(recipeId);
+        SelectRecipeResponseDto recipe = fromEntity(savedRecipe);
+        List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipeId);
+        List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipeId);
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
-        Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeIdOrderByStepNumberAsc(id);
+        Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeOrderByStepNumberAsc(savedRecipe);
         if (recipeStep.isPresent()) {
             recipe.setRecipeSteps(recipeStep.get());
         }
