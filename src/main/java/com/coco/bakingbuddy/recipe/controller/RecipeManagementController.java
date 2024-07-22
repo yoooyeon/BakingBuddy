@@ -74,7 +74,6 @@ public class RecipeManagementController {
         try {
             CreateRecipeResponseDto savedRecipe = recipeService.create(dto, recipeImage);
             ResponseEntity<CreateRecipeResponseDto> ok = ResponseEntity.ok(savedRecipe);
-            log.info(">>>ok{}",ok.getBody());
             return ok;
         } catch (Exception e) {
             // 예외 처리 및 적절한 응답 반환

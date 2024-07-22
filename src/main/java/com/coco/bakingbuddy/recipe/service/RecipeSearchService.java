@@ -45,9 +45,6 @@ public class RecipeSearchService {
             result.setUsername(user.getUsername());
             result.setProfileImageUrl(user.getProfileImageUrl());
             resultList.add(result);
-            for (Ingredient ingredient : ingredients) {
-                log.info(">>>ingredient name{}", ingredient.getName());
-            }
         }
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
 

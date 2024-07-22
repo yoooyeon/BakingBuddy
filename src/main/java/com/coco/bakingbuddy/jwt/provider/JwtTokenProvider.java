@@ -61,9 +61,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
         claims.put("roles", role); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
-        log.info(">>>>createToken={}", claims);
         Date expirationDate = new Date(now.getTime() + accessTokenValidityInMilliseconds); // validityInMilliseconds 확인
-        log.info(">>>set expirationDate{}", expirationDate);
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(expirationDate)

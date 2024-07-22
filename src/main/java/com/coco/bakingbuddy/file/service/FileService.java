@@ -70,7 +70,7 @@ public class FileService {
             // 유저 도메인에 파일 경로 저장
             User user = userService.selectById(userId);
             user.updateProfile("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+//            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
             user.updateNickname(nickname);
 
             return ImageFileCreateResponseDto.fromEntity(imageFileRepository.save(dto.toEntity()));
@@ -109,7 +109,7 @@ public class FileService {
             Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
             recipe.updateImage("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
             recipeRepository.save(recipe);
-            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+//            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
 
             return RecipeImageFileCreateResponseDto.fromEntity(recipeImageFileRepository.save(dto.toEntity()));
 
@@ -144,7 +144,7 @@ public class FileService {
 //                    .recipeStepId(recipeStepId)
                     .uploadPath(uploadPath)
                     .build();
-            log.info("Uploaded step image: " + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
+//            log.info("Uploaded step image: " + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
             return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName;
 
         } catch (IOException e) {

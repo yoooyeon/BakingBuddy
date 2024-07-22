@@ -84,13 +84,10 @@ public class RecipeService {
         SelectRecipeResponseDto recipe = fromEntity(recipeQueryDslRepository.findById(id));
         List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(id);
         List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(id);
-        for (Tag tag : tags) {
-            log.info(">>>tags={}", tag.getName());
-        }
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
         Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeIdOrderByStepNumberAsc(id);
-        if (recipeStep.isPresent()){
+        if (recipeStep.isPresent()) {
             recipe.setRecipeSteps(recipeStep.get());
         }
         User user = userRepository.findById(recipe.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
