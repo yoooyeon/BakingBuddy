@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @Slf4j
 @ControllerAdvice
 public class GlobalControllerAdvice {
-
     @ModelAttribute
     public void addAttributes(@AuthenticationPrincipal User user, Model model) {
         if (user != null) {

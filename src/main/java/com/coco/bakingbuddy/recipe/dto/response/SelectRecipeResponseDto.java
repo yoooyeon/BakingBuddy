@@ -24,7 +24,6 @@ public class SelectRecipeResponseDto {
     private String username;
     private String profileImageUrl;
     private boolean openYn; // 공개 여부 True - Open
-
     private List<Ingredient> ingredients; // JPA
     private List<RecipeStep> recipeSteps; // JPA
     private List<Tag> tags; // JPA
@@ -43,7 +42,6 @@ public class SelectRecipeResponseDto {
                 .time(recipe.getTime())
                 .level(recipe.getLevel())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
-//                .recipeSteps(recipe.getRecipeSteps())
                 .build();
     }
 }
