@@ -23,6 +23,8 @@ public class RecipeResponseDto {
 
     private Integer time; // 소요시간
     private String level; // 난이도
+    private Integer likeCount;
+
 
     public static RecipeResponseDto fromEntity(Recipe recipe) {
         return RecipeResponseDto.builder()
@@ -32,6 +34,8 @@ public class RecipeResponseDto {
                 .description(recipe.getDescription())
 //                .ingredients(recipe.getIngredients())
                 .time(recipe.getTime())
+                .likeCount(recipe.getLikeCount())
+
                 .level(recipe.getLevel())
                 .build();
     }

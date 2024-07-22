@@ -33,7 +33,8 @@ public class Recipe extends BaseTime {
     private Integer time; // 소요시간
     private String level; // 난이도
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Integer likeCount = 0;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likeUsers;
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,5 +76,17 @@ public class Recipe extends BaseTime {
         for (RecipeStep step : steps) {
             step.setRecipe(this);
         }
+    }
+
+    public void increaseLikeCount(Like like) {
+        this.likeCount++;
+        this.likeUsers.add(like);
+    }
+
+    public void decreaseLikeCount(Like like) {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+        this.likeUsers.remove(like);
     }
 }

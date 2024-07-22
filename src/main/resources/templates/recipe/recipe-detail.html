@@ -172,7 +172,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div>
                     <label class="label-large">소요시간</label>
                     <div class="label-description">
@@ -183,6 +182,12 @@
                     <label class="label-large">태그</label>
                     <div class="label-description">
                         <span th:text="${#strings.arrayJoin(recipe.tags.![name], ', ')}"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="label-large">좋아요</label>
+                    <div class="label-description">
+                        <span th:text="${recipe.likeCount}"></span>
                     </div>
                 </div>
                 <hr class="my-4">
