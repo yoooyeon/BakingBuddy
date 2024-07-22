@@ -11,6 +11,7 @@ import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,8 @@ public class LikeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
 
+    private final SimpMessagingTemplate messagingTemplate;
+
     @Transactional
     public LikeResponseDto likeRecipe(Long recipeId, Long userId) {
         Recipe recipe = recipeRepository.findById(recipeId)
@@ -32,19 +35,30 @@ public class LikeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Like> existingLike = likeRepository.findByRecipeAndUser(recipe, user);
-        if (existingLike.isEmpty()) { // 유저가 게시글에 좋아요 하지 않았을 경우
+        boolean isLiked;
+        if (!existingLike.isPresent()) {
             Like newLike = Like.builder()
                     .recipe(recipe)
                     .user(user)
                     .build();
             likeRepository.save(newLike);
             recipe.increaseLikeCount(newLike);
-            recipeRepository.save(recipe);
+            isLiked = true;
+        } else {
+            Like like = existingLike.get();
+            likeRepository.delete(like);
+            recipe.decreaseLikeCount(like);
+            isLiked = false;
         }
 
+        Recipe save = recipeRepository.save(recipe);
+
+        // Broadcast the update to all subscribers
+        messagingTemplate.convertAndSend("/topic/recipes", new LikeResponseDto(isLiked, save.getLikeCount()));
+
         return LikeResponseDto.builder()
-                .userLiked(true)
-                .likeCount(recipe.getLikeCount())
+                .userLiked(isLiked)
+                .likeCount(save.getLikeCount())
                 .build();
     }
 
@@ -66,6 +80,23 @@ public class LikeService {
         return LikeResponseDto.builder()
                 .userLiked(false)
                 .likeCount(recipe.getLikeCount())
+                .build();
+    }
+
+    public LikeResponseDto status(Long recipeId, Long userId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Optional<Like> existingLike = likeRepository.findByRecipeAndUser(recipe, user);
+        if (existingLike.isPresent()) {
+            return LikeResponseDto.builder()
+                    .userLiked(true)
+                    .build();
+        }
+        return LikeResponseDto.builder()
+                .userLiked(false)
                 .build();
     }
 }

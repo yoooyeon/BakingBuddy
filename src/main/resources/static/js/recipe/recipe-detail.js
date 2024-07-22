@@ -2,7 +2,7 @@ let recipeId, userId;
 
 document.addEventListener("DOMContentLoaded", function () {
     // 초기 값 세팅
-    recipeId = document.getElementById('recipe-id').textContent;
+    recipeId = document.getElementById('recipe-id').value;
     userId = document.getElementById('user-id').value;
 
     const likeStatusImage = document.querySelector('#like-status');
@@ -26,20 +26,35 @@ document.addEventListener("DOMContentLoaded", function () {
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
 
-        // Subscribe to a topic (example: /topic/recipes)
         stompClient.subscribe('/topic/recipes', function (message) {
             var body = JSON.parse(message.body);
-
-            // Handle the incoming message and update the DOM
-            if (body.type === 'RECIPE_UPDATE') {
-                // Update recipe details on the page
-                updateRecipeDetails(body.recipe);
-            }
+            console.log("body=", body);
+            updateRecipeDetails(body);
         });
     });
 
+    function updateRecipeDetails(data) {
+        console.log("updateRecipeDetails", data)
+        // 서버로부터 받은 데이터에서 좋아요 상태와 좋아요 수를 사용하여 UI를 업데이트합니다.
+        const likeImage = document.querySelector('#like-status');
+        const notLikeImage = document.querySelector('#not-like-status');
+        console.log(likeImage && notLikeImage)
+        if (data.userLiked) {
+            console.log(data.userLiked)
+            likeImage.src = '/images/liked.png';
+            likeImage.setAttribute('data-user-liked', 'true');
+            notLikeImage.style.display = 'none'; // Hide not liked
+        } else {
+            likeImage.src = '/images/not-liked.png';
+            likeImage.setAttribute('data-user-liked', 'false');
+            notLikeImage.style.display = 'block'; // Show not liked
+        }
+
+        // 좋아요 수를 업데이트합니다.
+        document.querySelector('.like-count').textContent = data.likeCount;
+    }
+
     function initializeLikeStatus() {
-        // 여기서 서버에서 현재 좋아요 상태를 가져오고, UI를 초기화합니다.
         fetch(`/api/likes/status?recipeId=${recipeId}&userId=${userId}`)
             .then(response => response.json())
             .then(data => {
@@ -66,9 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const notLikeImage = document.querySelector('#not-like-status');
         const isLiked = likeImage && likeImage.getAttribute('data-user-liked') === 'true';
 
-        // 좋아요 상태에 따라 요청을 다르게 보냅니다.
         const method = isLiked ? 'DELETE' : 'POST';  // 이미 좋아요 상태면 DELETE, 아니면 POST
-        console.log(method)
+        console.log(method);
         fetch(`/api/likes`, {
             method: method,
             headers: {
@@ -81,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.json())
             .then(data => {
-                // 이미지와 likeCount를 업데이트하는 로직
                 if (likeImage) {
                     if (data.userLiked) {
                         likeImage.src = '/images/liked.png';
@@ -99,12 +112,5 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             })
             .catch(error => console.error('Error:', error));
-    }
-
-    function updateRecipeDetails(recipe) {
-        // Update the recipe details on the page
-        document.querySelector('h2').textContent = recipe.name;
-        document.querySelector('img').src = recipe.recipeImageUrl;
-        // Add more fields as needed
     }
 });

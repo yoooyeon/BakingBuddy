@@ -142,12 +142,8 @@
                 <h2 th:text="${recipe.name}">Recipe Name</h2>
                 <hr>
                 <input type="hidden" id="user-id" th:value="${recipe.userId}"/>
-                <div>
-                    <label class="label-large" style="display: none"></label>
-                    <div class="label-description" style="display: none">
-                        <span id="recipe-id" th:text="${recipe.id}">1</span>
-                    </div>
-                </div>
+                <input type="hidden" id="recipe-id" th:value="${recipe.id}"/>
+
                 <div>
                     <label class="label-large">작성자</label>
                     <div class="label-description">
@@ -197,7 +193,7 @@
                 <div>
                     <label class="label-large">좋아요</label>
                     <div class="label-description">
-                        <span th:text="${recipe.likeCount}"></span>
+                        <span th:text="${recipe.likeCount}" class="like-count"></span>
                     </div>
                 </div>
                 <div>
