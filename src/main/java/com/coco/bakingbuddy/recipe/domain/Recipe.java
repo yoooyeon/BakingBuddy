@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class Recipe extends BaseTime {
 
     private Integer likeCount = 0;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likeUsers;
+    private Set<Like> likes = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeStep> recipeSteps; // 조리 단계
@@ -78,15 +79,17 @@ public class Recipe extends BaseTime {
         }
     }
 
-    public void increaseLikeCount(Like like) {
+    public Recipe increaseLikeCount(Like like) {
         this.likeCount++;
-        this.likeUsers.add(like);
+        this.likes.add(like);
+        return this;
     }
 
-    public void decreaseLikeCount(Like like) {
+    public Recipe decreaseLikeCount(Like like) {
         if (this.likeCount > 0) {
             this.likeCount--;
         }
-        this.likeUsers.remove(like);
+        this.likes.remove(like);
+        return this;
     }
 }

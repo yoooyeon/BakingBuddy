@@ -4,6 +4,7 @@ import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Like;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
 import com.coco.bakingbuddy.recipe.repository.LikeRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.user.domain.User;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,30 +25,31 @@ public class LikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void likeRecipe(Long recipeId, Long userId) {
+    public LikeResponseDto likeRecipe(Long recipeId, Long userId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Like> existingLike = likeRepository.findByRecipeAndUser(recipe, user);
-        if (!existingLike.isPresent()) {
+        if (existingLike.isEmpty()) { // 유저가 게시글에 좋아요 하지 않았을 경우
             Like newLike = Like.builder()
                     .recipe(recipe)
                     .user(user)
                     .build();
-
-            Like like = likeRepository.save(newLike);
-            recipe.increaseLikeCount(like);
-
-            // 다음과 같이 저장하지 않아도 영속성 컨텍스트에 의해 관리되지만
-            // 명시성, 플러시 모드와 전략의 불확실성 때문에 작성했다.
+            likeRepository.save(newLike);
+            recipe.increaseLikeCount(newLike);
             recipeRepository.save(recipe);
         }
+
+        return LikeResponseDto.builder()
+                .userLiked(true)
+                .likeCount(recipe.getLikeCount())
+                .build();
     }
 
     @Transactional
-    public void unlikeRecipe(Long recipeId, Long userId) {
+    public LikeResponseDto unlikeRecipe(Long recipeId, Long userId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
         User user = userRepository.findById(userId)
@@ -61,5 +62,11 @@ public class LikeService {
             recipe.decreaseLikeCount(like);
             recipeRepository.save(recipe);
         }
+
+        return LikeResponseDto.builder()
+                .userLiked(false)
+                .likeCount(recipe.getLikeCount())
+                .build();
     }
 }
+

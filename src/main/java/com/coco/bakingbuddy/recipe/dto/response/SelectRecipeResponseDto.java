@@ -32,6 +32,7 @@ public class SelectRecipeResponseDto {
     private Integer time; // 소요시간
     private String level; // 난이도
     private Integer likeCount;
+    private boolean userLiked;
 
     public static SelectRecipeResponseDto fromEntity(Recipe recipe) {
         return SelectRecipeResponseDto.builder()

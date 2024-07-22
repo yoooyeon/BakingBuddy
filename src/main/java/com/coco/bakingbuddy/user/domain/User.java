@@ -11,10 +11,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Builder
@@ -40,7 +37,7 @@ public class User extends BaseTime implements UserDetails {
     private String profile;
     private String email;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likedRecipes;
+    private Set<Like> likedRecipes = new HashSet<>();
     // 관심 태그
 //    private List<Tag> tags = new ArrayList<>();
 

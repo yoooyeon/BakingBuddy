@@ -71,6 +71,9 @@ public class RecipeService {
             result.setIngredients(ingredientsMap.get(recipe.getId()));
             result.setTags(tagsMap.get(recipe.getId()));
             User user = recipe.getUser();
+            boolean userLiked = recipe.getLikes().stream()
+                    .anyMatch(like -> like.getUser().equals(user));
+            result.setUserLiked(userLiked);
             result.setUsername(user.getUsername());
             result.setProfileImageUrl(user.getProfileImageUrl());
             resultList.add(result);
@@ -94,8 +97,10 @@ public class RecipeService {
         User user = userRepository.findById(recipe.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         recipe.setUsername(user.getUsername());
         recipe.setProfileImageUrl(user.getProfileImageUrl());
+        boolean userLiked = savedRecipe.getLikes().stream()
+                .anyMatch(like -> like.getUser().equals(user));
+        recipe.setUserLiked(userLiked);
         return recipe;
-
     }
 
     @Transactional
