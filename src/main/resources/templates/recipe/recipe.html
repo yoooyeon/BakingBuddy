@@ -158,10 +158,9 @@
                     <label class="label-large">요리 순서</label>
                     <div th:each="step, iterStat : ${recipe.recipeSteps}" class="step-container">
                         <div class="step-header">
-                            <h5 th:text="${iterStat.index + 1}">Step 1</h5>
+                            <h5 th:text="${step.stepNumber}">Step 1</h5>
                         </div>
                         <div class="step-description">
-                            <p th:text="${step.stepNumber}">Step Number</p>
                             <p th:text="${step.description}">Step description here...</p>
                             <div th:if="${step.getStepImage}">
                                 <img th:src="${step.getStepImage}" alt="Step Image" class="img-fluid mt-2">

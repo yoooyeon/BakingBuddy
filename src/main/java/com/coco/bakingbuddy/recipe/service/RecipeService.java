@@ -89,7 +89,7 @@ public class RecipeService {
         }
         recipe.setIngredients(ingredients);
         recipe.setTags(tags);
-        Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeId(id);
+        Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeIdOrderByStepNumberAsc(id);
         if (recipeStep.isPresent()){
             recipe.setRecipeSteps(recipeStep.get());
         }

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface RecipeStepRepository extends JpaRepository<RecipeStep, Long> {
-    Optional<List<RecipeStep>> findByRecipeId(Long id);
+    Optional<List<RecipeStep>> findByRecipeIdOrderByStepNumberAsc(Long id);
 }

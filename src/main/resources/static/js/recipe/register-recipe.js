@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            // 1. 레시피 저장
+            // 1. Save recipe
             const response = await fetch('/api/recipes', {
                 method: 'POST',
                 body: formData
@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
             // Ensure the response is in JSON format
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.indexOf('application/json') !== -1) {
@@ -70,15 +71,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log("Saved Recipe:", savedRecipe);
                 const recipeId = savedRecipe.id;
                 console.log("recipeId=", recipeId)
-                // 2. 단계 추가
+
+                // 2. Add steps
                 const steps = collectRecipeSteps(recipeStepList);
                 console.log("Collected steps", steps);
 
-                for (const step of steps) {
+                const stepPromises = steps.map(async (step) => {
                     const stepData = new FormData();
                     stepData.append('stepNumber', step.stepNumber);
                     stepData.append('description', step.description);
-                    stepData.append('stepImage', step.stepImage);
+                    if (step.stepImage) {
+                        stepData.append('stepImage', step.stepImage);
+                    }
                     stepData.append('recipeId', recipeId);
 
                     try {
@@ -96,15 +100,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         // Update the UI with the new step
                         addStepToList(stepResult); // Implement this function to update the UI
+
                     } catch (error) {
                         console.error('Error adding step:', error);
                     }
-                }
+                });
+
+                // Wait for all step addition promises to resolve
+                await Promise.all(stepPromises);
+
+                // Redirect or update UI as needed after all steps are added
+                window.location.href = `/api/recipes/${recipeId}`;
+
+            } else {
+                console.error('Unexpected content type:', contentType);
             }
         } catch (error) {
             console.error('Error saving recipe:', error);
         }
     });
+
 
 
     function addStepToList() {
