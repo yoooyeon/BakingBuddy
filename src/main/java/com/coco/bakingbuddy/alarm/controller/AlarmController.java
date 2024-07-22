@@ -25,11 +25,6 @@ public class AlarmController {
         model.addAttribute("alarms", alarms);
         return "alarm/user-alarm-list";
     }
-    @GetMapping("{id}")
-    public String selectById(@PathVariable("id") Long id) {
-        return "alarm/alarm";
-    }
-
     @GetMapping("/socket")
     public String socket() {
         return "socket-test";

@@ -27,12 +27,6 @@ public class UserController {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    @ResponseBody
-    @GetMapping("hello")
-    public Object sayHello(Authentication authentication) {
-        return authentication.getPrincipal();
-    }
-
     @GetMapping
     public String allUsers(Model model) {
         List<SelectUserResponseDto> dto = userService.selectAll();
@@ -47,7 +41,7 @@ public class UserController {
         return "user/my-page";
     }
 
-    @GetMapping("{userId}/edit-user") //화면 이동
+    @GetMapping("{userId}/edit-user")
     public String editUser(@PathVariable("userId") Long userId, Model model) {
         model.addAttribute("user", userService.selectById(userId));
         model.addAttribute("updateUserRequestDto", new UpdateUserRequestDto());

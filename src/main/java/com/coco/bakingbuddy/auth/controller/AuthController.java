@@ -3,6 +3,8 @@ package com.coco.bakingbuddy.auth.controller;
 import com.coco.bakingbuddy.auth.dto.request.LoginRequestDto;
 import com.coco.bakingbuddy.auth.service.AuthService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
+import com.coco.bakingbuddy.global.response.ErrorResponse;
+import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.service.UserService;
@@ -17,6 +19,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
+import static com.coco.bakingbuddy.global.response.ErrorResponse.toResponseEntity;
+import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEntity;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -52,24 +57,26 @@ public class AuthController {
     public String login() {
         return "user/login";
     }
+
     @ResponseBody
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
+    public ResponseEntity<SuccessResponse<Map<String, String>>> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
         String accessToken = authService.getAccessToken(user);
         String refreshToken = authService.getRefreshToken(user);
         jwtTokenProvider.addTokenToCookie(response, accessToken, "accessToken");
         jwtTokenProvider.addTokenToCookie(response, refreshToken, "refreshToken");
-        return ResponseEntity.ok(Map.of("accessToken", accessToken, "refreshToken", refreshToken));
+        Map<String, String> tokens = Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+        return toResponseEntity("토큰 생성", tokens);
     }
 
     @ResponseBody
     @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(@RequestBody String refreshToken) {
+    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken) {
         if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
             String newToken = jwtTokenProvider.createAccessTokenFromRefreshToken(refreshToken);
-            return ResponseEntity.ok(newToken);
+            return toResponseEntity("리프레시 토큰으로 새 토큰 발급 성공",newToken);
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
+            return toResponseEntity(HttpStatus.FORBIDDEN, "리프레시 토큰 Invalid");
         }
     }
 
