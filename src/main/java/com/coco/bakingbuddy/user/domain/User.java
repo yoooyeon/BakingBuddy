@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.user.domain;
 import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.recipe.domain.Directory;
+import com.coco.bakingbuddy.recipe.domain.Like;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 @Builder
@@ -37,6 +39,8 @@ public class User extends BaseTime implements UserDetails {
     private String picture;
     private String profile;
     private String email;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likedRecipes;
     // 관심 태그
 //    private List<Tag> tags = new ArrayList<>();
 

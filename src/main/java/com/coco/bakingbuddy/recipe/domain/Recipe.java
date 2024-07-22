@@ -21,12 +21,10 @@ public class Recipe extends BaseTime {
     private Long id;
 
     private String name;
-
     @ManyToOne
     @JoinColumn(name = "DIRECTORY_ID")
     private Directory directory;
-
-    private boolean useYn;
+    private boolean useYn; // 삭제여부 N:삭제 상태
     @Column(length = 600)  // 최대 길이 설정 // @Lob
     private String description;
     private String openYn; // 공개 여부 True - Open
@@ -34,6 +32,9 @@ public class Recipe extends BaseTime {
 
     private Integer time; // 소요시간
     private String level; // 난이도
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likeUsers;
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeStep> recipeSteps; // 조리 단계

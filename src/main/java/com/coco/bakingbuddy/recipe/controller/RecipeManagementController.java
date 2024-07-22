@@ -60,7 +60,7 @@ public class RecipeManagementController {
     public String selectById(@PathVariable("id") Long id, Model model) {
         SelectRecipeResponseDto dto = recipeService.selectById(id);
         model.addAttribute("recipe", dto);
-        return "recipe/recipe";
+        return "recipe/recipe-detail";
     }
 
     @GetMapping("register")
