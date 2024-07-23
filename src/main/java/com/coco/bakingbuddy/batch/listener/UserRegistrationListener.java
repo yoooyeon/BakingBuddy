@@ -5,7 +5,6 @@ import com.coco.bakingbuddy.batch.event.UserRegistrationEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.io.IOException;
 @Component
 public class UserRegistrationListener {
     private final AlarmService alarmService;
-    private SimpMessagingTemplate messagingTemplate;
 
     @EventListener
     public void handleUserRegistration(UserRegistrationEvent event) throws IOException {

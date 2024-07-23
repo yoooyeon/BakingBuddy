@@ -27,10 +27,21 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log('Connected: ' + frame);
 
         stompClient.subscribe('/topic/recipes', function (message) {
+            console.log(message)
             var body = JSON.parse(message.body);
             console.log("body=", body);
             updateRecipeDetails(body);
         });
+        stompClient.subscribe('/topic/user-count', function (message) {
+            console.log(message)
+
+            var userCount = JSON.parse(message.body);
+            console.log("userCount=", userCount);
+
+            document.querySelector('#user-count').textContent = userCount;
+        });
+    }, function (error) {
+        console.log(error)
     });
 
     function updateRecipeDetails(data) {

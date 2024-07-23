@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .deleteCookies("accessToken", "refreshToken"))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/recipe-detail").permitAll()
                         .requestMatchers(HttpMethod.GET, "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/refresh-token").authenticated()

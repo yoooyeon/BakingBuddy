@@ -177,4 +177,8 @@ public class JwtTokenProvider {
         }
         return null;
     }
+
+    public Claims parseClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+    }
 }

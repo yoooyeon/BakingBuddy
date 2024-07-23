@@ -7,11 +7,11 @@ import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
 import com.coco.bakingbuddy.recipe.repository.LikeRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
+import com.coco.bakingbuddy.socket.MessagingService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +24,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
-
-    private final SimpMessagingTemplate messagingTemplate;
+    private final MessagingService messagingService;
 
     @Transactional
     public LikeResponseDto likeRecipe(Long recipeId, Long userId) {
@@ -52,10 +51,7 @@ public class LikeService {
         }
 
         Recipe save = recipeRepository.save(recipe);
-
-        // Broadcast the update to all subscribers
-        messagingTemplate.convertAndSend("/topic/recipes", new LikeResponseDto(isLiked, save.getLikeCount()));
-
+        messagingService.broadcastLikeUpdate(new LikeResponseDto(isLiked, save.getLikeCount()));
         return LikeResponseDto.builder()
                 .userLiked(isLiked)
                 .likeCount(save.getLikeCount())
