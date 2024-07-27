@@ -1,7 +1,6 @@
 package com.coco.bakingbuddy.user.controller;
 
 import com.coco.bakingbuddy.global.response.SuccessResponse;
-import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.response.SelectUserProfileResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
@@ -24,7 +23,6 @@ import static com.coco.bakingbuddy.user.dto.response.SelectUserProfileResponseDt
 @RestController
 public class UserController {
     private final UserService userService;
-    private final RecipeService recipeService;
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -50,8 +48,8 @@ public class UserController {
             @RequestPart("username") String username,
             @RequestPart("nickname") String nickname,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
-        SelectUserProfileResponseDto profile = fromEntity(userService.editUserInfo(userId, username, nickname, profileImage));
-        return toResponseEntity("유저 정보 수정 성공", profile);
+        return toResponseEntity("유저 정보 수정 성공",
+                fromEntity(userService.editUserInfo(userId, username, nickname, profileImage)));
     }
 
 
