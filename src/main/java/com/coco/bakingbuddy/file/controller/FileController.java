@@ -14,11 +14,10 @@ import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEnt
 
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
-@Controller
+@RestController
 public class FileController {
     private final FileService fileService;
 
-    @ResponseBody
     @PostMapping("/users/{userId}")
     public ResponseEntity<SuccessResponse<ImageFileCreateResponseDto>> upload(
             @PathVariable("userId") Long userId,
@@ -32,15 +31,5 @@ public class FileController {
         fileService.deleteImages(request.getImageIds());
         return ResponseEntity.ok("이미지 삭제 성공");
     }
-
-
-//    @ResponseBody
-//    @PostMapping("/recipes/{recipeId}")
-//    public RecipeImageFileCreateResponseDto upload(
-//            @PathVariable("recipeId") Long recipeId,
-//            @RequestParam("recipeImage") MultipartFile recipeImage
-//    ) {
-//        return fileService.uploadRecipeImageFile(recipeId, recipeImage);
-//    }
 
 }

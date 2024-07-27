@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEnt
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/ranking")
-@Controller
+@RestController
 public class RankingController {
     private final RankingService rankingService;
 
@@ -26,15 +27,5 @@ public class RankingController {
     @GetMapping("/terms")
     public ResponseEntity<SuccessResponse<List<SelectRankingTermsCacheResponseDto>>> selectTop10CachedRankingTerm() {
         return toResponseEntity("인기 검색어 조회 성공", rankingService.selectTop10CachedRankingTerm());
-    }
-
-    @GetMapping("/clicks")
-    public String clicks() {
-        return "recipe/recipe-list";
-    }
-
-    @GetMapping("/recipes")
-    public String recipes() {
-        return "recipe/recipe-list";
     }
 }

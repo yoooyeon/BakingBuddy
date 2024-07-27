@@ -24,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long registerUser(CreateUserRequestDto user) {
+    public User registerUser(CreateUserRequestDto user) {
         if (isDuplicated(user.getUsername())) {
             throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
@@ -36,7 +36,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .role("USER") // todo admin과 어떻게 나눌지
-                .build()).getId();
+                .build());
     }
 
     private boolean isDuplicated(String username) {

@@ -37,8 +37,13 @@ spring:
     url: jdbc:mariadb://127.0.0.1:3306/baking_buddy
     username: root
     password: root
+  #    driver-class-name: org.h2.Driver
+  #    url: jdbc:h2:~/baking_buddy
+  #    username: sa
+
 
   jpa:
+    #    database-platform: org.hibernate.dialect.H2Dialect
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: update
@@ -48,6 +53,7 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect
+  #        dialect: org.hibernate.dialect.H2Dialect
 
   #  servlet:
   #    multipart:
