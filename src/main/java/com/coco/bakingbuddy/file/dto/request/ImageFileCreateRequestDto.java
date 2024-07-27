@@ -18,14 +18,14 @@ public class ImageFileCreateRequestDto {
     private String fileName;
     private Long userId;
 
-    public ImageFile toEntity() {
+    public static ImageFile toEntity(ImageFileCreateRequestDto dto) {
         return ImageFile.builder()
-                .originalName(originalName)
-                .ext(ext)
-                .uuid(uuid)
-                .uploadPath(uploadPath)
-                .fileName(fileName)
-                .userId(userId)
+                .originalName(dto.getOriginalName())
+                .ext(dto.getExt())
+                .uuid(dto.getUuid())
+                .uploadPath(dto.getUploadPath())
+                .fileName(dto.getFileName())
+                .userId(dto.getUserId())
                 .build();
     }
 }

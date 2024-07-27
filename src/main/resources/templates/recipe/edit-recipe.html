@@ -164,9 +164,10 @@
                                     <span class="remove-step-btn" onclick="removeItem(this)">x</span>
                                 </div>
                                 <input type="hidden" class="step-number" th:value="${step.stepNumber}">
-                                <textarea class="form-control step-description" th:text="${step.description}"></textarea>
+                                <textarea class="form-control step-description"
+                                          th:text="${step.description}"></textarea>
                                 <input type="file" class="form-control step-image">
-                                <img th:src="${step.stepImage}" alt="Step Image" class="step-image-preview" />
+                                <img th:src="${step.stepImage}" alt="Step Image" class="step-image-preview"/>
                                 <button type="button" class="btn btn-danger mt-2 delete-step-image-btn"
                                         data-image-id="${step.id}">이미지 삭제
                                 </button>

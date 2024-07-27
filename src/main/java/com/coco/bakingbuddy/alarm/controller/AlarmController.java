@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 public class AlarmController {
     private final AlarmService alarmService;
+
     @GetMapping("users/{userId}")
     public List<SelectAlarmResponseDto> selectByUserId(@PathVariable("userId") Long userId) {
         return alarmService.selectByUserId(userId);

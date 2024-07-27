@@ -19,12 +19,13 @@ import java.util.List;
 public class SearchService {
     private final UserRepository userRepository;
     private final RecentSearchQueryDslRepository recentSearchQueryDslRepository;
+
     public void addRecentSearch(Long userId, String term) {
 
         // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        RecentSearch existingSearch = recentSearchQueryDslRepository.selectRecentSearchByUserIdAndTerm(userId,term);
+        RecentSearch existingSearch = recentSearchQueryDslRepository.selectRecentSearchByUserIdAndTerm(userId, term);
 
 
         if (existingSearch != null) {

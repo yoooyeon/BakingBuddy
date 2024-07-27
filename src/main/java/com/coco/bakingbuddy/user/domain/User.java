@@ -55,6 +55,7 @@ public class User extends BaseTime implements UserDetails {
     public void clearRecentSearches() {
         this.recentSearches.clear();
     }
+
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
@@ -121,6 +122,8 @@ public class User extends BaseTime implements UserDetails {
         return true;
     }
 
-
+    public void updateUsername(String username) {
+        this.username = username;
+    }
 }
 

@@ -1,5 +1,4 @@
 package com.coco.bakingbuddy.alarm.service;
-import com.coco.bakingbuddy.user.domain.User;
 
 import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.alarm.dto.response.SelectAlarmResponseDto;
@@ -7,6 +6,7 @@ import com.coco.bakingbuddy.alarm.repository.AlarmQueryDslRepository;
 import com.coco.bakingbuddy.alarm.repository.AlarmRepository;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
+import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

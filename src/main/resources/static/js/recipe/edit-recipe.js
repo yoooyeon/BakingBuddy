@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ imageIds: deletedImages })
+            body: JSON.stringify({imageIds: deletedImages})
         }).then(response => {
             if (!response.ok) {
                 throw new Error('Failed to delete images');
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name: newDirName })
+                    body: JSON.stringify({name: newDirName})
                 });
 
                 if (response.ok) {

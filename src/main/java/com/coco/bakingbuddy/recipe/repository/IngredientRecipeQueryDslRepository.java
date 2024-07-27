@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.repository;
 
-import com.coco.bakingbuddy.recipe.domain.*;
+import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,9 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.recipe.domain.QIngredient.ingredient;
-import static com.coco.bakingbuddy.recipe.domain.QIngredientRecipe.*;
 import static com.coco.bakingbuddy.recipe.domain.QIngredientRecipe.ingredientRecipe;
-import static com.coco.bakingbuddy.recipe.domain.QRecipe.recipe;
 
 @RequiredArgsConstructor
 @Repository

@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.user.service;
 
+import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
 
     @Transactional
     public User registerUser(CreateUserRequestDto user) {
@@ -63,5 +66,14 @@ public class UserService {
                 .map(RecentSearchResponseDto::fromEntity)
                 .sorted((dto1, dto2) -> dto2.getTimestamp().compareTo(dto1.getTimestamp()))
                 .collect(Collectors.toList());
+    }
+
+    public User editUserInfo(Long userId, String username, String nickname, MultipartFile profileImage) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        user.updateNickname(nickname);
+        user.updateUsername(username);
+        String url = fileService.uploadImageFile(userId, profileImage);
+        user.updateProfile(url);
+        return userRepository.save(user);
     }
 }

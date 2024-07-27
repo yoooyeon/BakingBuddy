@@ -4,7 +4,6 @@ import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.recipe.dto.request.LikeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
 import com.coco.bakingbuddy.recipe.service.LikeService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

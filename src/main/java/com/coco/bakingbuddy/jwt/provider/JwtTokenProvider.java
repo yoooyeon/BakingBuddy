@@ -1,8 +1,8 @@
 package com.coco.bakingbuddy.jwt.provider;
 
+import com.coco.bakingbuddy.auth.service.PrincipalService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.auth.service.PrincipalService;
 import com.coco.bakingbuddy.jwt.domain.RefreshToken;
 import com.coco.bakingbuddy.jwt.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;

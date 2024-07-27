@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.file.dto.request;
 
-import com.coco.bakingbuddy.file.domain.RecipeImageFile;
 import com.coco.bakingbuddy.file.domain.RecipeStepImageFile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

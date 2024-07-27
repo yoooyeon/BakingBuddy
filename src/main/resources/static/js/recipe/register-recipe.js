@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-
     function addStepToList() {
         const stepContainer = document.createElement('div');
         stepContainer.className = 'step-container';

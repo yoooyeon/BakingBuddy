@@ -17,15 +17,18 @@
     <form th:action="@{/signup}" th:object="${createUserRequestDto}" method="post">
         <div class="mb-3">
             <label for="username" class="form-label">사용자명</label>
-            <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="사용자명을 입력하세요" required>
+            <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="사용자명을 입력하세요"
+                   required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="비밀번호를 입력하세요" required>
+            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="비밀번호를 입력하세요"
+                   required>
         </div>
         <div class="mb-3">
             <label for="nickname" class="form-label">닉네임</label>
-            <input type="text" class="form-control" id="nickname" th:field="*{nickname}" placeholder="닉네임을 입력하세요" required>
+            <input type="text" class="form-control" id="nickname" th:field="*{nickname}" placeholder="닉네임을 입력하세요"
+                   required>
         </div>
         <button type="submit" class="btn btn-primary">회원가입</button>
     </form>

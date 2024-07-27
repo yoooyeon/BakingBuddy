@@ -3,18 +3,13 @@ package com.coco.bakingbuddy.file.service;
 import com.coco.bakingbuddy.file.dto.request.ImageFileCreateRequestDto;
 import com.coco.bakingbuddy.file.dto.request.RecipeImageFileCreateRequestDto;
 import com.coco.bakingbuddy.file.dto.request.RecipeStepImageFileCreateRequestDto;
-import com.coco.bakingbuddy.file.dto.response.ImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
-import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
-import com.coco.bakingbuddy.file.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
-import com.coco.bakingbuddy.user.domain.User;
-import com.coco.bakingbuddy.user.service.UserService;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
@@ -37,16 +32,12 @@ public class FileService {
     private final String BUCKET_NAME = "baking-buddy-bucket";
     private final Storage storage;
     private final ImageFileRepository imageFileRepository;
-    private final UserService userService;
     private final RecipeRepository recipeRepository;
     private final RecipeImageFileRepository recipeImageFileRepository;
-    private final RecipeStepRepository recipeStepRepository;
-    private final RecipeStepImageFileRepository recipeStepImageFileRepository;
 
 
     @Transactional
-
-    public ImageFileCreateResponseDto uploadImageFile(Long userId, String nickname, MultipartFile multiPartFile) {
+    public String uploadImageFile(Long userId, MultipartFile multiPartFile) {
         String originalName = multiPartFile.getOriginalFilename();
         String ext = multiPartFile.getContentType();
         String uuid = UUID.randomUUID().toString();
@@ -68,13 +59,9 @@ public class FileService {
                     .userId(userId)
                     .uploadPath(uploadPath)
                     .build();
-            // 유저 도메인에 파일 경로 저장
-            User user = userService.selectById(userId);
-            user.updateProfile("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-//            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-            user.updateNickname(nickname);
-
-            return ImageFileCreateResponseDto.fromEntity(imageFileRepository.save(dto.toEntity()));
+            imageFileRepository.save(ImageFileCreateRequestDto.toEntity(dto));
+            String imageUrl = "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName;
+            return imageUrl;
 
         } catch (IOException e) {
             // 파일 업로드 중 오류 발생 시 처리

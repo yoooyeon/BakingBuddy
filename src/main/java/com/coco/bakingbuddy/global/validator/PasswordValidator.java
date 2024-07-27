@@ -1,4 +1,5 @@
 package com.coco.bakingbuddy.global.validator;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

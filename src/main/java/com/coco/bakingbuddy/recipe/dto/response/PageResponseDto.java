@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.recipe.dto.response;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 public class PageResponseDto<T> {
     private List<T> content;

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class RecentSearchResponseDto {
     private String search;
     private LocalDateTime timestamp;
+
     public static RecentSearchResponseDto fromEntity(RecentSearch dto) {
         return RecentSearchResponseDto.builder()
                 .search(dto.getTerm())

@@ -41,7 +41,7 @@ public class RecipeManagementController {
         return toResponseEntity("레시피 수정 완료", responseData);
     }
 
-//    @GetMapping
+    //    @GetMapping
 //    public ResponseEntity<SuccessResponse<Page<SelectRecipeResponseDto>>> selectAll(
 //            @RequestParam(name = "page", defaultValue = "0") int page,
 //            @RequestParam(name = "size", defaultValue = "10") int size) {
@@ -49,17 +49,18 @@ public class RecipeManagementController {
 //        return toResponseEntity("레시피 조회 성공",
 //                recipeService.selectAll(PageRequest.of(page, size)));
 //    }
-@GetMapping
-public ResponseEntity<SuccessResponse<PageResponseDto<SelectRecipeResponseDto>>> selectAll(
-        @RequestParam(name = "page", defaultValue = "0") int page,
-        @RequestParam(name = "size", defaultValue = "10") int size) {
-    Page<SelectRecipeResponseDto> recipePage = recipeService.selectAll(PageRequest.of(page, size));
-    List<SelectRecipeResponseDto> recipes = recipePage.getContent();
-    int totalPages = recipePage.getTotalPages();
-    long totalElements = recipePage.getTotalElements();
-    PageResponseDto<SelectRecipeResponseDto> response = new PageResponseDto<>(recipes, totalPages, totalElements);
-    return toResponseEntity("레시피 조회 성공", response);
-}
+    @GetMapping
+    public ResponseEntity<SuccessResponse<PageResponseDto<SelectRecipeResponseDto>>> selectAll(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        Page<SelectRecipeResponseDto> recipePage = recipeService.selectAll(PageRequest.of(page, size));
+        List<SelectRecipeResponseDto> recipes = recipePage.getContent();
+        int totalPages = recipePage.getTotalPages();
+        long totalElements = recipePage.getTotalElements();
+        PageResponseDto<SelectRecipeResponseDto> response = new PageResponseDto<>(recipes, totalPages, totalElements);
+        return toResponseEntity("레시피 조회 성공", response);
+    }
+
     @GetMapping("{id}")
     public ResponseEntity<SuccessResponse<SelectRecipeResponseDto>> selectById(@PathVariable("id") Long id) {
         return toResponseEntity("디렉토리 아이디로 조회 성공", recipeService.selectById(id));
