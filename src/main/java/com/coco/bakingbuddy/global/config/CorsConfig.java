@@ -18,6 +18,8 @@ public class CorsConfig {
 
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add("http://localhost:3001");
+        allowedOriginPatterns.add("http://localhost:3002");
+        allowedOriginPatterns.add("http://localhost:3000");
         allowedOriginPatterns.add("http://127.0.0.1:3001");
         configuration.setAllowedOrigins(allowedOriginPatterns);
 

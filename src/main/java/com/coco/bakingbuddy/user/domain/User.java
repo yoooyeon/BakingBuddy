@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Like;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,44 +26,33 @@ public class User extends BaseTime implements UserDetails {
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
     private String nickname;
     @Column(nullable = false)
     private String username;
     private String password;
     private String profileImageUrl;
-    //    @Enumerated(EnumType.STRING)
     private String role;
     private String picture;
     private String profile;
     private String email;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likedRecipes = new HashSet<>();
-    // 관심 태그
-//    private List<Tag> tags = new ArrayList<>();
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecentSearch> recentSearches = new ArrayList<>();
 
-    // 기존 메서드들
-
-    public void addRecentSearch(String term) {
-        RecentSearch recentSearch = RecentSearch.create(term, this);
-        this.recentSearches.add(recentSearch);
-    }
-
-    public void clearRecentSearches() {
-        this.recentSearches.clear();
-    }
-
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Recipe> recipes = new ArrayList<>();
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Directory> directories = new ArrayList<>();
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Alarm> alarms = new ArrayList<>();
@@ -96,6 +86,18 @@ public class User extends BaseTime implements UserDetails {
         this.profileImageUrl = uploadPath;
     }
 
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void addRecentSearch(String term) {
+        RecentSearch recentSearch = RecentSearch.create(term, this);
+        this.recentSearches.add(recentSearch);
+    }
+
+    public void clearRecentSearches() {
+        this.recentSearches.clear();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -122,8 +124,6 @@ public class User extends BaseTime implements UserDetails {
         return true;
     }
 
-    public void updateUsername(String username) {
-        this.username = username;
-    }
+
 }
 

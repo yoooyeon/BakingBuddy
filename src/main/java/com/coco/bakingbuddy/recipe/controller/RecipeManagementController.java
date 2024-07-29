@@ -4,14 +4,15 @@ import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
-import com.coco.bakingbuddy.recipe.dto.response.*;
+import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEntity;
 
@@ -49,16 +51,21 @@ public class RecipeManagementController {
 //        return toResponseEntity("레시피 조회 성공",
 //                recipeService.selectAll(PageRequest.of(page, size)));
 //    }
+//    @GetMapping
+//    public ResponseEntity<SuccessResponse<PageResponseDto<SelectRecipeResponseDto>>> selectAll(
+//            @RequestParam(name = "page", defaultValue = "0") int page,
+//            @RequestParam(name = "size", defaultValue = "10") int size) {
+//        Page<SelectRecipeResponseDto> recipePage = recipeService.selectAll(PageRequest.of(page, size));
+//        List<SelectRecipeResponseDto> recipes = recipePage.getContent();
+//        int totalPages = recipePage.getTotalPages();
+//        long totalElements = recipePage.getTotalElements();
+//        PageResponseDto<SelectRecipeResponseDto> response = new PageResponseDto<>(recipes, totalPages, totalElements);
+//        return toResponseEntity("레시피 조회 성공", response);
+//    }
     @GetMapping
-    public ResponseEntity<SuccessResponse<PageResponseDto<SelectRecipeResponseDto>>> selectAll(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size) {
-        Page<SelectRecipeResponseDto> recipePage = recipeService.selectAll(PageRequest.of(page, size));
-        List<SelectRecipeResponseDto> recipes = recipePage.getContent();
-        int totalPages = recipePage.getTotalPages();
-        long totalElements = recipePage.getTotalElements();
-        PageResponseDto<SelectRecipeResponseDto> response = new PageResponseDto<>(recipes, totalPages, totalElements);
-        return toResponseEntity("레시피 조회 성공", response);
+    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectAll() {
+        return toResponseEntity("레시피 조회 성공",
+                recipeService.selectAll());
     }
 
     @GetMapping("{id}")
@@ -81,8 +88,10 @@ public class RecipeManagementController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> create(
-            @Valid @RequestPart("dto") CreateRecipeRequestDto dto,
+            @Valid @RequestPart("recipe") CreateRecipeRequestDto dto,
             @RequestPart("recipeImage") MultipartFile recipeImage) {
+        log.info(">>>CreateRecipeResponseDto{}", dto);
+        log.info(">>>CreateRecipeResponseDto{}", recipeImage);
         try {
             CreateRecipeResponseDto savedRecipe = recipeService.create(dto, recipeImage);
             return toResponseEntity("레시피 생성 성공", savedRecipe);

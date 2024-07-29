@@ -15,11 +15,8 @@ public class RecipeStep {
     @Column(name = "RECIPE_STEP_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //    @JsonProperty("stepNumber")
     private Integer stepNumber; // 단계 번호
-    //    @JsonProperty("description")
     private String description; // 단계 설명
-    //    @JsonProperty("stepImage")
     private String stepImage; // 단계 이미지
 
     @ManyToOne

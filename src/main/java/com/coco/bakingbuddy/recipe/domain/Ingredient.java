@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,8 @@ public class Ingredient extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @JsonIgnore
+
     @OneToMany(mappedBy = "ingredient")
     private List<IngredientRecipe> ingredientRecipes;
 

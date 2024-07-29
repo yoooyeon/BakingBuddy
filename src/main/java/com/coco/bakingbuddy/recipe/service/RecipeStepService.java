@@ -19,7 +19,8 @@ public class RecipeStepService {
     private final RecipeStepRepository recipeStepRepository;
     private final FileService fileService;
 
-    public CreateRecipeStepResponseDto addStep(Long recipeId, Integer stepNumber, String description, MultipartFile stepImage) {
+    public CreateRecipeStepResponseDto
+    addStep(Long recipeId, Integer stepNumber, String description, MultipartFile stepImage) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
 
@@ -28,7 +29,7 @@ public class RecipeStepService {
             // Save the image and get its URL
             imageUrl = fileService.uploadRecipeStepImage(stepImage);
         }
-        // todo fileService stemImage
+        // todo fileService stepImage
         RecipeStep recipeStep = recipeStepRepository.save(RecipeStep.builder()
                 .stepNumber(stepNumber)
                 .description(description)

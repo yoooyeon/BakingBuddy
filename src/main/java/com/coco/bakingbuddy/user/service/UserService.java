@@ -3,7 +3,19 @@ package com.coco.bakingbuddy.user.service;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
+import com.coco.bakingbuddy.recipe.domain.Directory;
+import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
+import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.RecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.repository.IngredientRecipeQueryDslRepository;
+import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
+import com.coco.bakingbuddy.tag.domain.Tag;
+import com.coco.bakingbuddy.tag.domain.TagRecipe;
+import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
@@ -14,10 +26,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
+import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
 
 @RequiredArgsConstructor
 @Service
@@ -25,14 +40,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
+    private final RecipeQueryDslRepository recipeQueryDslRepository;
+    private final TagRecipeQueryDslRepository tagRecipeQueryDslRepository;
+    private final IngredientRecipeQueryDslRepository ingredientRecipeQueryDslRepository;
 
     @Transactional
     public User registerUser(CreateUserRequestDto user) {
         if (isDuplicated(user.getUsername())) {
             throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
-
-//        RoleType role = RoleType.ROLE_USER;
         return userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
@@ -51,7 +67,8 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<SelectUserResponseDto> selectAll() {
-        return userRepository.findAll().stream().map(SelectUserResponseDto::fromEntity).collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .map(SelectUserResponseDto::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -75,5 +92,47 @@ public class UserService {
         String url = fileService.uploadImageFile(userId, profileImage);
         user.updateProfile(url);
         return userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DirectoryWithRecipesResponseDto> selectDirsByUserId(Long userId) {
+        List<Recipe> recipes = recipeQueryDslRepository.findByUserId(userId);
+        List<DirectoryWithRecipesResponseDto> result = new ArrayList<>();
+        if (recipes == null || recipes.isEmpty()) {
+            return null;
+        }
+        HashMap<Directory, List<Recipe>> recipeByDir = new HashMap<>();
+        List<Tag> tags = new ArrayList<>();
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            Long id = recipe.getId();
+            List<TagRecipe> tagRecipes = tagRecipeQueryDslRepository.findByRecipeId(id);
+            List<IngredientRecipe> ingredientRecipes = ingredientRecipeQueryDslRepository.findByRecipeId(id);
+            for (TagRecipe tagRecipe : tagRecipes) {
+                Tag tag = tagRecipe.getTag();
+                tags.add(tag);
+            }
+            for (IngredientRecipe ingredientRecipe : ingredientRecipes) {
+                Ingredient ingredient = ingredientRecipe.getIngredient();
+                ingredients.add(ingredient);
+            }
+            SelectRecipeResponseDto selectRecipeResponseDto = fromEntity(recipe);
+            selectRecipeResponseDto.setIngredients(ingredients);
+            selectRecipeResponseDto.setTags(tags);
+            List<Recipe> list = recipeByDir.getOrDefault(recipe.getDirectory(), new ArrayList<>());
+            list.add(recipe);
+            recipeByDir.put(recipe.getDirectory(), list);
+        }
+        for (Directory key : recipeByDir.keySet()) {
+            List<Recipe> recipe = recipeByDir.get(key);
+
+            result.add(DirectoryWithRecipesResponseDto.builder()
+                    .dirId(key.getId())
+                    .dirName(key.getName())
+                    .recipes(recipe.stream().map(RecipeResponseDto::fromEntity).collect(Collectors.toList()))
+                    .build());
+
+        }
+        return result;
     }
 }

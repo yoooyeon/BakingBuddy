@@ -1,10 +1,12 @@
 package com.coco.bakingbuddy.recipe.service;
 
-import com.coco.bakingbuddy.file.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.recipe.domain.*;
+import com.coco.bakingbuddy.recipe.domain.Directory;
+import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
+import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -26,7 +28,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
@@ -49,7 +54,34 @@ public class RecipeService {
     private final IngredientRecipeRepository ingredientRecipeRepository;
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
-    private final RecipeStepRepository recipeStepRepository;
+
+    @Transactional(readOnly = true)
+    public List<SelectRecipeResponseDto> selectAll() {
+        List<Recipe> all = recipeRepository.findAll();
+
+        List<Long> recipeIds = all.stream()
+                .map(Recipe::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, List<Ingredient>> ingredientsMap = ingredientRecipeQueryDslRepository.findIngredientsByRecipeIds(recipeIds);
+        Map<Long, List<Tag>> tagsMap = tagRecipeQueryDslRepository.findTagsByRecipeIds(recipeIds);
+
+        List<SelectRecipeResponseDto> resultList = new ArrayList<>();
+        for (Recipe recipe : all) {
+            SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
+            result.setIngredients(ingredientsMap.get(recipe.getId()));
+            result.setTags(tagsMap.get(recipe.getId()));
+            User user = recipe.getUser();
+            boolean userLiked = recipe.getLikes().stream()
+                    .anyMatch(like -> like.getUser().equals(user));
+            result.setUserLiked(userLiked);
+            result.setUsername(user.getUsername());
+            result.setProfileImageUrl(user.getProfileImageUrl());
+            resultList.add(result);
+        }
+
+        return resultList;
+    }
 
     @Transactional(readOnly = true)
     public Page<SelectRecipeResponseDto> selectAll(Pageable pageable) {
@@ -84,23 +116,21 @@ public class RecipeService {
 
     @Transactional(readOnly = true)
     public SelectRecipeResponseDto selectById(Long recipeId) {
-        Recipe savedRecipe = recipeQueryDslRepository.findById(recipeId);
-        SelectRecipeResponseDto recipe = fromEntity(savedRecipe);
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
+        SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
+
         List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipeId);
         List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipeId);
-        recipe.setIngredients(ingredients);
-        recipe.setTags(tags);
-        Optional<List<RecipeStep>> recipeStep = recipeStepRepository.findByRecipeOrderByStepNumberAsc(savedRecipe);
-        if (recipeStep.isPresent()) {
-            recipe.setRecipeSteps(recipeStep.get());
-        }
-        User user = userRepository.findById(recipe.getUserId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        recipe.setUsername(user.getUsername());
-        recipe.setProfileImageUrl(user.getProfileImageUrl());
-        boolean userLiked = savedRecipe.getLikes().stream()
+
+        result.setIngredients(ingredients);
+        result.setTags(tags);
+        User user = recipe.getUser();
+        boolean userLiked = recipe.getLikes().stream()
                 .anyMatch(like -> like.getUser().equals(user));
-        recipe.setUserLiked(userLiked);
-        return recipe;
+        result.setUserLiked(userLiked);
+        result.setUsername(user.getUsername());
+        result.setProfileImageUrl(user.getProfileImageUrl());
+        return result;
     }
 
     @Transactional
@@ -183,47 +213,7 @@ public class RecipeService {
     }
 
 
-    @Transactional(readOnly = true)
-    public List<DirectoryWithRecipesResponseDto> selectDirsByUserId(Long userId) {
-        List<Recipe> recipes = recipeQueryDslRepository.findByUserId(userId);
-        List<DirectoryWithRecipesResponseDto> result = new ArrayList<>();
-        if (recipes == null || recipes.isEmpty()) {
-            return null;
-        }
-        HashMap<Directory, List<Recipe>> recipeByDir = new HashMap<>();
-        List<Tag> tags = new ArrayList<>();
-        List<Ingredient> ingredients = new ArrayList<>();
-        for (Recipe recipe : recipes) {
-            Long id = recipe.getId();
-            List<TagRecipe> tagRecipes = tagRecipeQueryDslRepository.findByRecipeId(id);
-            List<IngredientRecipe> ingredientRecipes = ingredientRecipeQueryDslRepository.findByRecipeId(id);
-            for (TagRecipe tagRecipe : tagRecipes) {
-                Tag tag = tagRecipe.getTag();
-                tags.add(tag);
-            }
-            for (IngredientRecipe ingredientRecipe : ingredientRecipes) {
-                Ingredient ingredient = ingredientRecipe.getIngredient();
-                ingredients.add(ingredient);
-            }
-            SelectRecipeResponseDto selectRecipeResponseDto = fromEntity(recipe);
-            selectRecipeResponseDto.setIngredients(ingredients);
-            selectRecipeResponseDto.setTags(tags);
-            List<Recipe> list = recipeByDir.getOrDefault(recipe.getDirectory(), new ArrayList<>());
-            list.add(recipe);
-            recipeByDir.put(recipe.getDirectory(), list);
-        }
-        for (Directory key : recipeByDir.keySet()) {
-            List<Recipe> recipe = recipeByDir.get(key);
 
-            result.add(DirectoryWithRecipesResponseDto.builder()
-                    .dirId(key.getId())
-                    .dirName(key.getName())
-                    .recipes(recipe.stream().map(RecipeResponseDto::fromEntity).collect(Collectors.toList()))
-                    .build());
-
-        }
-        return result;
-    }
 
 
 }

@@ -21,17 +21,6 @@ public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final RecipeQueryDslRepository recipeQueryDslRepository;
 
-    public void setValue(String key, RedisAutoCompletePreviewDto value) {
-        redisTemplate.opsForValue().set(key, value);
-    }
-
-    public Object getValue(String key) {
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    public void deleteValue(String key) {
-        redisTemplate.delete(key);
-    }
 
     @Transactional
     public void saveSearchTerm(String term) {

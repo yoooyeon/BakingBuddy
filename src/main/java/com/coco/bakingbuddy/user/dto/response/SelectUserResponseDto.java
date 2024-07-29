@@ -18,6 +18,7 @@ public class SelectUserResponseDto {
     public static SelectUserResponseDto fromEntity(User user) {
         return SelectUserResponseDto.builder()
                 .username(user.getUsername())
+                .nickname(user.getNickname())
                 .id(user.getId())
                 .build();
     }

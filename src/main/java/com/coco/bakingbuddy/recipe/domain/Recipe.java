@@ -3,6 +3,8 @@ package com.coco.bakingbuddy.recipe.domain;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +24,8 @@ public class Recipe extends BaseTime {
     private Long id;
 
     private String name;
+    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "DIRECTORY_ID")
     private Directory directory;
@@ -37,16 +41,19 @@ public class Recipe extends BaseTime {
     private Integer likeCount = 0;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes = new HashSet<>();
+    @JsonIgnore
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeStep> recipeSteps; // 조리 단계
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @JsonIgnore
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Set<TagRecipe> tagRecipes;
+    @JsonIgnore
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private List<IngredientRecipe> ingredientRecipes;
