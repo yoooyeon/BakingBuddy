@@ -77,9 +77,6 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok' // 테스트 의존성 추가
     testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-    implementation 'org.webjars:bootstrap:3.3.7-1'
 
     // 구글 이미지 스토리지
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
@@ -91,12 +88,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    // https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity6
-    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity6', version: '3.1.2.RELEASE'
     // Spring Batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
 
-//    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
