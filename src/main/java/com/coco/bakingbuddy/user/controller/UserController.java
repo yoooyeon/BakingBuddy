@@ -36,21 +36,20 @@ public class UserController {
         return toResponseEntity("모든 유저 조회 성공", users);
     }
 
-    @GetMapping("{userId}")
+    @GetMapping("mypage")
     public ResponseEntity<SuccessResponse<SelectUserProfileResponseDto>>
-    selectByUserId(@PathVariable("userId") Long userId) {
-        User user = userService.selectById(userId);
-        return toResponseEntity("유저 프로필 정보 조회 성공", fromEntity(user));
+    selectByUserId(@AuthenticationPrincipal User user) {
+        return toResponseEntity("유저 프로필 정보 조회 성공", fromEntity(userService.selectById(user.getId())));
     }
 
-    @PutMapping("{userId}")
+    @PutMapping
     public ResponseEntity<SuccessResponse<SelectUserProfileResponseDto>>
-    editUser(@PathVariable("userId") Long userId,
+    editUser(@AuthenticationPrincipal User user,
              @RequestPart("username") String username,
              @RequestPart("nickname") String nickname,
              @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         return toResponseEntity("유저 정보 수정 성공",
-                fromEntity(userService.editUserInfo(userId, username, nickname, profileImage)));
+                fromEntity(userService.editUserInfo(user.getId(), username, nickname, profileImage)));
     }
 
     @GetMapping("recent")
@@ -59,9 +58,10 @@ public class UserController {
         return toResponseEntity("최근 검색어 조회 성공"
                 , userService.findRecentSearchesByUserId(user.getId()));
     }
-    @GetMapping("{userId}/recipes")
+
+    @GetMapping("recipes")
     public ResponseEntity<SuccessResponse<List<DirectoryWithRecipesResponseDto>>>
-    selectRecipeByUserId(@PathVariable("userId") Long userId) {
-        return toResponseEntity("유저 아이디로 레시피 조회 성공", userService.selectDirsByUserId(userId));
+    selectRecipeByUserId(@AuthenticationPrincipal User user) {
+        return toResponseEntity("유저 아이디로 레시피 조회 성공", userService.selectDirsByUserId(user.getId()));
     }
 }

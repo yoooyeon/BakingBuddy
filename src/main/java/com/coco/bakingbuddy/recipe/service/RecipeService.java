@@ -134,10 +134,10 @@ public class RecipeService {
     }
 
     @Transactional
-    public CreateRecipeResponseDto create(CreateRecipeRequestDto dto, MultipartFile multipartFile) {
+    public CreateRecipeResponseDto create(Long userId,CreateRecipeRequestDto dto, MultipartFile multipartFile) {
         Directory directory = directoryRepository.findById(dto.getDirId())
                 .orElseThrow(() -> new CustomException(ErrorCode.DIRECTORY_NOT_FOUND));
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
         recipe.setDirectory(directory);

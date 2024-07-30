@@ -10,11 +10,13 @@ import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
+import com.coco.bakingbuddy.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,12 +90,13 @@ public class RecipeManagementController {
 
     @PostMapping
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> create(
+            @AuthenticationPrincipal User user,
             @Valid @RequestPart("recipe") CreateRecipeRequestDto dto,
             @RequestPart("recipeImage") MultipartFile recipeImage) {
         log.info(">>>CreateRecipeResponseDto{}", dto);
         log.info(">>>CreateRecipeResponseDto{}", recipeImage);
         try {
-            CreateRecipeResponseDto savedRecipe = recipeService.create(dto, recipeImage);
+            CreateRecipeResponseDto savedRecipe = recipeService.create(user.getId(),dto, recipeImage);
             return toResponseEntity("레시피 생성 성공", savedRecipe);
         } catch (Exception e) {
             // 예외 처리 및 적절한 응답 반환
