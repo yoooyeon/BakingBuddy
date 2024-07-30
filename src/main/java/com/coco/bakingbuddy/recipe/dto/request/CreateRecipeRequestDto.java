@@ -20,9 +20,6 @@ public class CreateRecipeRequestDto {
 
     @NotNull(message = "dirId가 빈 값일 수 없습니다.")
     private Long dirId;
-
-    @NotNull(message = "userId가 빈 값일 수 없습니다.")
-    private Long userId;
     @NotNull(message = "레시피 설명이 빈 값일 수 없습니다.")
     private String description;
 
