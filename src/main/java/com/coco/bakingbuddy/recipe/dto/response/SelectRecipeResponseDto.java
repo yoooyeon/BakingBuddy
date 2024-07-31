@@ -1,6 +1,6 @@
 package com.coco.bakingbuddy.recipe.dto.response;
 
-import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import com.coco.bakingbuddy.tag.domain.Tag;
@@ -32,7 +32,6 @@ public class SelectRecipeResponseDto {
     private List<RecipeStep> recipeSteps; // JPA
     private List<Tag> tags; // JPA
     private String recipeImageUrl;
-
     private Integer time; // 소요시간
     private String level; // 난이도
     private Integer likeCount;

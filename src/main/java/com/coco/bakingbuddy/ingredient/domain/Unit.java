@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.recipe.domain;
+package com.coco.bakingbuddy.ingredient.domain;
 
 public enum Unit {
     CUP("컵"),

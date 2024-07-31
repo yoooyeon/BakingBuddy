@@ -2,6 +2,11 @@ package com.coco.bakingbuddy.recipe.service;
 
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
+import com.coco.bakingbuddy.ingredient.domain.Ingredient;
+import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
+import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
+import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeRepository;
+import com.coco.bakingbuddy.ingredient.repository.IngredientRepository;
 import com.coco.bakingbuddy.recipe.domain.*;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;

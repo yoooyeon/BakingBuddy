@@ -1,5 +1,6 @@
-package com.coco.bakingbuddy.recipe.domain;
+package com.coco.bakingbuddy.like.domain;
 
+import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;

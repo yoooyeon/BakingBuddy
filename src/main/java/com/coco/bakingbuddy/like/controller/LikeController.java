@@ -1,11 +1,9 @@
-package com.coco.bakingbuddy.recipe.controller;
+package com.coco.bakingbuddy.like.controller;
 
 import com.coco.bakingbuddy.global.response.SuccessResponse;
-import com.coco.bakingbuddy.recipe.dto.request.LikeRequestDto;
-import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
-import com.coco.bakingbuddy.recipe.service.LikeService;
+import com.coco.bakingbuddy.like.dto.response.LikeResponseDto;
+import com.coco.bakingbuddy.like.service.LikeService;
 import com.coco.bakingbuddy.user.domain.User;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

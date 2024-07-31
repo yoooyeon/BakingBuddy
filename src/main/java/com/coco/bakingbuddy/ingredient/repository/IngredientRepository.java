@@ -1,6 +1,6 @@
-package com.coco.bakingbuddy.recipe.repository;
+package com.coco.bakingbuddy.ingredient.repository;
 
-import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

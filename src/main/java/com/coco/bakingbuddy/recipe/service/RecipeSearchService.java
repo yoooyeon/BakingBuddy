@@ -1,9 +1,9 @@
 package com.coco.bakingbuddy.recipe.service;
 
-import com.coco.bakingbuddy.recipe.domain.Ingredient;
+import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
-import com.coco.bakingbuddy.recipe.repository.IngredientRecipeQueryDslRepository;
+import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;

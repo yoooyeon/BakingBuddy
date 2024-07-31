@@ -1,6 +1,6 @@
-package com.coco.bakingbuddy.recipe.dto.response;
+package com.coco.bakingbuddy.ingredient.dto;
 
-import com.coco.bakingbuddy.recipe.domain.Unit;
+import com.coco.bakingbuddy.ingredient.domain.Unit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

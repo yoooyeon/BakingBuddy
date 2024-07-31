@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.recipe.dto.request;
+package com.coco.bakingbuddy.like.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class LikeRequestDto {
-    private Long userId;
-    private Long recipeId;
+public class LikeResponseDto {
+    private boolean userLiked;
+    private Integer likeCount;
 }

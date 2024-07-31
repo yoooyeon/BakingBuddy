@@ -1,6 +1,6 @@
 package com.coco.bakingbuddy.socket;
 
-import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
+import com.coco.bakingbuddy.like.dto.response.LikeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

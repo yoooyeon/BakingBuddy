@@ -1,6 +1,7 @@
-package com.coco.bakingbuddy.recipe.domain;
+package com.coco.bakingbuddy.ingredient.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
+import com.coco.bakingbuddy.recipe.domain.Recipe;
 import jakarta.persistence.*;
 import lombok.Getter;
 

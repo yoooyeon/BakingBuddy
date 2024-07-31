@@ -1,11 +1,11 @@
-package com.coco.bakingbuddy.recipe.service;
+package com.coco.bakingbuddy.like.service;
 
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.recipe.domain.Like;
+import com.coco.bakingbuddy.like.repository.LikeRepository;
+import com.coco.bakingbuddy.like.dto.response.LikeResponseDto;
+import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
-import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
-import com.coco.bakingbuddy.recipe.repository.LikeRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.socket.MessagingService;
 import com.coco.bakingbuddy.user.domain.User;

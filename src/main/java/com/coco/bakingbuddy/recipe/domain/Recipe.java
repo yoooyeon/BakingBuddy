@@ -1,9 +1,10 @@
 package com.coco.bakingbuddy.recipe.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
+import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
+import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.user.domain.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
