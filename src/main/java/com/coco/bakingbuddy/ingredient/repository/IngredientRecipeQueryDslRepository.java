@@ -53,7 +53,7 @@ public class IngredientRecipeQueryDslRepository {
                         ingredientRecipe.amount.as("amount"),
                         ingredientRecipe.servings.as("servings")))
                 .from(ingredientRecipe)
-                .leftJoin(ingredientRecipe.ingredient, ingredient).fetchJoin()
+                .leftJoin(ingredientRecipe.ingredient, ingredient)
                 .where(ingredientRecipe.recipe.id.in(recipeIds))
                 .fetch();
 

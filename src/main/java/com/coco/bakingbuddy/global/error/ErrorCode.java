@@ -46,7 +46,10 @@ public enum ErrorCode {
     JWT_EXPIRED(BAD_REQUEST, "정보가 맞지 않습니다."),
     JWT_UNSUPPORTED(BAD_REQUEST, "정보가 맞지 않습니다."),
     JWT_INVALID_SIGNATURE(BAD_REQUEST, "정보가 맞지 않습니다."),
-    JWT_NO_VALID(BAD_REQUEST, "정보가 맞지 않습니다.");
+    JWT_NO_VALID(BAD_REQUEST, "정보가 맞지 않습니다."),
+
+    UNAUTHORIZED_DELETE(BAD_REQUEST, "삭제 권한이 없습니다."),
+    ;
 
     private final HttpStatus status;
     private final String message;

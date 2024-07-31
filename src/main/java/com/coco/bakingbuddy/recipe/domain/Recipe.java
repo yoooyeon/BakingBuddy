@@ -51,10 +51,10 @@ public class Recipe extends BaseTime {
     @JoinColumn(name = "user_id")
     private User user;
     @JsonIgnore
-    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<TagRecipe> tagRecipes;
     @JsonIgnore
-    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<IngredientRecipe> ingredientRecipes;
 
     public void delete() {

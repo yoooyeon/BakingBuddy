@@ -13,7 +13,6 @@ import com.coco.bakingbuddy.ingredient.repository.IngredientRepository;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
-import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
@@ -118,7 +117,7 @@ public class RecipeService {
         recipe.setDirectory(directory);
         recipe.setUser(user);
         saveTags(dto.getTags(), recipe);
-        saveIngredients(dto.getIngredients(), recipe,dto.getServings());
+        saveIngredients(dto.getIngredients(), recipe, dto.getServings());
         fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
 
         return CreateRecipeResponseDto.fromEntity(recipe);
@@ -132,10 +131,22 @@ public class RecipeService {
     }
 
     @Transactional
-    public DeleteRecipeResponseDto delete(DeleteRecipeRequestDto dto) {
-        Long id = dto.getId();
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new CustomException(RECIPE_NOT_FOUND));
-        recipe.delete();
+    public DeleteRecipeResponseDto delete(Long id, User user) {
+        // 레시피 존재 여부 확인
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new CustomException(RECIPE_NOT_FOUND));
+
+        log.info(">>>recipe.getUser().getId()={}", recipe.getUser().getId());
+        log.info(">>>user.getId()={}", user.getId());
+        // 레시피 소유자 확인
+        if (recipe.getUser().getId() != user.getId()) {
+            throw new CustomException(UNAUTHORIZED_DELETE); // 권한 없음 오류 처리
+        }
+
+        // 레시피 삭제 처리 (물리적 삭제 또는 논리적 삭제)
+        recipeRepository.delete(recipe);
+
+        // 삭제된 레시피를 DTO로 반환
         return DeleteRecipeResponseDto.fromEntity(recipe);
     }
 
@@ -185,7 +196,7 @@ public class RecipeService {
         }
     }
 
-    private void saveIngredients(List<CreateIngredientRequestDto> ingredients, Recipe recipe,int servings) {
+    private void saveIngredients(List<CreateIngredientRequestDto> ingredients, Recipe recipe, int servings) {
         if (ingredients != null && !ingredients.isEmpty()) {
             for (CreateIngredientRequestDto dto : ingredients) {
                 Ingredient ingredient = ingredientRepository.findByName(dto.getName()).orElseGet(() ->
@@ -196,7 +207,7 @@ public class RecipeService {
                 ingredientRecipeRepository.save(IngredientRecipe.builder()
                         .amount(dto.getAmount())
                         .servings(servings)
-                        .unit(Unit.from(dto.getUnit()))
+                        .unit(Unit.from(dto.getUnitDisplayName()))
                         .ingredient(ingredient)
                         .recipe(recipe)
                         .build());

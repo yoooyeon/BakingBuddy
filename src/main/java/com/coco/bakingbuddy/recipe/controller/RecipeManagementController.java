@@ -2,18 +2,15 @@ package com.coco.bakingbuddy.recipe.controller;
 
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
-import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
-import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
 import com.coco.bakingbuddy.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +51,7 @@ public class RecipeManagementController {
 
     /**
      * 모든 레시피 조회
+     *
      * @return
      */
     @GetMapping
@@ -64,6 +62,7 @@ public class RecipeManagementController {
 
     /**
      * 레시피 아이디로 조회
+     *
      * @param id
      * @return
      */
@@ -74,6 +73,7 @@ public class RecipeManagementController {
 
     /**
      * 하나의 디렉토리에 해당하는 레시피 모두 조회
+     *
      * @param directoryId
      * @return
      */
@@ -86,6 +86,7 @@ public class RecipeManagementController {
 
     /**
      * 레시피 생성
+     *
      * @param user
      * @param dto
      * @param recipeImage
@@ -97,7 +98,7 @@ public class RecipeManagementController {
             @Valid @RequestPart("recipe") CreateRecipeRequestDto dto,
             @RequestPart("recipeImage") MultipartFile recipeImage) {
         try {
-            CreateRecipeResponseDto savedRecipe = recipeService.create(user.getId(),dto, recipeImage);
+            CreateRecipeResponseDto savedRecipe = recipeService.create(user.getId(), dto, recipeImage);
             return toResponseEntity("레시피 생성 성공", savedRecipe);
         } catch (Exception e) {
             // 예외 처리 및 적절한 응답 반환
@@ -107,6 +108,7 @@ public class RecipeManagementController {
 
     /**
      * 레시피 수정
+     *
      * @param recipeId
      * @param dto
      * @return
@@ -121,13 +123,16 @@ public class RecipeManagementController {
 
     /**
      * 레시피 삭제
-     * @param dto
+     *
+     * @param recipeId
+     * @param user
      * @return
      */
-    @DeleteMapping
+    @DeleteMapping("{id}")
     public ResponseEntity<SuccessResponse<DeleteRecipeResponseDto>> delete(
-            @Valid @RequestBody DeleteRecipeRequestDto dto) {
-        return toResponseEntity("레시피 삭제 성공", recipeService.delete(dto));
+            @PathVariable("id") Long recipeId,
+            @AuthenticationPrincipal User user) {
+        return toResponseEntity("레시피 삭제 성공", recipeService.delete(recipeId, user));
 
     }
 }
