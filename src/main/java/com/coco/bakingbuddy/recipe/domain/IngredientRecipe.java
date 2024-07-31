@@ -15,7 +15,8 @@ public class IngredientRecipe extends BaseTime {
     private Long id;
     @Column(nullable = false)
     private BigDecimal amount;
-
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private Unit unit;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RECIPE_ID")
