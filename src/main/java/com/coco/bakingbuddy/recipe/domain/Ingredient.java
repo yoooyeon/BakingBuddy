@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
@@ -13,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Ingredient extends BaseTime {
     @Id
@@ -21,6 +21,7 @@ public class Ingredient extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
     @JsonIgnore
     @OneToMany(mappedBy = "ingredient")
     private List<IngredientRecipe> ingredientRecipes;

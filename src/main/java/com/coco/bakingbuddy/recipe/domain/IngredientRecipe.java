@@ -4,6 +4,8 @@ import com.coco.bakingbuddy.global.domain.BaseTime;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Entity
 public class IngredientRecipe extends BaseTime {
@@ -11,7 +13,10 @@ public class IngredientRecipe extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "INGREDIENT_RECIPE_ID")
     private Long id;
+    @Column(nullable = false)
+    private BigDecimal amount;
 
+    private Unit unit;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;
@@ -27,4 +32,5 @@ public class IngredientRecipe extends BaseTime {
     public void addIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
     }
+
 }
