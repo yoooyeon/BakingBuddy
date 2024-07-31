@@ -1,9 +1,10 @@
 package com.coco.bakingbuddy.recipe.service;
 
 import com.coco.bakingbuddy.ingredient.domain.Ingredient;
+import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
+import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
-import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +39,11 @@ public class RecipeSearchService {
         List<SelectRecipeResponseDto> resultList = new ArrayList<>();
         for (Recipe recipe : recipePage) {
             SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
-            List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
+            List<IngredientResponseDto> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
+            ingredients.forEach(ingredient -> {
+                String displayName = ingredient.getUnit().getDisplayName();
+                ingredient.setUnitDisplayName(displayName);
+            });
             List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipe.getId());
             result.setIngredients(ingredients);
             result.setTags(tags);
@@ -49,13 +55,18 @@ public class RecipeSearchService {
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
 
     }
+
     @Transactional(readOnly = true)
     public List<SelectRecipeResponseDto> selectByTerm(String term) {
         List<Recipe> recipePage = recipeQueryDslRepository.findByKeyword(term);
         List<SelectRecipeResponseDto> resultList = new ArrayList<>();
         for (Recipe recipe : recipePage) {
             SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
-            List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
+            List<IngredientResponseDto> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
+            ingredients.forEach(ingredient -> {
+                String displayName = ingredient.getUnit().getDisplayName();
+                ingredient.setUnitDisplayName(displayName);
+            });
             List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipe.getId());
             result.setIngredients(ingredients);
             result.setTags(tags);

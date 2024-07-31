@@ -1,7 +1,8 @@
 package com.coco.bakingbuddy.ingredient.repository;
 
-import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
+import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.coco.bakingbuddy.recipe.domain.QIngredient.ingredient;
-import static com.coco.bakingbuddy.recipe.domain.QIngredientRecipe.ingredientRecipe;
+import static com.coco.bakingbuddy.ingredient.domain.QIngredient.ingredient;
+import static com.coco.bakingbuddy.ingredient.domain.QIngredientRecipe.ingredientRecipe;
+
 
 @RequiredArgsConstructor
 @Repository
@@ -26,26 +28,36 @@ public class IngredientRecipeQueryDslRepository {
                 .fetch();
     }
 
-    public List<Ingredient> findIngredientsByRecipeId(Long recipeId) {
+    public List<IngredientResponseDto> findIngredientsByRecipeId(Long recipeId) {
         return queryFactory
-                .select(ingredient)
+                .select(Projections.fields(IngredientResponseDto.class,
+                        ingredientRecipe.recipe.id.as("recipeId"),
+                        ingredient.name.as("name"),
+                        ingredientRecipe.unit.as("unit"), // Unit의 displayName으로 설정
+                        ingredientRecipe.amount.as("amount"),
+                        ingredientRecipe.servings.as("servings")))
                 .from(ingredientRecipe)
-                .leftJoin(ingredientRecipe.ingredient, ingredient)
+                .join(ingredientRecipe.ingredient, ingredient)
                 .where(ingredientRecipe.recipe.id.eq(recipeId))
                 .fetch();
     }
 
     // IngredientRepository
-    public Map<Long, List<Ingredient>> findIngredientsByRecipeIds(List<Long> recipeIds) {
+    public Map<Long, List<IngredientResponseDto>> findIngredientsByRecipeIds(List<Long> recipeIds) {
 
-        List<IngredientRecipe> ingredientRecipes = queryFactory
-                .selectFrom(ingredientRecipe)
+        List<IngredientResponseDto> ingredientRecipes = queryFactory
+                .select(Projections.fields(IngredientResponseDto.class,
+                        ingredientRecipe.recipe.id.as("recipeId"),
+                        ingredient.name.as("name"),
+                        ingredientRecipe.unit.as("unit"), // Unit의 displayName으로 설정
+                        ingredientRecipe.amount.as("amount"),
+                        ingredientRecipe.servings.as("servings")))
+                .from(ingredientRecipe)
                 .leftJoin(ingredientRecipe.ingredient, ingredient).fetchJoin()
                 .where(ingredientRecipe.recipe.id.in(recipeIds))
                 .fetch();
 
         return ingredientRecipes.stream()
-                .collect(Collectors.groupingBy(ir -> ir.getRecipe().getId(),
-                        Collectors.mapping(IngredientRecipe::getIngredient, Collectors.toList())));
+                .collect(Collectors.groupingBy(ir -> ir.getRecipeId()));
     }
 }

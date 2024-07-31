@@ -3,14 +3,15 @@ package com.coco.bakingbuddy.user.service;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
+import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
+import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
+import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.RecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
-import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
 import com.coco.bakingbuddy.tag.domain.Tag;
@@ -104,7 +105,7 @@ public class UserService {
         }
         HashMap<Directory, List<Recipe>> recipeByDir = new HashMap<>();
         List<Tag> tags = new ArrayList<>();
-        List<Ingredient> ingredients = new ArrayList<>();
+        List<IngredientResponseDto> ingredients = new ArrayList<>();
         for (Recipe recipe : recipes) {
             Long id = recipe.getId();
             List<TagRecipe> tagRecipes = tagRecipeQueryDslRepository.findByRecipeId(id);
@@ -115,7 +116,12 @@ public class UserService {
             }
             for (IngredientRecipe ingredientRecipe : ingredientRecipes) {
                 Ingredient ingredient = ingredientRecipe.getIngredient();
-                ingredients.add(ingredient);
+                ingredients.add(IngredientResponseDto.builder()
+                        .name(ingredient.getName())
+                        .amount(ingredientRecipe.getAmount())
+                        .servings(ingredientRecipe.getServings())
+                        .unit(ingredientRecipe.getUnit())
+                        .build());
             }
             SelectRecipeResponseDto selectRecipeResponseDto = fromEntity(recipe);
             selectRecipeResponseDto.setIngredients(ingredients);

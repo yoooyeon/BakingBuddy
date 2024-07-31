@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.coco.bakingbuddy.recipe.domain.QIngredientRecipe.ingredientRecipe;
+import static com.coco.bakingbuddy.ingredient.domain.QIngredientRecipe.ingredientRecipe;
 import static com.coco.bakingbuddy.recipe.domain.QRecipe.recipe;
 import static com.coco.bakingbuddy.tag.domain.QTag.tag;
 import static com.coco.bakingbuddy.tag.domain.QTagRecipe.tagRecipe;

@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.dto.request;
 
+import com.coco.bakingbuddy.ingredient.dto.request.CreateIngredientRequestDto;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import jakarta.validation.constraints.*;
@@ -27,7 +28,7 @@ public class CreateRecipeRequestDto {
     private String openYn; // 공개 여부 True - Open
 
     @NotEmpty(message = "ingredients가 빈 값일 수 없습니다.")
-    private List<String> ingredients; // JPA
+    private List<CreateIngredientRequestDto> ingredients; // JPA
 
     //    @NotEmpty(message = "조리 단계가 빈 값일 수 없습니다.")
     private List<RecipeStep> recipeSteps;
@@ -42,6 +43,9 @@ public class CreateRecipeRequestDto {
     private List<String> tags;
     private String recipeImageUrl;
 
+    @NotNull(message = "기준 단위(인분 등)(servings)이 빈 값일 수 없습니다.")
+    private Integer servings;
+
     public static Recipe toEntity(CreateRecipeRequestDto dto) {
         return Recipe.builder()
                 .name(dto.getName())
@@ -50,7 +54,6 @@ public class CreateRecipeRequestDto {
                 .level(dto.getLevel())
                 .openYn(dto.getOpenYn())
                 .recipeImageUrl(dto.getRecipeImageUrl())
-//                .recipeSteps(dto.getRecipeSteps())
                 .build();
     }
 }

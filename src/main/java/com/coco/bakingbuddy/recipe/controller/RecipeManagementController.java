@@ -6,7 +6,6 @@ import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
-import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
 import com.coco.bakingbuddy.recipe.service.RecipeService;
@@ -20,12 +19,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEntity;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @RequestMapping("/api/recipes")
@@ -33,17 +30,7 @@ import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEnt
 @RestController
 public class RecipeManagementController {
     private final RecipeService recipeService;
-    private final DirectoryService directoryService;
 
-    @GetMapping("{recipeId}/edit") // 레시피 수정 화면 조회
-    public ResponseEntity<SuccessResponse<Map<String, Object>>> editRecipe(@PathVariable("recipeId") Long recipeId) {
-        Map<String, Object> responseData = new HashMap<>();
-        SelectRecipeResponseDto recipe = recipeService.selectById(recipeId);
-        List<SelectDirectoryResponseDto> dirs = directoryService.selectByUserId(recipe.getUserId());
-        responseData.put("recipe", recipe);
-        responseData.put("directories", dirs);
-        return toResponseEntity("레시피 수정 완료", responseData);
-    }
 
     //    @GetMapping
 //    public ResponseEntity<SuccessResponse<Page<SelectRecipeResponseDto>>> selectAll(
@@ -64,58 +51,83 @@ public class RecipeManagementController {
 //        PageResponseDto<SelectRecipeResponseDto> response = new PageResponseDto<>(recipes, totalPages, totalElements);
 //        return toResponseEntity("레시피 조회 성공", response);
 //    }
+
+    /**
+     * 모든 레시피 조회
+     * @return
+     */
     @GetMapping
     public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectAll() {
         return toResponseEntity("레시피 조회 성공",
                 recipeService.selectAll());
     }
 
+    /**
+     * 레시피 아이디로 조회
+     * @param id
+     * @return
+     */
     @GetMapping("{id}")
     public ResponseEntity<SuccessResponse<SelectRecipeResponseDto>> selectById(@PathVariable("id") Long id) {
         return toResponseEntity("레시피 아이디로 조회 성공", recipeService.selectById(id));
     }
 
-    @GetMapping("register")
-    public ResponseEntity<SuccessResponse<List<SelectDirectoryResponseDto>>> register(@RequestParam("userId") Long userId) {
-        List<SelectDirectoryResponseDto> dirs = directoryService.selectByUserId(userId);
-        return toResponseEntity("디렉토리 등록 성공", directoryService.selectByUserId(userId));
-    }
-
+    /**
+     * 하나의 디렉토리에 해당하는 레시피 모두 조회
+     * @param directoryId
+     * @return
+     */
     @GetMapping("directories/{directoryId}")
-    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectByDirectoryId(
+    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectByDirId(
             @PathVariable("directoryId") Long directoryId) {
         return toResponseEntity("디렉토리에 해당하는 레시피 조회 성공",
                 recipeService.selectByDirectoryId(directoryId));
     }
 
+    /**
+     * 레시피 생성
+     * @param user
+     * @param dto
+     * @param recipeImage
+     * @return
+     */
     @PostMapping
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> create(
             @AuthenticationPrincipal User user,
             @Valid @RequestPart("recipe") CreateRecipeRequestDto dto,
             @RequestPart("recipeImage") MultipartFile recipeImage) {
-        log.info(">>>CreateRecipeResponseDto{}", dto);
-        log.info(">>>CreateRecipeResponseDto{}", recipeImage);
         try {
             CreateRecipeResponseDto savedRecipe = recipeService.create(user.getId(),dto, recipeImage);
             return toResponseEntity("레시피 생성 성공", savedRecipe);
         } catch (Exception e) {
             // 예외 처리 및 적절한 응답 반환
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<SuccessResponse<DeleteRecipeResponseDto>> create(
-            @Valid @RequestBody DeleteRecipeRequestDto dto) {
-        return toResponseEntity("레시피 삭제 성공", recipeService.delete(dto));
-
-    }
-
+    /**
+     * 레시피 수정
+     * @param recipeId
+     * @param dto
+     * @return
+     */
     @PutMapping("{recipeId}/edit")
-    public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> editRecipe(
+    public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> edit(
             @PathVariable("recipeId") Long recipeId
             , @Valid @RequestBody EditRecipeRequestDto dto) {
         dto.setId(recipeId);
         return toResponseEntity("레시피 수정 성공", recipeService.edit(dto));
+    }
+
+    /**
+     * 레시피 삭제
+     * @param dto
+     * @return
+     */
+    @DeleteMapping
+    public ResponseEntity<SuccessResponse<DeleteRecipeResponseDto>> delete(
+            @Valid @RequestBody DeleteRecipeRequestDto dto) {
+        return toResponseEntity("레시피 삭제 성공", recipeService.delete(dto));
+
     }
 }

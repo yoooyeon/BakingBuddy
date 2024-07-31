@@ -2,13 +2,17 @@ package com.coco.bakingbuddy.ingredient.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
-
+@Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class IngredientRecipe extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

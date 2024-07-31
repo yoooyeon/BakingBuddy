@@ -1,10 +1,13 @@
 package com.coco.bakingbuddy.recipe.dto.response;
 
+import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +20,8 @@ public class RecipeResponseDto {
     private boolean openYn; // 공개 여부 True - Open
     private String profileImageUrl;
 
-    private String ingredients; // JPA
+    private List<IngredientResponseDto> ingredients; // JPA
+
     private String tags; // JPA
     private String recipeImageUrl;
 

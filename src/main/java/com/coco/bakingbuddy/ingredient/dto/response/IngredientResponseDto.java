@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.ingredient.dto;
+package com.coco.bakingbuddy.ingredient.dto.response;
 
 import com.coco.bakingbuddy.ingredient.domain.Unit;
 import lombok.AllArgsConstructor;
@@ -13,8 +13,11 @@ import java.math.BigDecimal;
 @Builder
 @Data
 public class IngredientResponseDto {
+    private Long recipeId;
     private String name;
     private Unit unit;
     private BigDecimal amount;
     private int servings;
+    private String unitDisplayName;
+
 }

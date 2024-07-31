@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class CreateDirectoryResponseDto {
-    private String name;
     private Long id;
+    private String name;
 
 
     public static CreateDirectoryResponseDto fromEntity(Directory directory) {

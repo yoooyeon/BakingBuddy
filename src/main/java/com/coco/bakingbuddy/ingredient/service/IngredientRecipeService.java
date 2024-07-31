@@ -2,7 +2,7 @@ package com.coco.bakingbuddy.ingredient.service;
 
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
-import com.coco.bakingbuddy.ingredient.dto.IngredientResponseDto;
+import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

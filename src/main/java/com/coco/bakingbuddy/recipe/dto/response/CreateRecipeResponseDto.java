@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.dto.response;
 
+import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import lombok.AllArgsConstructor;
@@ -17,13 +18,12 @@ public class CreateRecipeResponseDto {
     private String name;
     private Long dirId;
     private Long id;
-    private Long userId;
     private String profileImageUrl;
 
     private String description;
     private boolean openYn; // 공개 여부 True - Open
 
-    private String ingredients; // JPA
+    private List<IngredientResponseDto> ingredients; // JPA
     private String tags; // JPA
     private String recipeImageUrl;
     private List<RecipeStep> recipeSteps;
@@ -36,7 +36,6 @@ public class CreateRecipeResponseDto {
                 .id(recipe.getId())
                 .dirId(recipe.getDirectory().getId())
                 .name(recipe.getName())
-                .userId(recipe.getUser().getId())
                 .description(recipe.getDescription())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
                 .time(recipe.getTime())
