@@ -27,7 +27,6 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -168,8 +167,10 @@ public class JwtTokenProvider {
     // 토큰을 쿠키에서 가져오기
     public String resolveTokenFromCookie(HttpServletRequest request, String tokenName) {
         Cookie[] cookies = request.getCookies();
+
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                log.info(">>>cookie{}",cookie);
                 if (tokenName.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
@@ -181,4 +182,5 @@ public class JwtTokenProvider {
     public Claims parseClaims(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
+
 }
