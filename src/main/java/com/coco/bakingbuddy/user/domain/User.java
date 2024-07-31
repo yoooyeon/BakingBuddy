@@ -89,11 +89,14 @@ public class User extends BaseTime implements UserDetails {
     public void updateUsername(String username) {
         this.username = username;
     }
+    // 최대 최근 검색어 수
+    private static final int MAX_RECENT_SEARCHES = 10;
 
-    public void addRecentSearch(String term) {
-        RecentSearch recentSearch = RecentSearch.create(term, this);
-        this.recentSearches.add(recentSearch);
+    public void addRecentSearch(RecentSearch recentSearch) {
+        recentSearches.add(recentSearch);
+        recentSearch.setUser(this); // 연관 관계 설정
     }
+
 
     public void clearRecentSearches() {
         this.recentSearches.clear();

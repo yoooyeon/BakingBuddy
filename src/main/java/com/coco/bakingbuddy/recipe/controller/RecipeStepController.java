@@ -21,7 +21,7 @@ public class RecipeStepController {
             @PathVariable("recipeId") Long recipeId,
             @RequestParam("stepNumber") Integer stepNumber,
             @RequestParam("description") String description,
-            @RequestParam("stepImage") MultipartFile stepImage) {
+            @RequestParam(value = "stepImage",required = false) MultipartFile stepImage) {
         return toResponseEntity("RecipeStep 저장 성공",
                 recipeStepService.addStep(recipeId, stepNumber, description, stepImage));
     }

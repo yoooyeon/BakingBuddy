@@ -82,6 +82,7 @@ public class UserService {
         return user.getRecentSearches().stream()
                 .map(RecentSearchResponseDto::fromEntity)
                 .sorted((dto1, dto2) -> dto2.getTimestamp().compareTo(dto1.getTimestamp()))
+                .limit(10)
                 .collect(Collectors.toList());
     }
 
@@ -95,11 +96,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<DirectoryWithRecipesResponseDto> selectDirsByUserId(Long userId) {
+    public List<DirectoryWithRecipesResponseDto> selectRecipesGroupbyDirByUserId(Long userId) {
         List<Recipe> recipes = recipeQueryDslRepository.findByUserId(userId);
         List<DirectoryWithRecipesResponseDto> result = new ArrayList<>();
         if (recipes == null || recipes.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         HashMap<Directory, List<Recipe>> recipeByDir = new HashMap<>();
         List<Tag> tags = new ArrayList<>();
@@ -125,7 +126,6 @@ public class UserService {
         }
         for (Directory key : recipeByDir.keySet()) {
             List<Recipe> recipe = recipeByDir.get(key);
-
             result.add(DirectoryWithRecipesResponseDto.builder()
                     .dirId(key.getId())
                     .dirName(key.getName())

@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.file.repository;
+package com.coco.bakingbuddy.recipe.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.domain.RecipeStep;
@@ -13,4 +13,6 @@ public interface RecipeStepRepository extends JpaRepository<RecipeStep, Long> {
     Optional<List<RecipeStep>> findByRecipeIdOrderByStepNumberAsc(Long id);
 
     Optional<List<RecipeStep>> findByRecipeOrderByStepNumberAsc(Recipe savedRecipe);
+
+    Optional<List<RecipeStep>> findByRecipe(Recipe recipe);
 }

@@ -1,6 +1,6 @@
 package com.coco.bakingbuddy.recipe.service;
 
-import com.coco.bakingbuddy.file.repository.RecipeStepRepository;
+import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;

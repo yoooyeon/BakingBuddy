@@ -4,6 +4,7 @@ import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
 import com.coco.bakingbuddy.search.repository.RecentSearchQueryDslRepository;
+import com.coco.bakingbuddy.search.repository.RecentSearchRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 public class SearchService {
     private final UserRepository userRepository;
     private final RecentSearchQueryDslRepository recentSearchQueryDslRepository;
+    private final RecentSearchRepository recentSearchRepository;
 
     public void addRecentSearch(Long userId, String term) {
 
@@ -33,8 +35,11 @@ public class SearchService {
             existingSearch.setTimestamp(LocalDateTime.now());
             userRepository.save(user); // 또는 별도로 RecentSearch 저장소가 있다면 사용
         } else {
+            // 현재 시간 기준으로 새로운 검색어 생성
+            RecentSearch recentSearch = RecentSearch.create(term, user);
+            RecentSearch save = recentSearchRepository.save(recentSearch);
             // 새로운 검색어 추가
-            user.addRecentSearch(term);
+            user.addRecentSearch(save);
             userRepository.save(user);
         }
     }

@@ -4,6 +4,7 @@ import com.coco.bakingbuddy.auth.dto.request.LoginRequestDto;
 import com.coco.bakingbuddy.auth.service.AuthService;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
+import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.CreateUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
@@ -14,6 +15,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +35,15 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @GetMapping("/api/auth/status")
+    public ResponseEntity<?> status(
+            @AuthenticationPrincipal User user) {
+        if (user != null) {
+            return toResponseEntity("로그인 상태 확인", Map.of("isAuthenticated", true));
+        }
+        return toResponseEntity(UNAUTHORIZED, "로그인 상태 X");
+    }
 
     @PostMapping("signup")
     public ResponseEntity<SuccessResponse<CreateUserResponseDto>> register(

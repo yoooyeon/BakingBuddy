@@ -62,6 +62,6 @@ public class UserController {
     @GetMapping("recipes")
     public ResponseEntity<SuccessResponse<List<DirectoryWithRecipesResponseDto>>>
     selectRecipeByUserId(@AuthenticationPrincipal User user) {
-        return toResponseEntity("유저 아이디로 레시피 조회 성공", userService.selectDirsByUserId(user.getId()));
+        return toResponseEntity("유저 아이디로 레시피 조회 성공", userService.selectRecipesGroupbyDirByUserId(user.getId()));
     }
 }

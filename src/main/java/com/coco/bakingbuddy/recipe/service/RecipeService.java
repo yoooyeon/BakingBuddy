@@ -1,16 +1,14 @@
 package com.coco.bakingbuddy.recipe.service;
 
 import com.coco.bakingbuddy.file.service.FileService;
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.recipe.domain.Directory;
-import com.coco.bakingbuddy.recipe.domain.Ingredient;
-import com.coco.bakingbuddy.recipe.domain.IngredientRecipe;
-import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.*;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.DeleteRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
-import com.coco.bakingbuddy.recipe.dto.response.*;
+import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.repository.*;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
@@ -29,13 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
-import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
+import static com.coco.bakingbuddy.global.error.ErrorCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,6 +51,7 @@ public class RecipeService {
     private final IngredientRecipeRepository ingredientRecipeRepository;
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
+    private final RecipeStepRepository recipeStepRepository;
 
     @Transactional(readOnly = true)
     public List<SelectRecipeResponseDto> selectAll() {
@@ -116,12 +114,15 @@ public class RecipeService {
 
     @Transactional(readOnly = true)
     public SelectRecipeResponseDto selectById(Long recipeId) {
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(RECIPE_NOT_FOUND));
         SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
 
         List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipeId);
         List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipeId);
-
+        Optional<List<RecipeStep>> recipeSteps = recipeStepRepository.findByRecipe(recipe);
+        if (recipeSteps.isPresent()) {
+            result.setRecipeSteps(recipeSteps.get());
+        }
         result.setIngredients(ingredients);
         result.setTags(tags);
         User user = recipe.getUser();
@@ -134,9 +135,9 @@ public class RecipeService {
     }
 
     @Transactional
-    public CreateRecipeResponseDto create(Long userId,CreateRecipeRequestDto dto, MultipartFile multipartFile) {
+    public CreateRecipeResponseDto create(Long userId, CreateRecipeRequestDto dto, MultipartFile multipartFile) {
         Directory directory = directoryRepository.findById(dto.getDirId())
-                .orElseThrow(() -> new CustomException(ErrorCode.DIRECTORY_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(DIRECTORY_NOT_FOUND));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         Recipe recipe = recipeRepository.save(CreateRecipeRequestDto.toEntity(dto));
@@ -211,9 +212,6 @@ public class RecipeService {
         }
         return recipes.stream().map(SelectRecipeResponseDto::fromEntity).collect(Collectors.toList());
     }
-
-
-
 
 
 }

@@ -5,10 +5,11 @@ import com.coco.bakingbuddy.recipe.dto.request.CreateDirectoryRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectDirectoryResponseDto;
 import com.coco.bakingbuddy.recipe.service.DirectoryService;
+import com.coco.bakingbuddy.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,15 +19,15 @@ import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEnt
 
 @RequestMapping("/api/directories")
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class DirectoryController {
 
     private final DirectoryService directoryService;
 
-    @GetMapping("users/{userId}")
+    @GetMapping("users")
     public ResponseEntity<SuccessResponse<List<SelectDirectoryResponseDto>>> selectByUserId(
-            @PathVariable("userId") Long userId) {
-        return toResponseEntity("사용자 디렉토리 조회 성공", directoryService.selectByUserId(userId));
+            @AuthenticationPrincipal User user) {
+        return toResponseEntity("사용자 디렉토리 조회 성공", directoryService.selectByUserId(user.getId()));
     }
 
     @GetMapping("{id}")
@@ -34,9 +35,10 @@ public class DirectoryController {
         return toResponseEntity("디렉토리 이름 조회 성공", directoryService.selectById(id));
     }
 
-    @PostMapping
-    @ResponseBody
-    public ResponseEntity<SuccessResponse<CreateDirectoryResponseDto>> create(@Valid @RequestBody CreateDirectoryRequestDto dto) {
-        return toResponseEntity("디렉토리 생성 성공", directoryService.create(dto));
+    @PostMapping("users")
+    public ResponseEntity<SuccessResponse<CreateDirectoryResponseDto>>
+    create(@Valid @RequestBody CreateDirectoryRequestDto dto,
+           @AuthenticationPrincipal User user) {
+        return toResponseEntity("디렉토리 생성 성공", directoryService.create(user.getId(), dto));
     }
 }

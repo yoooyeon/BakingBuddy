@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class CreateDirectoryRequestDto {
     @NotBlank(message = "이름이 빈 값일 수 없습니다.")
     private String name;
-    @NotNull(message = "userId가 빈 값일 수 없습니다.")
-    private Long userId;
 
     public static Directory toEntity(CreateDirectoryRequestDto dto) {
         return Directory.builder()

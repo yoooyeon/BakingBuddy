@@ -26,7 +26,7 @@ public class AlarmController {
 
     @GetMapping("users")
     public ResponseEntity<SuccessResponse<List<SelectAlarmResponseDto>>>
-    selectByUserId(@AuthenticationPrincipal User user) {
+    selectAlarmByUserId(@AuthenticationPrincipal User user) {
         return toResponseEntity("유저 알람 조회 성공", alarmService.selectByUserId(user.getId()));
     }
 }

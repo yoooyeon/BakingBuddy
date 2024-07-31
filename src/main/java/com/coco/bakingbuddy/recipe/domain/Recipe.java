@@ -39,10 +39,10 @@ public class Recipe extends BaseTime {
     private String level; // 난이도
 
     private Integer likeCount = 0;
+    @JsonIgnore
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes = new HashSet<>();
     @JsonIgnore
-
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeStep> recipeSteps; // 조리 단계
     @JsonIgnore
@@ -50,11 +50,9 @@ public class Recipe extends BaseTime {
     @JoinColumn(name = "user_id")
     private User user;
     @JsonIgnore
-
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Set<TagRecipe> tagRecipes;
     @JsonIgnore
-
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
     private List<IngredientRecipe> ingredientRecipes;
 
@@ -87,12 +85,18 @@ public class Recipe extends BaseTime {
     }
 
     public Recipe increaseLikeCount(Like like) {
+        if (this.likeCount == null) {
+            this.likeCount = 0; // 방어적으로 0으로 초기화
+        }
         this.likeCount++;
         this.likes.add(like);
         return this;
     }
 
     public Recipe decreaseLikeCount(Like like) {
+        if (this.likeCount == null) {
+            this.likeCount = 0; // 방어적으로 0으로 초기화
+        }
         if (this.likeCount > 0) {
             this.likeCount--;
         }

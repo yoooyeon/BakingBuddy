@@ -49,5 +49,22 @@ public class RecipeSearchService {
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
 
     }
+    @Transactional(readOnly = true)
+    public List<SelectRecipeResponseDto> selectByTerm(String term) {
+        List<Recipe> recipePage = recipeQueryDslRepository.findByKeyword(term);
+        List<SelectRecipeResponseDto> resultList = new ArrayList<>();
+        for (Recipe recipe : recipePage) {
+            SelectRecipeResponseDto result = SelectRecipeResponseDto.fromEntity(recipe);
+            List<Ingredient> ingredients = ingredientRecipeQueryDslRepository.findIngredientsByRecipeId(recipe.getId());
+            List<Tag> tags = tagRecipeQueryDslRepository.findTagsByRecipeId(recipe.getId());
+            result.setIngredients(ingredients);
+            result.setTags(tags);
+            User user = recipe.getUser();
+            result.setUsername(user.getUsername());
+            result.setProfileImageUrl(user.getProfileImageUrl());
+            resultList.add(result);
+        }
+        return resultList;
+    }
 
 }

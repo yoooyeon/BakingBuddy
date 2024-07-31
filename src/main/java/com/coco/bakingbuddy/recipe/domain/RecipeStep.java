@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class RecipeStep {
     private Integer stepNumber; // 단계 번호
     private String description; // 단계 설명
     private String stepImage; // 단계 이미지
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;

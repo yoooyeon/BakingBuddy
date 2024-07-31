@@ -72,7 +72,7 @@ public class RecipeManagementController {
 
     @GetMapping("{id}")
     public ResponseEntity<SuccessResponse<SelectRecipeResponseDto>> selectById(@PathVariable("id") Long id) {
-        return toResponseEntity("디렉토리 아이디로 조회 성공", recipeService.selectById(id));
+        return toResponseEntity("레시피 아이디로 조회 성공", recipeService.selectById(id));
     }
 
     @GetMapping("register")

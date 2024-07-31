@@ -40,9 +40,9 @@ public class DirectoryService {
     }
 
     @Transactional
-    public CreateDirectoryResponseDto create(CreateDirectoryRequestDto dto) {
+    public CreateDirectoryResponseDto create(Long userId, CreateDirectoryRequestDto dto) {
         // 디렉토리 이름이 중복되는지 확인
-        boolean directoryExists = directoryRepository.existsByNameAndUserId(dto.getName(), dto.getUserId());
+        boolean directoryExists = directoryRepository.existsByNameAndUserId(dto.getName(),userId);
         if (directoryExists) {
             throw new CustomException(DUPLICATE_DIRECTORY);
         }
@@ -50,7 +50,7 @@ public class DirectoryService {
                 .name(dto.getName())
                 .build();
         Directory save = directoryRepository.save(directory);
-        User user = userRepository.findById(dto.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         save.setUser(user);
         return CreateDirectoryResponseDto.fromEntity(save);

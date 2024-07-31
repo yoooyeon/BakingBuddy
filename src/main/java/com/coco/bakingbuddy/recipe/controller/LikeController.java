@@ -4,9 +4,14 @@ import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.recipe.dto.request.LikeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.LikeResponseDto;
 import com.coco.bakingbuddy.recipe.service.LikeService;
+import com.coco.bakingbuddy.user.domain.User;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEntity;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/likes")
@@ -14,21 +19,24 @@ import org.springframework.web.bind.annotation.*;
 public class LikeController {
     private final LikeService likeService;
 
-    @PostMapping
-    public ResponseEntity<SuccessResponse<LikeResponseDto>> like(@RequestBody LikeRequestDto dto) {
-        LikeResponseDto result = likeService.likeRecipe(dto.getRecipeId(), dto.getUserId());
-        return SuccessResponse.toResponseEntity("좋아요 처리 성공", result);
+    @PostMapping("recipes/{id}")
+    public ResponseEntity<SuccessResponse<LikeResponseDto>>
+    like(@PathVariable("id") Long recipeId, @AuthenticationPrincipal User user) {
+        LikeResponseDto result = likeService.likeRecipe(recipeId, user.getId());
+        return toResponseEntity("좋아요 처리 성공", result);
     }
 
-    @DeleteMapping
-    public ResponseEntity<SuccessResponse<LikeResponseDto>> unlike(@RequestBody LikeRequestDto dto) {
-        LikeResponseDto result = likeService.unlikeRecipe(dto.getRecipeId(), dto.getUserId());
-        return SuccessResponse.toResponseEntity("좋아요 처리 성공", result);
+    @DeleteMapping("recipes/{id}")
+    public ResponseEntity<SuccessResponse<LikeResponseDto>>
+    unlike(@PathVariable("id") Long recipeId,@AuthenticationPrincipal User user) {
+        LikeResponseDto result = likeService.unlikeRecipe(recipeId, user.getId());
+        return toResponseEntity("좋아요 취소 처리 성공", result);
     }
 
     @GetMapping("status")
-    public ResponseEntity<SuccessResponse<LikeResponseDto>> status(@RequestParam("recipeId") Long recipeId, @RequestParam("userId") Long userId) {
-        LikeResponseDto result = likeService.status(recipeId, userId);
-        return SuccessResponse.toResponseEntity("좋아요 상태 조회", result);
+    public ResponseEntity<SuccessResponse<LikeResponseDto>>
+    status(@RequestParam("recipeId") Long recipeId,@AuthenticationPrincipal User user) {
+        LikeResponseDto result = likeService.status(recipeId, user.getId());
+        return toResponseEntity("좋아요 상태 조회", result);
     }
 }

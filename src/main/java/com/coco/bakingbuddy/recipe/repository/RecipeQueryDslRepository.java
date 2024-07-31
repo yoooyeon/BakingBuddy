@@ -79,6 +79,21 @@ public class RecipeQueryDslRepository {
         return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 
+    public List<Recipe> findByKeyword(String keyword) {
+        return queryFactory
+                .selectFrom(recipe)
+                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .leftJoin(tagRecipe.tag, tag).fetchJoin()
+                .where(
+                        recipe.name.containsIgnoreCase(keyword)
+                                .or(ingredientRecipe.id.isNull().and(stringTemplate("''").like(keyword))) // ingredientRecipe가 없거나 이름이 일치하는 경우
+                                .or(tag.id.isNull().and(stringTemplate("''").like(keyword))) // tag가 없거나 이름이 일치하는 경우
+                )
+                .fetchResults()
+                .getResults();
+    }
+
 
     public List<RedisAutoCompletePreviewDto> findPreviewByTerm(String term) {
         return queryFactory
