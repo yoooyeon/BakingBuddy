@@ -18,6 +18,8 @@ public class IngredientRecipe extends BaseTime {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private Unit unit;
+    @Column(nullable = false)
+    private Integer servings; // 몇인분 기준
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;
