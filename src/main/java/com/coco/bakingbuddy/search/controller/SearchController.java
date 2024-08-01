@@ -39,12 +39,14 @@ public class SearchController {
     private final RecipeSearchService recipeSearchService;
     private final SearchService searchService;
 
+
+
     @GetMapping("recipes")
     public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> search(
             @RequestParam(name = "term", required = false) String term,
             @AuthenticationPrincipal User user) {
 
-        processSearchTerm(term, user);
+        processSearchTerm(term, user); // user history
 
         List<SelectRecipeResponseDto> selectRecipeResponseDtos;
         if (term != null && !term.isEmpty()) {

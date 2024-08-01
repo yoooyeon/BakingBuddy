@@ -86,13 +86,14 @@ public class RecipeQueryDslRepository {
                 .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag).fetchJoin()
                 .where(
-                        recipe.name.containsIgnoreCase(keyword)
-                                .or(ingredientRecipe.id.isNull().and(stringTemplate("''").like(keyword))) // ingredientRecipe가 없거나 이름이 일치하는 경우
-                                .or(tag.id.isNull().and(stringTemplate("''").like(keyword))) // tag가 없거나 이름이 일치하는 경우
+                        recipe.name.containsIgnoreCase(keyword) // 레시피 이름으로 검색
+                                .or(ingredientRecipe.ingredient.name.containsIgnoreCase(keyword)) // 재료로 검색
+                                .or(tag.name.containsIgnoreCase(keyword)) // 태그로 검색
                 )
                 .fetchResults()
                 .getResults();
     }
+
 
 
     public List<RedisAutoCompletePreviewDto> findPreviewByTerm(String term) {
