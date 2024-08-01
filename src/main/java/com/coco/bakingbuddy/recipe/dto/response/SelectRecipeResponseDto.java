@@ -37,6 +37,8 @@ public class SelectRecipeResponseDto {
     private Integer likeCount;
     private boolean userLiked;
 
+    private Integer servings;
+
     public static SelectRecipeResponseDto fromEntity(Recipe recipe) {
         return SelectRecipeResponseDto.builder()
                 .id(recipe.getId())

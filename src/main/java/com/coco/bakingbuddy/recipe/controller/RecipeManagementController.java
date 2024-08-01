@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.controller;
 
+import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
@@ -27,7 +28,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestController
 public class RecipeManagementController {
     private final RecipeService recipeService;
-
+    private final FileService fileService;
 
     //    @GetMapping
 //    public ResponseEntity<SuccessResponse<Page<SelectRecipeResponseDto>>> selectAll(
@@ -116,8 +117,13 @@ public class RecipeManagementController {
     @PutMapping("{recipeId}/edit")
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> edit(
             @PathVariable("recipeId") Long recipeId
-            , @Valid @RequestBody EditRecipeRequestDto dto) {
+            , @Valid @RequestPart("recipe") EditRecipeRequestDto dto,
+            @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage,
+            @AuthenticationPrincipal User user) {
         dto.setId(recipeId);
+        if (recipeImage!=null){
+            fileService.uploadRecipeImageFile(recipeId,recipeImage);
+        }
         return toResponseEntity("레시피 수정 성공", recipeService.edit(dto));
     }
 

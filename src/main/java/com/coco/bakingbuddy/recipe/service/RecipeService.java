@@ -104,6 +104,7 @@ public class RecipeService {
         dto.setIngredients(ingredients);
         dto.setTags(tagRecipeQueryDslRepository.findTagsByRecipeId(recipeId));
         dto.setRecipeSteps(recipeStepRepository.findByRecipe(recipe).orElse(Collections.emptyList()));
+        dto.setServings(recipe.getIngredientRecipes().get(0).getServings());
         setUserDetails(dto, recipe);
         return dto;
     }

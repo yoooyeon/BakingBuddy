@@ -119,13 +119,13 @@ public class UserService {
                 ingredients.add(IngredientResponseDto.builder()
                         .name(ingredient.getName())
                         .amount(ingredientRecipe.getAmount())
-                        .servings(ingredientRecipe.getServings())
                         .unit(ingredientRecipe.getUnit())
                         .build());
             }
             SelectRecipeResponseDto selectRecipeResponseDto = fromEntity(recipe);
             selectRecipeResponseDto.setIngredients(ingredients);
             selectRecipeResponseDto.setTags(tags);
+            selectRecipeResponseDto.setServings(ingredientRecipes.get(0).getServings());
             List<Recipe> list = recipeByDir.getOrDefault(recipe.getDirectory(), new ArrayList<>());
             list.add(recipe);
             recipeByDir.put(recipe.getDirectory(), list);

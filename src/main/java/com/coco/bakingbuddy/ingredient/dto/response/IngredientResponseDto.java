@@ -17,7 +17,6 @@ public class IngredientResponseDto {
     private String name;
     private Unit unit;
     private BigDecimal amount;
-    private int servings;
     private String unitDisplayName;
 
 }

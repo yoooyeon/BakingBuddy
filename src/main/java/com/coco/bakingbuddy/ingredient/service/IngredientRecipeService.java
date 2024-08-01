@@ -27,7 +27,6 @@ public class IngredientRecipeService {
 
             results.add(IngredientResponseDto.builder()
                     .amount(newAmount)
-                    .servings(newServings)
                     .name(ingredient.getIngredient().getName())
                     .build());
         }
