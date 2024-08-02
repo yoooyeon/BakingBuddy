@@ -6,9 +6,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://baking-buddy-428009:asia-northeast3:baking-buddy-sql
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: baking-buddy-428009:asia-northeast3:baking-buddy-sql/baking_buddy
+      SPRING_DATASOURCE_USERNAME: yooyeon
+      SPRING_DATASOURCE_PASSWORD: yooyeon
 #      SPRING_REDIS_HOST: 10.170.239.131
 #      SPRING_REDIS_PORT: 6379
     depends_on:
