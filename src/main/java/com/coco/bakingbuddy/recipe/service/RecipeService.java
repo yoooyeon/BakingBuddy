@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,13 +64,13 @@ public class RecipeService {
     private final RecipeStepRepository recipeStepRepository;
 
     @Transactional(readOnly = true)
-    public List<SelectRecipeResponseDto> selectAll() {
+    public List<SelectRecipeResponseDto> selectAll(@AuthenticationPrincipal User user) {
         List<Recipe> allRecipes = recipeRepository.findAll();
         Map<Long, List<IngredientResponseDto>> ingredientsMap = fetchIngredientsForRecipes(allRecipes);
         Map<Long, List<Tag>> tagsMap = fetchTagsForRecipes(allRecipes);
 
         return allRecipes.stream()
-                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap))
+                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap,user))
                 .collect(Collectors.toList());
     }
 
@@ -85,14 +86,14 @@ public class RecipeService {
         Map<Long, List<Tag>> tagsMap = fetchTagsForRecipes(recipePage.getContent());
 
         List<SelectRecipeResponseDto> resultList = recipePage.getContent().stream()
-                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap))
+                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap,null))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
     }
 
     @Transactional(readOnly = true)
-    public SelectRecipeResponseDto selectById(Long recipeId) {
+    public SelectRecipeResponseDto selectById(Long recipeId, User user) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(RECIPE_NOT_FOUND));
 
         SelectRecipeResponseDto dto = SelectRecipeResponseDto.fromEntity(recipe);
@@ -105,7 +106,7 @@ public class RecipeService {
         dto.setTags(tagRecipeQueryDslRepository.findTagsByRecipeId(recipeId));
         dto.setRecipeSteps(recipeStepRepository.findByRecipe(recipe).orElse(Collections.emptyList()));
         dto.setServings(recipe.getIngredientRecipes().get(0).getServings());
-        setUserDetails(dto, recipe);
+        dto = setUserDetails(dto, recipe,user);
         return dto;
     }
 
@@ -169,20 +170,21 @@ public class RecipeService {
         return tagRecipeQueryDslRepository.findTagsByRecipeIds(recipeIds);
     }
 
-    private SelectRecipeResponseDto buildSelectRecipeResponseDto(Recipe recipe, Map<Long, List<IngredientResponseDto>> ingredientsMap, Map<Long, List<Tag>> tagsMap) {
+    private SelectRecipeResponseDto buildSelectRecipeResponseDto
+            (Recipe recipe, Map<Long, List<IngredientResponseDto>> ingredientsMap, Map<Long, List<Tag>> tagsMap, User user) {
         SelectRecipeResponseDto dto = SelectRecipeResponseDto.fromEntity(recipe);
         dto.setIngredients(ingredientsMap.get(recipe.getId()));
         dto.setTags(tagsMap.get(recipe.getId()));
-        setUserDetails(dto, recipe);
+        dto = setUserDetails(dto, recipe, user);
         return dto;
     }
 
-    private void setUserDetails(SelectRecipeResponseDto dto, Recipe recipe) {
-        User user = recipe.getUser();
-        boolean userLiked = recipe.getLikes().stream().anyMatch(like -> like.getUser().equals(user));
+    private SelectRecipeResponseDto setUserDetails(SelectRecipeResponseDto dto, Recipe recipe,User user) {
+        boolean userLiked = recipe.getLikes().stream().anyMatch(like -> like.getUser().getId().equals(user.getId()));
         dto.setUserLiked(userLiked);
         dto.setUsername(user.getUsername());
         dto.setProfileImageUrl(user.getProfileImageUrl());
+        return dto;
     }
 
     private void saveTags(List<String> tags, Recipe recipe) {

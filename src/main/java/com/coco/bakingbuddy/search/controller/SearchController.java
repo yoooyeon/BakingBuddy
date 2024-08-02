@@ -52,7 +52,7 @@ public class SearchController {
         if (term != null && !term.isEmpty()) {
             selectRecipeResponseDtos = recipeSearchService.selectByTerm(term);
         } else {
-            selectRecipeResponseDtos = recipeService.selectAll();
+            selectRecipeResponseDtos = recipeService.selectAll(user);
         }
         return toResponseEntity("레시피 페이지로 조회 성공", selectRecipeResponseDtos);
     }

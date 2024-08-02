@@ -56,9 +56,9 @@ public class RecipeManagementController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectAll() {
+    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectAll(@AuthenticationPrincipal User user) {
         return toResponseEntity("레시피 조회 성공",
-                recipeService.selectAll());
+                recipeService.selectAll(user));
     }
 
     /**
@@ -68,8 +68,10 @@ public class RecipeManagementController {
      * @return
      */
     @GetMapping("{id}")
-    public ResponseEntity<SuccessResponse<SelectRecipeResponseDto>> selectById(@PathVariable("id") Long id) {
-        return toResponseEntity("레시피 아이디로 조회 성공", recipeService.selectById(id));
+    public ResponseEntity<SuccessResponse<SelectRecipeResponseDto>>
+    selectById(@PathVariable("id") Long id,
+               @AuthenticationPrincipal User user) {
+        return toResponseEntity("레시피 아이디로 조회 성공", recipeService.selectById(id,user));
     }
 
     /**
@@ -121,8 +123,8 @@ public class RecipeManagementController {
             @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage,
             @AuthenticationPrincipal User user) {
         dto.setId(recipeId);
-        if (recipeImage!=null){
-            fileService.uploadRecipeImageFile(recipeId,recipeImage);
+        if (recipeImage != null) {
+            fileService.uploadRecipeImageFile(recipeId, recipeImage);
         }
         return toResponseEntity("레시피 수정 성공", recipeService.edit(dto));
     }
