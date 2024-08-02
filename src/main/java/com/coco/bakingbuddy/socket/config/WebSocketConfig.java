@@ -1,7 +1,11 @@
 package com.coco.bakingbuddy.socket.config;
 
+import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import com.coco.bakingbuddy.socket.JwtChannelInterceptor;
+import com.coco.bakingbuddy.socket.JwtHandshakeInterceptor;
+import com.coco.bakingbuddy.socket.MyWebSocketHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -15,7 +19,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JwtChannelInterceptor jwtChannelInterceptor;
+//    private final JwtChannelInterceptor jwtChannelInterceptor;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -25,14 +30,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/recipe-detail")
+        registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*") // SOP
+                .addInterceptors(new JwtHandshakeInterceptor(jwtTokenProvider))
                 .withSockJS();
     }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(jwtChannelInterceptor);
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(jwtChannelInterceptor);
+//    }
+
+    @Bean
+    public MyWebSocketHandler myWebSocketHandler() {
+        return new MyWebSocketHandler();
     }
 
 }

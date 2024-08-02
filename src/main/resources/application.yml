@@ -86,6 +86,7 @@ logging:
       springframework:
         security: DEBUG
         web: DEBUG
+
       hibernate: DEBUG
 
 
