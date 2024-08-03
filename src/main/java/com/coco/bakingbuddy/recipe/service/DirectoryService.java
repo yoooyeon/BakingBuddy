@@ -42,7 +42,7 @@ public class DirectoryService {
     @Transactional
     public CreateDirectoryResponseDto create(Long userId, CreateDirectoryRequestDto dto) {
         // 디렉토리 이름이 중복되는지 확인
-        boolean directoryExists = directoryRepository.existsByNameAndUserId(dto.getName(),userId);
+        boolean directoryExists = directoryRepository.existsByNameAndUserId(dto.getName(), userId);
         if (directoryExists) {
             throw new CustomException(DUPLICATE_DIRECTORY);
         }

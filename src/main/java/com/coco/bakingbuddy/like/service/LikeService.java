@@ -7,7 +7,7 @@ import com.coco.bakingbuddy.like.dto.response.LikeResponseDto;
 import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
-import com.coco.bakingbuddy.socket.MessagingService;
+import com.coco.bakingbuddy.socket.service.MessagingService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

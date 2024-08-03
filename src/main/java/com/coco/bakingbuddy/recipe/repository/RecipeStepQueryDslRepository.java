@@ -18,6 +18,7 @@ import static com.coco.bakingbuddy.recipe.domain.QRecipeStep.recipeStep;
 @Repository
 public class RecipeStepQueryDslRepository {
     private final JPAQueryFactory queryFactory;
+
     public void delete(List<RecipeStep> recipeSteps) {
         queryFactory.delete(recipeStep)
                 .where(recipeStep.in(recipeSteps))

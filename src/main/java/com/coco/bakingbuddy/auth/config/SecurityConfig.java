@@ -53,12 +53,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/app/**").permitAll()
+                        .requestMatchers("/topic/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .deleteCookies("accessToken","refreshToken")
+                        .deleteCookies("accessToken", "refreshToken")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session management

@@ -26,14 +26,14 @@ public class LikeController {
 
     @DeleteMapping("recipes/{id}")
     public ResponseEntity<SuccessResponse<LikeResponseDto>>
-    unlike(@PathVariable("id") Long recipeId,@AuthenticationPrincipal User user) {
+    unlike(@PathVariable("id") Long recipeId, @AuthenticationPrincipal User user) {
         LikeResponseDto result = likeService.unlikeRecipe(recipeId, user.getId());
         return toResponseEntity("좋아요 취소 처리 성공", result);
     }
 
     @GetMapping("status")
     public ResponseEntity<SuccessResponse<LikeResponseDto>>
-    status(@RequestParam("recipeId") Long recipeId,@AuthenticationPrincipal User user) {
+    status(@RequestParam("recipeId") Long recipeId, @AuthenticationPrincipal User user) {
         LikeResponseDto result = likeService.status(recipeId, user.getId());
         return toResponseEntity("좋아요 상태 조회", result);
     }

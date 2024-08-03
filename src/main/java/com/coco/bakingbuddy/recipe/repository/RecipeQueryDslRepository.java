@@ -95,7 +95,6 @@ public class RecipeQueryDslRepository {
     }
 
 
-
     public List<RedisAutoCompletePreviewDto> findPreviewByTerm(String term) {
         return queryFactory
                 .select(Projections.constructor(RedisAutoCompletePreviewDto.class,

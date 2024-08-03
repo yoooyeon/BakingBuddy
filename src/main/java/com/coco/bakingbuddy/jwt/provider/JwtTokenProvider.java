@@ -170,7 +170,6 @@ public class JwtTokenProvider {
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                log.info(">>>cookie{}",cookie);
                 if (tokenName.equals(cookie.getName())) {
                     return cookie.getValue();
                 }

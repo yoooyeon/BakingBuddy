@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.socket;
+package com.coco.bakingbuddy.socket.service;
 
 import com.coco.bakingbuddy.like.dto.response.LikeResponseDto;
 import lombok.RequiredArgsConstructor;

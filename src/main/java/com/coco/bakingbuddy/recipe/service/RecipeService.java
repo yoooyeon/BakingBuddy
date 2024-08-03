@@ -70,7 +70,7 @@ public class RecipeService {
         Map<Long, List<Tag>> tagsMap = fetchTagsForRecipes(allRecipes);
 
         return allRecipes.stream()
-                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap,user))
+                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap, user))
                 .collect(Collectors.toList());
     }
 
@@ -86,7 +86,7 @@ public class RecipeService {
         Map<Long, List<Tag>> tagsMap = fetchTagsForRecipes(recipePage.getContent());
 
         List<SelectRecipeResponseDto> resultList = recipePage.getContent().stream()
-                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap,null))
+                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap, null))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(resultList, pageable, recipePage.getTotalElements());
@@ -106,7 +106,7 @@ public class RecipeService {
         dto.setTags(tagRecipeQueryDslRepository.findTagsByRecipeId(recipeId));
         dto.setRecipeSteps(recipeStepRepository.findByRecipe(recipe).orElse(Collections.emptyList()));
         dto.setServings(recipe.getIngredientRecipes().get(0).getServings());
-        dto = setUserDetails(dto, recipe,user);
+        dto = setUserDetails(dto, recipe, user);
         return dto;
     }
 
@@ -179,7 +179,7 @@ public class RecipeService {
         return dto;
     }
 
-    private SelectRecipeResponseDto setUserDetails(SelectRecipeResponseDto dto, Recipe recipe,User user) {
+    private SelectRecipeResponseDto setUserDetails(SelectRecipeResponseDto dto, Recipe recipe, User user) {
         boolean userLiked = recipe.getLikes().stream().anyMatch(like -> like.getUser().getId().equals(user.getId()));
         dto.setUserLiked(userLiked);
         dto.setUsername(user.getUsername());

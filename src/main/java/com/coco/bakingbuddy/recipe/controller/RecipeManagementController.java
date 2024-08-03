@@ -71,7 +71,7 @@ public class RecipeManagementController {
     public ResponseEntity<SuccessResponse<SelectRecipeResponseDto>>
     selectById(@PathVariable("id") Long id,
                @AuthenticationPrincipal User user) {
-        return toResponseEntity("레시피 아이디로 조회 성공", recipeService.selectById(id,user));
+        return toResponseEntity("레시피 아이디로 조회 성공", recipeService.selectById(id, user));
     }
 
     /**

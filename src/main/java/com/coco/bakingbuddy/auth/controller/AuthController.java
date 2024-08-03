@@ -7,6 +7,7 @@ import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.CreateUserResponseDto;
+import com.coco.bakingbuddy.user.dto.response.LoginUserResponseDto;
 import com.coco.bakingbuddy.user.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,20 +53,15 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<SuccessResponse<Map<String, String>>> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
-        // Generate access and refresh tokens
+    public ResponseEntity<SuccessResponse<LoginUserResponseDto>> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
         String accessToken = authService.getAccessToken(user);
         String refreshToken = authService.getRefreshToken(user);
 
         // Store tokens in cookies
         jwtTokenProvider.addTokenToCookie(response, accessToken, "accessToken");
         jwtTokenProvider.addTokenToCookie(response, refreshToken, "refreshToken");
-
-        // Create a response map with tokens (if you need to send them in the response body as well)
-        Map<String, String> tokens = Map.of("accessToken", accessToken, "refreshToken", refreshToken);
-
-        // Return a success response
-        return toResponseEntity("로그인 성공, 토큰 생성", tokens);
+        LoginUserResponseDto result = LoginUserResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+        return toResponseEntity("로그인 성공, 토큰 생성", result);
     }
 
 

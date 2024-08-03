@@ -1,18 +1,23 @@
 package com.coco.bakingbuddy.socket.controller;
 
+import com.coco.bakingbuddy.socket.ConnectedUserManager;
+import com.coco.bakingbuddy.socket.JwtChannelInterceptor;
+import com.coco.bakingbuddy.socket.StompEventListener;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+
+@RequiredArgsConstructor
 @Slf4j
 @Controller
 public class WebSocketController {
-    private int onlineUsers = 0;
-
+    private final ConnectedUserManager connectedUserManager;
     @MessageMapping("/userConnected")
     @SendTo("/topic/onlineUsers")
     public int userConnected() {
-        onlineUsers++;
+        int onlineUsers = connectedUserManager.getConnectedCount();
         log.info(">>>userConnected={}",onlineUsers);
         return onlineUsers;
     }
@@ -20,14 +25,9 @@ public class WebSocketController {
     @MessageMapping("/userDisconnected")
     @SendTo("/topic/onlineUsers")
     public int userDisconnected() {
-        onlineUsers--;
+        int onlineUsers = connectedUserManager.getConnectedCount();
         log.info(">>>userDisconnected={}",onlineUsers);
         return onlineUsers;
     }
-//    @MessageMapping("/send")
-//    @SendTo("/topic/recipes")
-//    public RecipeMessage sendMessage(RecipeMessage message) {
-//        // Handle the incoming message
-//        return message;
-//    }
+
 }

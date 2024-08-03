@@ -40,7 +40,6 @@ public class SearchController {
     private final SearchService searchService;
 
 
-
     @GetMapping("recipes")
     public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> search(
             @RequestParam(name = "term", required = false) String term,
