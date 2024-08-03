@@ -48,6 +48,8 @@ public class SelectRecipeResponseDto {
                 .level(recipe.getLevel())
                 .recipeImageUrl(recipe.getRecipeImageUrl())
                 .likeCount(recipe.getLikeCount())
+                .username(recipe.getUser().getUsername())
+                .profileImageUrl(recipe.getUser().getProfileImageUrl())
                 .build();
     }
 }

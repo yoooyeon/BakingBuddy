@@ -183,8 +183,8 @@ public class RecipeService {
     private SelectRecipeResponseDto setUserDetails(SelectRecipeResponseDto dto, Recipe recipe, User user) {
         boolean userLiked = recipe.getLikes().stream().anyMatch(like -> like.getUser().getId().equals(user.getId()));
         dto.setUserLiked(userLiked);
-        dto.setUsername(user.getUsername());
-        dto.setProfileImageUrl(user.getProfileImageUrl());
+//        dto.setUsername(user.getUsername());
+//        dto.setProfileImageUrl(user.getProfileImageUrl());
         return dto;
     }
 
