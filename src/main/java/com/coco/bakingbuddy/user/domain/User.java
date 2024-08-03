@@ -2,8 +2,8 @@ package com.coco.bakingbuddy.user.domain;
 
 import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.global.domain.BaseTime;
-import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.like.domain.Like;
+import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
 import com.fasterxml.jackson.annotation.JsonIgnore;

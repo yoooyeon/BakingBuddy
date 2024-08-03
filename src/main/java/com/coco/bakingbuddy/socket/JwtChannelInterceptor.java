@@ -4,7 +4,6 @@ import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
@@ -17,9 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.security.Principal;
 import java.util.List;
 
 @Order(Ordered.HIGHEST_PRECEDENCE + 99) // security보다 높은 우선순위
@@ -41,7 +38,6 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
         // Extract token from cookies
         String token = extractTokenFromAuthorizationHeader(headerAccessor);
-
         // If the command is CONNECT, validate the token
         if (headerAccessor.getCommand() == StompCommand.CONNECT && token != null) {
             try {
@@ -68,14 +64,6 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
             }
         }
         return null;
-    }
-
-
-    @EventListener
-    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-        String username = event.getUser().getName();// You might need to adapt this based on how you identify users
-        log.info(">>>>handleSessionDisconnect username={}",username);
-        connectedUserManager.removeUser(username);
     }
 
 

@@ -1,16 +1,14 @@
 package com.coco.bakingbuddy.recipe.dto.response;
 
-import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import com.coco.bakingbuddy.tag.domain.Tag;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 

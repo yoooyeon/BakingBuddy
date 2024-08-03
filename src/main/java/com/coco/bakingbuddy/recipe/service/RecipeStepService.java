@@ -1,7 +1,5 @@
 package com.coco.bakingbuddy.recipe.service;
 
-import com.coco.bakingbuddy.recipe.repository.RecipeStepQueryDslRepository;
-import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
@@ -9,6 +7,8 @@ import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.domain.RecipeStep;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeStepResponseDto;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
+import com.coco.bakingbuddy.recipe.repository.RecipeStepQueryDslRepository;
+import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

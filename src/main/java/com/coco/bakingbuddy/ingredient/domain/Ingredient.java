@@ -2,9 +2,9 @@ package com.coco.bakingbuddy.ingredient.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 

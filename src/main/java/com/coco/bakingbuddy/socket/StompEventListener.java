@@ -48,7 +48,5 @@ public class StompEventListener {
         }
     }
 
-    public int getOnlineUserCount() {
-        return userSet.size();
-    }
+
 }

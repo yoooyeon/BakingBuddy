@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.recipe.service;
 
-import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
