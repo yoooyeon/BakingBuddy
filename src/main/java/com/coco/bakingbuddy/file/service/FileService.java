@@ -67,7 +67,7 @@ public class FileService {
     }
 
     @Transactional
-    public String uploadRecipeStepImage(MultipartFile stepImageFile) {
+    public String uploadRecipeStepImage(Long recipeStepId,MultipartFile stepImageFile) {
         return uploadFile(stepImageFile, RECIPE_STEP_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
             recipeStepImageFileRepository.save(
                     RecipeStepImageFile.builder()
@@ -75,6 +75,7 @@ public class FileService {
                             .ext(ext)
                             .uuid(uuid)
                             .fileName(fileName)
+                            .recipeStepId(recipeStepId)
                             .uploadPath(RECIPE_STEP_UPLOAD_PATH + uuid)
                             .build());
         });

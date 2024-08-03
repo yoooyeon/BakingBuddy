@@ -30,16 +30,18 @@ public class RecipeStepService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
 
-        String imageUrl = null;
-        if (stepImage != null && !stepImage.isEmpty()) {
-            imageUrl = fileService.uploadRecipeStepImage(stepImage);
-        }
         RecipeStep recipeStep = recipeStepRepository.save(RecipeStep.builder()
                 .stepNumber(stepNumber)
                 .description(description)
                 .recipe(recipe)
-                .stepImage(imageUrl)
                 .build());
+
+        String imageUrl = null;
+        if (stepImage != null && !stepImage.isEmpty()) {
+            imageUrl = fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
+            recipeStep.updateImage(imageUrl);
+
+        }
 
         return CreateRecipeStepResponseDto.fromEntity(recipeStep);
     }
@@ -48,19 +50,19 @@ public class RecipeStepService {
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
-        List<RecipeStep> recipeSteps = recipeStepRepository.findByRecipe(recipe).orElseThrow(() -> new CustomException(RECIPE_STEP_NOT_FOUND));
+        List<RecipeStep> recipeSteps = recipeStepRepository.findByRecipe(recipe)
+                .orElseThrow(() -> new CustomException(RECIPE_STEP_NOT_FOUND));
         recipeStepQueryDslRepository.delete(recipeSteps);
         String imageUrl = null;
-        if (stepImage != null && !stepImage.isEmpty()) {
-            imageUrl = fileService.uploadRecipeStepImage(stepImage);
-        }
         RecipeStep recipeStep = recipeStepRepository.save(RecipeStep.builder()
                 .stepNumber(stepNumber)
                 .description(description)
                 .recipe(recipe)
-                .stepImage(imageUrl)
                 .build());
-
+        if (stepImage != null && !stepImage.isEmpty()) {
+            imageUrl = fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
+            recipeStep.updateImage(imageUrl);
+        }
         return CreateRecipeStepResponseDto.fromEntity(recipeStep);
 
     }
