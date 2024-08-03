@@ -116,21 +116,28 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
-def generated = "generated/querydsl"
-
-tasks.withType(JavaCompile) {
-    options.annotationProcessorGeneratedSourcesDirectory = file(generated)
-}
+def generated = "${project.buildDir}/generated/querydsl"
 
 sourceSets {
     main {
         java {
-            srcDirs += [generated]
+            srcDirs += generated
         }
     }
 }
 
-clean {
-    delete file(generated)
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorPath = configurations.annotationProcessor
+    doFirst {
+        // QueryDSL의 생성된 소스 파일을 outputDir로 설정
+        def outputDir = file(generated)
+        outputDir.mkdirs()
+        options.compilerArgs += ["-Aquerydsl.entityAccessors=true"] // 추가적인 옵션 필요시 설정
+    }
+}
+
+tasks.named('clean') {
+    doLast {
+        delete file(generated)
+    }
 }

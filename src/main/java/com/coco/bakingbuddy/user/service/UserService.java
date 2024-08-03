@@ -91,7 +91,7 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.updateNickname(nickname);
         user.updateUsername(username);
-        String url = fileService.uploadImageFile(userId, profileImage);
+        String url = fileService.uploadUserProfileImageFile(userId, profileImage);
         user.updateProfile(url);
         return userRepository.save(user);
     }

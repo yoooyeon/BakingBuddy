@@ -13,7 +13,9 @@ public enum Unit {
     GRAM("g"),
     KILOGRAM("kg"),
     LITER("L"),
-    MILLILITER("mL");
+    MILLILITER("mL"),
+    PIECE("개")
+    ;
 
     private final String displayName;
     private static final Map<String, Unit> lookup = new HashMap<>();

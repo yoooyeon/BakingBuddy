@@ -49,6 +49,8 @@ public enum ErrorCode {
     JWT_NO_VALID(BAD_REQUEST, "정보가 맞지 않습니다."),
 
     UNAUTHORIZED_DELETE(BAD_REQUEST, "삭제 권한이 없습니다."),
+
+    MAX_UPLOAD_SIZE_EXCEEDED(BAD_REQUEST, "파일 최대 용량을 초과하였습니다."),
     ;
 
     private final HttpStatus status;

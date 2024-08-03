@@ -50,7 +50,6 @@ import static com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto.toE
 @RequiredArgsConstructor
 @Service
 public class RecipeService {
-    private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
     private final DirectoryRepository directoryRepository;
     private final UserRepository userRepository;
@@ -58,6 +57,7 @@ public class RecipeService {
     private final TagRecipeRepository tagRecipeRepository;
     private final TagRecipeQueryDslRepository tagRecipeQueryDslRepository;
     private final IngredientRecipeQueryDslRepository ingredientRecipeQueryDslRepository;
+    private final IngredientRepository ingredientRepository;
     private final IngredientRecipeRepository ingredientRecipeRepository;
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
@@ -120,7 +120,8 @@ public class RecipeService {
         recipe.setUser(user);
         saveTags(dto.getTags(), recipe);
         saveIngredients(dto.getIngredients(), recipe, dto.getServings());
-        fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
+        String imageUrl = fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
+        recipe.updateImage(imageUrl);
 
         return CreateRecipeResponseDto.fromEntity(recipe);
     }

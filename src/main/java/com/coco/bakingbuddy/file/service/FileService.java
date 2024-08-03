@@ -1,150 +1,119 @@
 package com.coco.bakingbuddy.file.service;
 
-import com.coco.bakingbuddy.file.dto.request.ImageFileCreateRequestDto;
-import com.coco.bakingbuddy.file.dto.request.RecipeImageFileCreateRequestDto;
-import com.coco.bakingbuddy.file.dto.request.RecipeStepImageFileCreateRequestDto;
-import com.coco.bakingbuddy.file.dto.response.RecipeImageFileCreateResponseDto;
+import com.coco.bakingbuddy.file.domain.ImageFile;
+import com.coco.bakingbuddy.file.domain.RecipeImageFile;
+import com.coco.bakingbuddy.file.domain.RecipeStepImageFile;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
+import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.recipe.domain.Recipe;
-import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import static com.coco.bakingbuddy.global.error.ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class FileService {
+    private final Storage storage;
+    private final ImageFileRepository imageFileRepository;
+    private final RecipeImageFileRepository recipeImageFileRepository;
+    private final RecipeStepImageFileRepository recipeStepImageFileRepository;
+
     private final String UPLOAD_PATH = "UserProfile/";
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
     private final String RECIPE_STEP_UPLOAD_PATH = "RecipeStep/";
-    private final String BUCKET_NAME = "baking-buddy-bucket";
-    private final Storage storage;
-    private final ImageFileRepository imageFileRepository;
-    private final RecipeRepository recipeRepository;
-    private final RecipeImageFileRepository recipeImageFileRepository;
-
+    private final String BUCKET_NAME = "baking-buddy-bucket/";
+    private final String STORAGE_URL = "https://storage.googleapis.com/";
 
     @Transactional
-    public String uploadImageFile(Long userId, MultipartFile multiPartFile) {
-        String originalName = multiPartFile.getOriginalFilename();
-        String ext = multiPartFile.getContentType();
-        String uuid = UUID.randomUUID().toString();
-        String fileName = UPLOAD_PATH + uuid + "_" + originalName;
-        String uploadPath = UPLOAD_PATH + uuid;
-        try {
-            // GCS에 이미지 파일 업로드
-            BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, fileName)
-                    .setContentType(ext)
-                    .build();
-            storage.create(blobInfo, multiPartFile.getInputStream());
-
-            // 이미지 파일 메타 데이터 저장
-            ImageFileCreateRequestDto dto = ImageFileCreateRequestDto.builder()
+    public String uploadUserProfileImageFile(Long userId, MultipartFile multiPartFile) {
+        return uploadFile(multiPartFile, UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
+            imageFileRepository.save(ImageFile.builder()
                     .originalName(originalName)
                     .ext(ext)
                     .uuid(uuid)
                     .fileName(fileName)
                     .userId(userId)
-                    .uploadPath(uploadPath)
-                    .build();
-            imageFileRepository.save(ImageFileCreateRequestDto.toEntity(dto));
-            String imageUrl = "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName;
-            return imageUrl;
-
-        } catch (IOException e) {
-            // 파일 업로드 중 오류 발생 시 처리
-            e.printStackTrace();
-            throw new RuntimeException("Failed to save profile image: " + e.getMessage());
-        }
+                    .uploadPath(UPLOAD_PATH + uuid)
+                    .build());
+        });
     }
 
     @Transactional
-    public RecipeImageFileCreateResponseDto uploadRecipeImageFile(Long recipeId, MultipartFile multiPartFile) {
-        String originalName = multiPartFile.getOriginalFilename();
-        String ext = multiPartFile.getContentType();
-        String uuid = UUID.randomUUID().toString();
-        String fileName = RECIPE_UPLOAD_PATH + uuid + "_" + originalName;
-        String uploadPath = RECIPE_UPLOAD_PATH + uuid;
-        try {
-            // GCS에 이미지 파일 업로드
-            BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, fileName)
-                    .setContentType(ext)
-                    .build();
-            storage.create(blobInfo, multiPartFile.getInputStream());
-
-            // 이미지 파일 메타 데이터 저장
-            RecipeImageFileCreateRequestDto dto = RecipeImageFileCreateRequestDto.builder()
+    public String uploadRecipeImageFile(Long recipeId, MultipartFile multiPartFile) {
+        return uploadFile(multiPartFile, RECIPE_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
+            recipeImageFileRepository.save(RecipeImageFile.builder()
                     .originalName(originalName)
                     .ext(ext)
                     .uuid(uuid)
                     .fileName(fileName)
                     .recipeId(recipeId)
-                    .uploadPath(uploadPath)
-                    .build();
-            // 유저 도메인에 파일 경로 저장
-            Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
-            recipe.updateImage("https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-            recipeRepository.save(recipe);
-//            log.info("userUpdateProfile:" + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-
-            return RecipeImageFileCreateResponseDto.fromEntity(recipeImageFileRepository.save(dto.toEntity()));
-
-        } catch (IOException e) {
-            // 파일 업로드 중 오류 발생 시 처리
-            e.printStackTrace();
-            throw new RuntimeException("Failed to save profile image: " + e.getMessage());
-        }
+                    .uploadPath(RECIPE_UPLOAD_PATH + uuid)
+                    .build());
+        });
     }
 
     @Transactional
     public String uploadRecipeStepImage(MultipartFile stepImageFile) {
-        String originalName = stepImageFile.getOriginalFilename();
-        String ext = stepImageFile.getContentType();
+        return uploadFile(stepImageFile, RECIPE_STEP_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
+            recipeStepImageFileRepository.save(
+                    RecipeStepImageFile.builder()
+                            .originalName(originalName)
+                            .ext(ext)
+                            .uuid(uuid)
+                            .fileName(fileName)
+                            .uploadPath(RECIPE_STEP_UPLOAD_PATH + uuid)
+                            .build());
+        });
+    }
+
+    private String uploadFile(MultipartFile file, String uploadPath, FileMetadataHandler handler) {
+        String originalName = file.getOriginalFilename();
+        String ext = file.getContentType();
         String uuid = UUID.randomUUID().toString();
-        String fileName = RECIPE_STEP_UPLOAD_PATH + uuid + "_" + originalName;
-        String uploadPath = RECIPE_STEP_UPLOAD_PATH + uuid;
+        String fileName = uploadPath + uuid + "_" + originalName;
 
         try {
-            // Upload image file to GCS
             BlobInfo blobInfo = BlobInfo.newBuilder(BUCKET_NAME, fileName)
                     .setContentType(ext)
                     .build();
-            storage.create(blobInfo, stepImageFile.getInputStream());
-
-            // Save image file metadata
-            RecipeStepImageFileCreateRequestDto dto = RecipeStepImageFileCreateRequestDto.builder()
-                    .originalName(originalName)
-                    .ext(ext)
-                    .uuid(uuid)
-                    .fileName(fileName)
-//                    .recipeStepId(recipeStepId)
-                    .uploadPath(uploadPath)
-                    .build();
-//            log.info("Uploaded step image: " + "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName);
-            return "https://storage.googleapis.com/" + BUCKET_NAME + "/" + fileName;
+            storage.create(blobInfo, file.getInputStream());
+            handler.handle(fileName, uuid, originalName, ext);
+            return makeImageUrl(fileName);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save step image: " + e.getMessage());
+            throw new RuntimeException("Failed to save image: " + e.getMessage());
+        } catch (MaxUploadSizeExceededException e) {
+            throw new CustomException(MAX_UPLOAD_SIZE_EXCEEDED);
         }
+    }
+
+    private String makeImageUrl(String fileName) {
+        return STORAGE_URL + BUCKET_NAME + fileName;
     }
 
     public void deleteImages(List<Long> imageIds) {
         for (Long imageId : imageIds) {
             log.info(">>>deleteImages{}", imageId);
         }
-        // todo 이미지 삭제 처리
+        // TODO: 이미지 삭제 처리
+    }
 
+    @FunctionalInterface
+    private interface FileMetadataHandler {
+        void handle(String fileName, String uuid, String originalName, String ext);
     }
 }

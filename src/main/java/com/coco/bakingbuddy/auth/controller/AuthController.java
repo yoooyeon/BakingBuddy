@@ -105,7 +105,7 @@ public class AuthController {
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
-        return SuccessResponse.toResponseEntity("로그아웃 성공");
+        return toResponseEntity("로그아웃 성공");
     }
 
 
