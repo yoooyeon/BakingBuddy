@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.RECIPE_STEP_NOT_FOUND;
 
@@ -25,45 +26,39 @@ public class RecipeStepService {
     private final FileService fileService;
     private final RecipeStepQueryDslRepository recipeStepQueryDslRepository;
 
-    public CreateRecipeStepResponseDto
-    addStep(Long recipeId, Integer stepNumber, String description, MultipartFile stepImage) {
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
-
-        RecipeStep recipeStep = recipeStepRepository.save(RecipeStep.builder()
-                .stepNumber(stepNumber)
-                .description(description)
-                .recipe(recipe)
-                .build());
-
-        String imageUrl = null;
-        if (stepImage != null && !stepImage.isEmpty()) {
-            imageUrl = fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
-            recipeStep.updateImage(imageUrl);
-
-        }
-
-        return CreateRecipeStepResponseDto.fromEntity(recipeStep);
+    public CreateRecipeStepResponseDto addStep(Long recipeId, Integer stepNumber, String description, MultipartFile stepImage) {
+        Recipe recipe = fetchRecipe(recipeId);
+        return saveOrUpdateStep(recipe, stepNumber, description, stepImage);
     }
 
     public CreateRecipeStepResponseDto editStep(Long recipeId, Integer stepNumber, String description, MultipartFile stepImage) {
+        Recipe recipe = fetchRecipe(recipeId);
 
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
+        // 기존 조리 순서 제거
         List<RecipeStep> recipeSteps = recipeStepRepository.findByRecipe(recipe)
                 .orElseThrow(() -> new CustomException(RECIPE_STEP_NOT_FOUND));
         recipeStepQueryDslRepository.delete(recipeSteps);
-        String imageUrl = null;
-        RecipeStep recipeStep = recipeStepRepository.save(RecipeStep.builder()
+        return saveOrUpdateStep(recipe, stepNumber, description, stepImage);
+    }
+
+    private CreateRecipeStepResponseDto saveOrUpdateStep(Recipe recipe, Integer stepNumber, String description, MultipartFile stepImage) {
+        RecipeStep recipeStep = RecipeStep.builder()
                 .stepNumber(stepNumber)
                 .description(description)
                 .recipe(recipe)
-                .build());
-        if (stepImage != null && !stepImage.isEmpty()) {
-            imageUrl = fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
+                .build();
+
+        recipeStep = recipeStepRepository.save(recipeStep);
+
+        if (stepImage != null && !stepImage.isEmpty()) { // 이미지 있으면 파일서비스로 저장
+            String imageUrl = fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
             recipeStep.updateImage(imageUrl);
         }
         return CreateRecipeStepResponseDto.fromEntity(recipeStep);
+    }
 
+    private Recipe fetchRecipe(Long recipeId) {
+        return recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RECIPE_NOT_FOUND));
     }
 }
