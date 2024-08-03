@@ -22,6 +22,7 @@ import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.coco.bakingbuddy.global.error.ErrorCode.DUPLICATE_USERNAME;
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
 import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -47,15 +49,13 @@ public class UserService {
 
     @Transactional
     public User registerUser(CreateUserRequestDto user) {
-        if (isDuplicated(user.getUsername())) {
-            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
-        }
+        if (isDuplicated(user.getUsername())) throw new CustomException(DUPLICATE_USERNAME); // 아이디 중복 체크
+        log.info(">>>user.getRole {}",user.getRole());
         return userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .nickname(user.getNickname())
-                .profileImageUrl(user.getProfileImageUrl())
-                .role("USER") // todo admin과 어떻게 나눌지
+                .role(RoleType.from(user.getRole()))
                 .build());
     }
 
@@ -91,8 +91,10 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.updateNickname(nickname);
         user.updateUsername(username);
-        String url = fileService.uploadUserProfileImageFile(userId, profileImage);
-        user.updateProfile(url);
+        if (profileImage != null && !profileImage.isEmpty()){
+            String url = fileService.uploadUserProfileImageFile(userId, profileImage);
+            user.updateProfile(url);
+        }
         return userRepository.save(user);
     }
 

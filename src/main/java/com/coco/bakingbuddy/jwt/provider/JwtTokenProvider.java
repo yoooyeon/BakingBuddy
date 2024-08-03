@@ -5,6 +5,7 @@ import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.jwt.domain.RefreshToken;
 import com.coco.bakingbuddy.jwt.repository.RefreshTokenRepository;
+import com.coco.bakingbuddy.user.service.RoleType;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
@@ -56,7 +57,7 @@ public class JwtTokenProvider {
 
 
     // Access Token 생성
-    public String createAccessToken(String userPk, String role) {
+    public String createAccessToken(String userPk, RoleType role) {
         Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
         claims.put("roles", role); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();

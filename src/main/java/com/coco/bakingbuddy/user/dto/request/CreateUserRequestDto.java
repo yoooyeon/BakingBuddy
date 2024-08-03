@@ -18,6 +18,8 @@ public class CreateUserRequestDto {
     private String password;
     @NotBlank(message = "nickname 이 빈 값일 수 없습니다.")
     private String nickname;
-    private String profileImageUrl;
+    @NotBlank(message = "role 이 빈 값일 수 없습니다.")
+    private String role;
+
 
 }

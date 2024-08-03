@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
+import com.coco.bakingbuddy.user.service.RoleType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,10 +32,10 @@ public class User extends BaseTime implements UserDetails {
     private String username;
     private String password;
     private String profileImageUrl;
-    private String role;
-    private String picture;
-    private String profile;
-    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likedRecipes = new HashSet<>();
 

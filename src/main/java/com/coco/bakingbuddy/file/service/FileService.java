@@ -6,7 +6,6 @@ import com.coco.bakingbuddy.file.domain.RecipeStepImageFile;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -35,7 +34,7 @@ public class FileService {
     private final String UPLOAD_PATH = "UserProfile/";
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
     private final String RECIPE_STEP_UPLOAD_PATH = "RecipeStep/";
-    private final String BUCKET_NAME = "baking-buddy-bucket/";
+    private final String BUCKET_NAME = "baking-buddy-bucket"; // 변경 불가, api 요청 상수
     private final String STORAGE_URL = "https://storage.googleapis.com/";
 
     @Transactional
@@ -67,7 +66,7 @@ public class FileService {
     }
 
     @Transactional
-    public String uploadRecipeStepImage(Long recipeStepId,MultipartFile stepImageFile) {
+    public String uploadRecipeStepImage(Long recipeStepId, MultipartFile stepImageFile) {
         return uploadFile(stepImageFile, RECIPE_STEP_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
             recipeStepImageFileRepository.save(
                     RecipeStepImageFile.builder()
@@ -103,7 +102,7 @@ public class FileService {
     }
 
     private String makeImageUrl(String fileName) {
-        return STORAGE_URL + BUCKET_NAME + fileName;
+        return STORAGE_URL + BUCKET_NAME + "/" + fileName;
     }
 
     public void deleteImages(List<Long> imageIds) {
