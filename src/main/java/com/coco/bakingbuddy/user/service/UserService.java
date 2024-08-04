@@ -87,10 +87,11 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public User editUserInfo(Long userId, String username, String nickname, MultipartFile profileImage) {
+    public User editUserInfo(Long userId, String username, String nickname, String introduction, MultipartFile profileImage) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.updateNickname(nickname);
         user.updateUsername(username);
+        user.updateIntroduction(introduction);
         if (profileImage != null && !profileImage.isEmpty()){
             String url = fileService.uploadUserProfileImageFile(userId, profileImage);
             user.updateProfile(url);

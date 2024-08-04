@@ -47,9 +47,10 @@ public class UserController {
     editUser(@AuthenticationPrincipal User user,
              @RequestPart("username") String username,
              @RequestPart("nickname") String nickname,
+             @RequestPart("introduction") String introduction,
              @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         return toResponseEntity("유저 정보 수정 성공",
-                fromEntity(userService.editUserInfo(user.getId(), username, nickname, profileImage)));
+                fromEntity(userService.editUserInfo(user.getId(), username, nickname, introduction,profileImage)));
     }
 
     @GetMapping("recent")

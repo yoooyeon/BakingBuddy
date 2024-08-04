@@ -32,6 +32,7 @@ public class User extends BaseTime implements UserDetails {
     private String username;
     private String password;
     private String profileImageUrl;
+    private String introduction;
 
     @Enumerated(EnumType.STRING)
     private RoleType role;
@@ -89,6 +90,9 @@ public class User extends BaseTime implements UserDetails {
 
     public void updateUsername(String username) {
         this.username = username;
+    }
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     // 최대 최근 검색어 수
