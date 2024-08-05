@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SelectUserProfileResponseDto {
+public class SelectUserIntroResponseDto {
     private String username;
     private String nickname;
     private String profileImageUrl;
     private String introduction;
 
-    public static SelectUserProfileResponseDto fromEntity(User user) {
-        return SelectUserProfileResponseDto.builder()
+    public static SelectUserIntroResponseDto fromEntity(User user) {
+        return SelectUserIntroResponseDto.builder()
                 .username(user.getUsername())
                 .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())

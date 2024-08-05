@@ -1,7 +1,6 @@
 package com.coco.bakingbuddy.user.service;
 
 import com.coco.bakingbuddy.file.service.FileService;
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
@@ -33,9 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.coco.bakingbuddy.global.error.ErrorCode.DUPLICATE_USERNAME;
-import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
+import static com.coco.bakingbuddy.global.error.ErrorCode.*;
 import static com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto.fromEntity;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -50,7 +49,7 @@ public class UserService {
     @Transactional
     public User registerUser(CreateUserRequestDto user) {
         if (isDuplicated(user.getUsername())) throw new CustomException(DUPLICATE_USERNAME); // 아이디 중복 체크
-        log.info(">>>user.getRole {}",user.getRole());
+        log.info(">>>user.getRole {}", user.getRole());
         return userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
@@ -92,7 +91,7 @@ public class UserService {
         user.updateNickname(nickname);
         user.updateUsername(username);
         user.updateIntroduction(introduction);
-        if (profileImage != null && !profileImage.isEmpty()){
+        if (profileImage != null && !profileImage.isEmpty()) {
             String url = fileService.uploadUserProfileImageFile(userId, profileImage);
             user.updateProfile(url);
         }
@@ -143,5 +142,9 @@ public class UserService {
 
         }
         return result;
+    }
+
+    public User selectIntroByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(USERNAME_NOT_FOUND));
     }
 }
