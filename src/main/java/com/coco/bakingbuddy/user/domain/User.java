@@ -36,6 +36,8 @@ public class User extends BaseTime implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private RoleType role;
+    @Column(unique = true, nullable = false)
+    private UUID uuid;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likedRecipes = new HashSet<>();

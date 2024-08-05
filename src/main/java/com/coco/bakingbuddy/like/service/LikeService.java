@@ -7,7 +7,6 @@ import com.coco.bakingbuddy.like.dto.response.LikeResponseDto;
 import com.coco.bakingbuddy.like.repository.LikeRepository;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
-import com.coco.bakingbuddy.socket.service.MessagingService;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
-    private final MessagingService messagingService;
+//    private final MessagingService messagingService;
 
     @Transactional
     public LikeResponseDto likeRecipe(Long recipeId, Long userId) {
@@ -51,7 +50,7 @@ public class LikeService {
         }
 
         Recipe save = recipeRepository.save(recipe);
-        messagingService.broadcastLikeUpdate(new LikeResponseDto(isLiked, save.getLikeCount()));
+//        messagingService.broadcastLikeUpdate(new LikeResponseDto(isLiked, save.getLikeCount()));
         return LikeResponseDto.builder()
                 .userLiked(isLiked)
                 .likeCount(save.getLikeCount())

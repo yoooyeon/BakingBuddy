@@ -50,6 +50,7 @@ public enum ErrorCode {
 
     // file
     MAX_UPLOAD_SIZE_EXCEEDED(BAD_REQUEST, "파일 최대 용량을 초과하였습니다."),
+    UUID_NOT_FOUND(BAD_REQUEST, "UUID가 존재하지 않습니다."),
     ;
 
     private final HttpStatus status;

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +26,7 @@ public class SelectRecipeResponseDto {
     private Long id;
     private String description;
     private String username;
+    private UUID writerUuid;
     private String profileImageUrl;
     private boolean openYn; // 공개 여부 True - Open
     private List<IngredientResponseDto> ingredients; // JPA
@@ -35,8 +37,8 @@ public class SelectRecipeResponseDto {
     private String level; // 난이도
     private Integer likeCount;
     private boolean userLiked;
-
     private Integer servings;
+    private WriterResponseDto writer;
 
     public static SelectRecipeResponseDto fromEntity(Recipe recipe) {
         return SelectRecipeResponseDto.builder()

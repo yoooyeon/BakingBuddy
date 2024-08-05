@@ -17,6 +17,7 @@ import com.coco.bakingbuddy.recipe.dto.request.EditRecipeRequestDto;
 import com.coco.bakingbuddy.recipe.dto.response.CreateRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DeleteRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
+import com.coco.bakingbuddy.recipe.dto.response.WriterResponseDto;
 import com.coco.bakingbuddy.recipe.repository.DirectoryRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
@@ -174,6 +175,12 @@ public class RecipeService {
     private SelectRecipeResponseDto buildSelectRecipeResponseDto
             (Recipe recipe, Map<Long, List<IngredientResponseDto>> ingredientsMap, Map<Long, List<Tag>> tagsMap, User user) {
         SelectRecipeResponseDto dto = SelectRecipeResponseDto.fromEntity(recipe);
+        dto.setWriter(WriterResponseDto.builder()
+                .profileImageUrl(recipe.getUser().getProfileImageUrl())
+                .uuid(recipe.getUser().getUuid())
+                .username(recipe.getUser().getUsername())
+                .build());
+
         dto.setIngredients(ingredientsMap.get(recipe.getId()));
         dto.setTags(tagsMap.get(recipe.getId()));
         dto = setUserDetails(dto, recipe, user);
@@ -183,8 +190,6 @@ public class RecipeService {
     private SelectRecipeResponseDto setUserDetails(SelectRecipeResponseDto dto, Recipe recipe, User user) {
         boolean userLiked = recipe.getLikes().stream().anyMatch(like -> like.getUser().getId().equals(user.getId()));
         dto.setUserLiked(userLiked);
-//        dto.setUsername(user.getUsername());
-//        dto.setProfileImageUrl(user.getProfileImageUrl());
         return dto;
     }
 

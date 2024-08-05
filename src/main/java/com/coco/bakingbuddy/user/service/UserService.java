@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.*;
@@ -49,12 +50,13 @@ public class UserService {
     @Transactional
     public User registerUser(CreateUserRequestDto user) {
         if (isDuplicated(user.getUsername())) throw new CustomException(DUPLICATE_USERNAME); // 아이디 중복 체크
-        log.info(">>>user.getRole {}", user.getRole());
+//        log.info(">>>user.getRole {}", user.getRole());
         return userRepository.save(User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .nickname(user.getNickname())
                 .role(RoleType.from(user.getRole()))
+                .uuid(UUID.randomUUID())
                 .build());
     }
 
@@ -146,5 +148,9 @@ public class UserService {
 
     public User selectIntroByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(USERNAME_NOT_FOUND));
+    }
+
+    public User selectIntroByUuid(UUID uuid) {
+        return userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(UUID_NOT_FOUND));
     }
 }
