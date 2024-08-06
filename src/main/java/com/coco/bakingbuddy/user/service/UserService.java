@@ -18,6 +18,7 @@ import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.request.CreateUserRequestDto;
+import com.coco.bakingbuddy.user.dto.response.SelectUserIntroResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -146,11 +147,11 @@ public class UserService {
         return result;
     }
 
-    public User selectIntroByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new CustomException(USERNAME_NOT_FOUND));
-    }
+    public SelectUserIntroResponseDto selectIntroByUuid(UUID uuid) {
+        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(UUID_NOT_FOUND));
+        SelectUserIntroResponseDto dto = SelectUserIntroResponseDto.fromEntity(user);
+        dto.setDirs(selectRecipesGroupbyDirByUserId(user.getId()));
+        return dto;
 
-    public User selectIntroByUuid(UUID uuid) {
-        return userRepository.findByUuid(uuid).orElseThrow(() -> new CustomException(UUID_NOT_FOUND));
     }
 }

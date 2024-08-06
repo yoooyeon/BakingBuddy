@@ -101,7 +101,6 @@ public class UserController {
     @GetMapping("intro/{uuid}")
     public ResponseEntity<SuccessResponse<SelectUserIntroResponseDto>>
     introUser(@PathVariable("uuid") UUID uuid) {
-        SelectUserIntroResponseDto data = SelectUserIntroResponseDto.fromEntity(userService.selectIntroByUuid(uuid));
-        return toResponseEntity("유저 소개 프로필 조회 성공", data);
+        return toResponseEntity("유저 소개 프로필 조회 성공", userService.selectIntroByUuid(uuid));
     }
 }
