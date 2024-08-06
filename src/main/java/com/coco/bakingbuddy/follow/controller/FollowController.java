@@ -1,8 +1,9 @@
 package com.coco.bakingbuddy.follow.controller;
 
+import com.coco.bakingbuddy.follow.dto.response.FollowResponseDto;
+import com.coco.bakingbuddy.follow.dto.response.FollowSummaryResponseDto;
 import com.coco.bakingbuddy.follow.service.FollowService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.global.response.ErrorResponse;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +55,11 @@ public class FollowController {
             @AuthenticationPrincipal User user) {
         boolean isFollowing = followService.isFollowing(user, followedId);
         return toResponseEntity(isFollowing ? "Following" : "Not following");
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<SuccessResponse<FollowSummaryResponseDto>>
+    summary(@AuthenticationPrincipal User user) {
+        return toResponseEntity("팔로우 요약 조회 성공", followService.getSummary(user));
     }
 }
