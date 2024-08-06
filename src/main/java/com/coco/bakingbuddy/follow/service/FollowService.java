@@ -5,6 +5,7 @@ import com.coco.bakingbuddy.follow.dto.response.FollowResponseDto;
 import com.coco.bakingbuddy.follow.dto.response.FollowSummaryResponseDto;
 import com.coco.bakingbuddy.follow.repository.FollowQueryDslRepository;
 import com.coco.bakingbuddy.follow.repository.FollowRepository;
+import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.coco.bakingbuddy.global.error.ErrorCode.*;
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -35,7 +37,9 @@ public class FollowService {
 
         User followed = userRepository.findByUuid(followedId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
+        if (follower.equals(followed)) {
+            throw new CustomException(CANNOT_FOLLOW_SELF);
+        }
         followRepository.save(Follow.builder().followed(followed).follower(follower).build());
     }
 

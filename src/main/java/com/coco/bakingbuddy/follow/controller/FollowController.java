@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.follow.controller;
 
-import com.coco.bakingbuddy.follow.dto.response.FollowResponseDto;
 import com.coco.bakingbuddy.follow.dto.response.FollowSummaryResponseDto;
 import com.coco.bakingbuddy.follow.service.FollowService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
@@ -32,7 +31,7 @@ public class FollowController {
             followService.follow(user.getId(), followedId);
             return toResponseEntity("팔로우 성공");
         } catch (CustomException e) {
-            return toResponseEntity(HttpStatus.NOT_FOUND, "팔로우 실패" + e.getMessage());
+            return toResponseEntity(e.getCode().getStatus(), e.getMessage());
         }
     }
 
@@ -44,8 +43,7 @@ public class FollowController {
             followService.unFollow(user.getId(), followedId);
             return toResponseEntity("언팔로우 성공");
         } catch (CustomException e) {
-            return toResponseEntity(HttpStatus.NOT_FOUND, "언팔로우 실패" + e.getMessage());
-
+            return toResponseEntity(e.getCode().getStatus(), e.getMessage());
         }
     }
 

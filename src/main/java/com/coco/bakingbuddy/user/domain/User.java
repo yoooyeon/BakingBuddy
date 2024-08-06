@@ -32,6 +32,22 @@ public class User extends BaseTime implements UserDetails {
     private String username;
     private String password;
     private String profileImageUrl;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
+    }
+
+
     private String introduction;
 
     @Enumerated(EnumType.STRING)
