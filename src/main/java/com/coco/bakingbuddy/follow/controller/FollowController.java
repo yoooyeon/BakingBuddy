@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static com.coco.bakingbuddy.global.response.ErrorResponse.toResponseEntity;
+import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEntity;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/follow")
@@ -26,9 +29,9 @@ public class FollowController {
             @AuthenticationPrincipal User user) {
         try {
             followService.follow(user.getId(), followedId);
-            return SuccessResponse.toResponseEntity("팔로우 성공");
+            return toResponseEntity("팔로우 성공");
         } catch (CustomException e) {
-            return ErrorResponse.toResponseEntity(HttpStatus.NOT_FOUND, "팔로우 실패" + e.getMessage());
+            return toResponseEntity(HttpStatus.NOT_FOUND, "팔로우 실패" + e.getMessage());
         }
     }
 
@@ -38,9 +41,9 @@ public class FollowController {
             @AuthenticationPrincipal User user) {
         try {
             followService.unFollow(user.getId(), followedId);
-            return SuccessResponse.toResponseEntity("언팔로우 성공");
+            return toResponseEntity("언팔로우 성공");
         } catch (CustomException e) {
-            return ErrorResponse.toResponseEntity(HttpStatus.NOT_FOUND, "언팔로우 실패" + e.getMessage());
+            return toResponseEntity(HttpStatus.NOT_FOUND, "언팔로우 실패" + e.getMessage());
 
         }
     }
@@ -50,6 +53,6 @@ public class FollowController {
             @RequestParam("followedId") UUID followedId,
             @AuthenticationPrincipal User user) {
         boolean isFollowing = followService.isFollowing(user, followedId);
-        return SuccessResponse.toResponseEntity(isFollowing ? "Following" : "Not following");
+        return toResponseEntity(isFollowing ? "Following" : "Not following");
     }
 }

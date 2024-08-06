@@ -18,8 +18,8 @@ public class FollowQueryDslRepository {
     public long unFollow(User follower, User followed) {
         return queryFactory
                 .delete(follow)
-                .where(follow.follower.eq(follower)
-                        .and(follow.followed.eq(followed))
+                .where(follow.follower.id.eq(follower.getId())
+                        .and(follow.followed.id.eq(followed.getId()))
                 )
                 .execute(); // execute() 메소드로 삭제된 행의 수를 반환
     }

@@ -9,6 +9,7 @@ import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final FollowQueryDslRepository followQueryDslRepository;
 
+    @Transactional
     public void follow(Long followerId, UUID followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -32,6 +34,7 @@ public class FollowService {
         followRepository.save(Follow.builder().followed(followed).follower(follower).build());
     }
 
+    @Transactional
     public void unFollow(Long followerId, UUID followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -41,6 +44,7 @@ public class FollowService {
         long removedRowCount = followQueryDslRepository.unFollow(follower, followed);
     }
 
+    @Transactional(readOnly = true)
     public boolean isFollowing(User follower, UUID followedId) {
         User followed = userRepository.findByUuid(followedId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
