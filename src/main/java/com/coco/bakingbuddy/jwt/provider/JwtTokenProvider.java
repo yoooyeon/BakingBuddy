@@ -5,6 +5,7 @@ import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.jwt.domain.RefreshToken;
 import com.coco.bakingbuddy.jwt.repository.RefreshTokenRepository;
+import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.service.RoleType;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
@@ -16,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -57,8 +60,12 @@ public class JwtTokenProvider {
 
 
     // Access Token 생성
-    public String createAccessToken(String userPk, RoleType role) {
-        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
+    public String createAccessToken(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = (User) userDetails;
+        RoleType role = user.getRole();
+
+        Claims claims = Jwts.claims().setSubject(authentication.getName());
         claims.put("roles", role); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + accessTokenValidityInMilliseconds); // validityInMilliseconds 확인

@@ -8,7 +8,13 @@ import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
+
+import static com.coco.bakingbuddy.global.error.ErrorCode.INVALID_CREDENTIALS;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -16,18 +22,23 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
-    public String getRefreshToken(LoginRequestDto dto) {
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        String token = jwtTokenProvider.createRefreshToken(user.getUsername());
-        return token;
+    public String getAccessToken(LoginRequestDto loginRequest) {
+        try {
+            // Authenticate user
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+
+            return jwtTokenProvider.createAccessToken(authentication);
+        } catch (AuthenticationException e) {
+            // Handle authentication failure
+            throw new CustomException(INVALID_CREDENTIALS);
+        }
     }
 
-    public String getAccessToken(LoginRequestDto dto) {
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        String token = jwtTokenProvider.createAccessToken(user.getUsername(), user.getRole());
-        return token;
+    public String getRefreshToken(String username) {
+        return jwtTokenProvider.createRefreshToken(username);
     }
 }

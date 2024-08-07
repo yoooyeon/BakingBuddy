@@ -53,9 +53,10 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<SuccessResponse<LoginUserResponseDto>> login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
+    public ResponseEntity<SuccessResponse<LoginUserResponseDto>>
+    login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
         String accessToken = authService.getAccessToken(user);
-        String refreshToken = authService.getRefreshToken(user);
+        String refreshToken = authService.getRefreshToken(user.getUsername());
 
         // Store tokens in cookies
         jwtTokenProvider.addTokenToCookie(response, accessToken, "accessToken");
