@@ -1,8 +1,8 @@
 package com.coco.bakingbuddy.recommendation.domain;
 
-import com.coco.bakingbuddy.product.domain.Product;
-import com.coco.bakingbuddy.recipe.domain.Recipe; // Import 추가
 import com.coco.bakingbuddy.global.domain.BaseTime;
+import com.coco.bakingbuddy.product.domain.Product;
+import com.coco.bakingbuddy.recipe.domain.Recipe;
 import jakarta.persistence.*;
 import lombok.*;
 

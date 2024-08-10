@@ -53,11 +53,16 @@ public enum ErrorCode {
     UUID_NOT_FOUND(BAD_REQUEST, "UUID가 존재하지 않습니다."),
 
     // follow
-    CANNOT_FOLLOW_SELF(BAD_REQUEST,"자기 자신을 팔로우 할 수 없습니다."),
+    CANNOT_FOLLOW_SELF(BAD_REQUEST, "자기 자신을 팔로우 할 수 없습니다."),
 
     //auth
-    INVALID_CREDENTIALS(BAD_REQUEST,"로그인 정보가 맞지 않습니다.")
+    INVALID_CREDENTIALS(BAD_REQUEST, "로그인 정보가 맞지 않습니다."),
+
+    // product
+    PRODUCT_NOT_FOUND(BAD_REQUEST,"상품 정보를 찾을 수 없습니다"),
+
     ;
+
 
     private final HttpStatus status;
     private final String message;

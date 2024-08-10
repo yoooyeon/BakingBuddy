@@ -1,25 +1,31 @@
-package com.coco.bakingbuddy.product.domain;
+package com.coco.bakingbuddy.review.domain;
 
-import com.coco.bakingbuddy.review.domain.Review;
+import com.coco.bakingbuddy.product.domain.Product;
+import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class ProductReview extends Review {
+public class ProductReview  {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID", nullable = false)
     private Product product;
 
-    @Override
-    public void setRelatedEntity(Object entity) {
-        if (entity instanceof Product) {
-            this.product = (Product) entity;
-        } else {
-            throw new IllegalArgumentException("Invalid entity type for ProductReview");
-        }
-    }
+    @Column(nullable = false)
+    private String content;
+
+    @Column(nullable = false)
+    private int rating; // 1-5점 사이의 평점
 }
