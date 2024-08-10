@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.recipe.domain;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
 import com.coco.bakingbuddy.like.domain.Like;
+import com.coco.bakingbuddy.review.domain.RecipeReview;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,6 +57,8 @@ public class Recipe extends BaseTime {
     @JsonIgnore
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<IngredientRecipe> ingredientRecipes;
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeReview> reviews;
 
     public void delete() {
         this.useYn = false;

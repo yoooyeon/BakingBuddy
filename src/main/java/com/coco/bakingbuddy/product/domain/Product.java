@@ -1,8 +1,11 @@
 package com.coco.bakingbuddy.product.domain;
 
+
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
+import com.coco.bakingbuddy.product.domain.ProductReview;
+import java.util.List;
 
 @Builder
 @Getter
@@ -18,6 +21,8 @@ public class Product extends BaseTime {
     private Integer price;
     private String description;
     private String productImageUrl;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductReview> reviews;
     private boolean useYn;
 
 }
