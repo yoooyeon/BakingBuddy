@@ -46,7 +46,7 @@ public class ProductReviewController {
      * @return
      */
     @GetMapping("{id}")
-    public ResponseEntity<SuccessResponse<List<SelectProductReviewResponseDto>>> selectById(
+    public ResponseEntity<SuccessResponse<SelectProductReviewResponseDto>> selectById(
             @PathVariable("id") Long id,
             @AuthenticationPrincipal User user) {
         return toResponseEntity("상품 리뷰 아이디로 조회 성공",
@@ -62,7 +62,7 @@ public class ProductReviewController {
     public ResponseEntity<SuccessResponse<List<SelectProductReviewResponseDto>>> selectByUserId(
             @AuthenticationPrincipal User user) {
         return toResponseEntity("상품 리뷰 유저 아이디로 조회 성공",
-                productReviewService.selectById(user.getId()));
+                productReviewService.selectByUserId(user));
     }
 
 
@@ -98,7 +98,7 @@ public class ProductReviewController {
             @PathVariable("id") Long id,
             @Valid @RequestBody EditProductReviewRequestDto dto,
             @AuthenticationPrincipal User user) {
-//        dto.setId(reviewId);
+        dto.setId(id);
         return toResponseEntity("상품 리뷰 수정 성공", productReviewService.edit(dto, user));
     }
 
@@ -113,6 +113,7 @@ public class ProductReviewController {
     public ResponseEntity<SuccessResponse<DeleteProductReviewResponseDto>> delete(
             @PathVariable("id") Long reviewId,
             @AuthenticationPrincipal User user) {
-        return toResponseEntity("상품 리뷰 삭제 성공", productReviewService.delete(reviewId, user));
+        productReviewService.delete(reviewId, user);
+        return toResponseEntity("상품 리뷰 삭제 성공");
     }
 }

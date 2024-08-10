@@ -35,8 +35,8 @@ public class RecipeReviewController {
     @GetMapping
     public ResponseEntity<SuccessResponse<List<SelectRecipeReviewResponseDto>>> selectAll(
             @AuthenticationPrincipal User user) {
-        return toResponseEntity("레시피 리뷰 조회 성공",
-                recipeReviewService.selectAll(user));
+        return toResponseEntity("모든 레시피 리뷰 조회 성공",
+                recipeReviewService.selectAll());
     }
 
     /**
@@ -68,7 +68,6 @@ public class RecipeReviewController {
             CreateRecipeReviewResponseDto savedReview = recipeReviewService.create(user.getId(), dto);
             return toResponseEntity("레시피 리뷰 생성 성공", savedReview);
         } catch (Exception e) {
-            // 예외 처리 및 적절한 응답 반환
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -85,7 +84,7 @@ public class RecipeReviewController {
             @PathVariable("id") Long id,
             @Valid @RequestBody EditRecipeReviewRequestDto dto,
             @AuthenticationPrincipal User user) {
-//        dto.setId(reviewId);
+        dto.setId(id);
         return toResponseEntity("레시피 리뷰 수정 성공", recipeReviewService.edit(dto, user));
     }
 
@@ -100,6 +99,7 @@ public class RecipeReviewController {
     public ResponseEntity<SuccessResponse<DeleteRecipeReviewResponseDto>> delete(
             @PathVariable("id") Long reviewId,
             @AuthenticationPrincipal User user) {
-        return toResponseEntity("레시피 리뷰 삭제 성공", recipeReviewService.delete(reviewId, user));
+        recipeReviewService.delete(reviewId, user);
+        return toResponseEntity("레시피 리뷰 삭제 성공");
     }
 }

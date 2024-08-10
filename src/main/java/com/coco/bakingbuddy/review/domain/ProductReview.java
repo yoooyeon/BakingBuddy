@@ -4,7 +4,7 @@ import com.coco.bakingbuddy.product.domain.Product;
 import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
-
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor

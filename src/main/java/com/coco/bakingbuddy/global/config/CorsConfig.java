@@ -18,9 +18,9 @@ public class CorsConfig {
                 asList("http://localhost:3001"
                         , "http://localhost:3002"
                         , "http://localhost:3000"
+                        , "http://localhost:8080"
                         , "http://127.0.0.1:3001"
                         , "https://baking-buddy-frontend-rg7h.vercel.app"
-
                 ));
         configuration.setAllowedMethods(asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(asList("*"));

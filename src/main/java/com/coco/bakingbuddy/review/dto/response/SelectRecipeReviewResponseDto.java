@@ -14,11 +14,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SelectRecipeReviewResponseDto {
+    private Long id;
     private SelectUserResponseDto user;
     private String content;
     private int rating; // 1-5점 사이의 평점
     public static SelectRecipeReviewResponseDto fromEntity(RecipeReview recipeReview) {
         return SelectRecipeReviewResponseDto.builder()
+                .id(recipeReview.getId())
                 .content(recipeReview.getContent())
                 .rating(recipeReview.getRating())
                 .build();
