@@ -2,9 +2,10 @@ package com.coco.bakingbuddy.product.domain;
 
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
+import com.coco.bakingbuddy.review.domain.ProductReview;
 import jakarta.persistence.*;
 import lombok.*;
-import com.coco.bakingbuddy.product.domain.ProductReview;
+
 import java.util.List;
 
 @Builder
