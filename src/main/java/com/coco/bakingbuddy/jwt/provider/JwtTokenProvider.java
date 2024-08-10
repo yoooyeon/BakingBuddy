@@ -167,6 +167,7 @@ public class JwtTokenProvider {
     public void addTokenToCookie(HttpServletResponse response, String token, String tokenName) {
         Cookie cookie = new Cookie(tokenName, token);
         cookie.setPath("/");
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) (tokenName.equals("accessToken") ? accessTokenValidityInMilliseconds : refreshTokenValidityInMilliseconds) / 1000);
         response.addCookie(cookie);

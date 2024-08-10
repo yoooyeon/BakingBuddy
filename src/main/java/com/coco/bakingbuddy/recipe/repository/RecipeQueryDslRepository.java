@@ -2,8 +2,10 @@ package com.coco.bakingbuddy.recipe.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
+import com.coco.bakingbuddy.user.domain.User;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,4 +108,35 @@ public class RecipeQueryDslRepository {
                 .where(recipe.name.containsIgnoreCase(term))
                 .fetch();
     }
+
+    public List<Recipe> findByUsers(List<User> allFollowedUsers) {
+        return queryFactory
+                .selectFrom(recipe)
+                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .leftJoin(tagRecipe.tag, tag).fetchJoin()
+                .where(recipe.user.in(allFollowedUsers))
+                .orderBy(recipe.createdDate.desc())
+                .fetchResults()
+                .getResults();
+    }
+
+    public List<Recipe> findByUsersAfterCursor(List<User> users, Long cursor) {
+        JPAQuery<Recipe> query = queryFactory
+                .selectFrom(recipe)
+                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .leftJoin(tagRecipe.tag, tag).fetchJoin()
+                .where(recipe.user.in(users));
+
+        if (cursor != null) {
+            // cursor 이후의 레시피를 가져오도록 조건 추가
+            query.where(recipe.id.gt(cursor));
+        }
+
+        return query.orderBy(recipe.createdDate.desc()) // createdDate로 변경
+                .limit(10) // 페이지당 가져올 레시피 수 제한
+                .fetch();
+    }
+
 }

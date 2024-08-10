@@ -5,7 +5,6 @@ import com.coco.bakingbuddy.follow.dto.response.FollowResponseDto;
 import com.coco.bakingbuddy.follow.dto.response.FollowSummaryResponseDto;
 import com.coco.bakingbuddy.follow.repository.FollowQueryDslRepository;
 import com.coco.bakingbuddy.follow.repository.FollowRepository;
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
@@ -61,7 +60,7 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<FollowResponseDto> getAllFollowedUsers(User user) {
+    public List<FollowResponseDto> getAllFollowedUsersDto(User user) {
         List<FollowResponseDto> result = new ArrayList<>();
         List<Follow> follows = followRepository.findByFollower(user);
         for (Follow follow : follows) {
@@ -106,5 +105,10 @@ public class FollowService {
                 .followers(followerDtos)
                 .followedUsers(followedUserDtos)
                 .build();
+    }
+    @Transactional(readOnly = true)
+    public List<User> getAllFollowedUsers(User user) {
+        List<Follow> follows = followRepository.findByFollower(user);
+        return follows.stream().map(x->x.getFollowed()).collect(Collectors.toList());
     }
 }

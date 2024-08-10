@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.recipe.service;
 
 import com.coco.bakingbuddy.file.service.FileService;
+import com.coco.bakingbuddy.follow.service.FollowService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
@@ -34,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,9 +63,10 @@ public class RecipeService {
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final FileService fileService;
     private final RecipeStepRepository recipeStepRepository;
+    private final FollowService followService;
 
     @Transactional(readOnly = true)
-    public List<SelectRecipeResponseDto> selectAll(@AuthenticationPrincipal User user) {
+    public List<SelectRecipeResponseDto> selectAll(User user) {
         List<Recipe> allRecipes = recipeRepository.findAll();
         Map<Long, List<IngredientResponseDto>> ingredientsMap = fetchIngredientsForRecipes(allRecipes);
         Map<Long, List<Tag>> tagsMap = fetchTagsForRecipes(allRecipes);
@@ -222,5 +223,19 @@ public class RecipeService {
                         .build());
             }
         }
+    }
+
+    public List<SelectRecipeResponseDto> selectFeed(User user,Long cursor) {
+        List<User> allFollowedUsers = followService.getAllFollowedUsers(user);
+
+        // 만약 cursor가 null이 아니라면 cursor 이후의 레시피를 가져옵니다.
+        List<Recipe> allRecipes = recipeQueryDslRepository.findByUsersAfterCursor(allFollowedUsers, cursor);
+
+        Map<Long, List<IngredientResponseDto>> ingredientsMap = fetchIngredientsForRecipes(allRecipes);
+        Map<Long, List<Tag>> tagsMap = fetchTagsForRecipes(allRecipes);
+
+        return allRecipes.stream()
+                .map(recipe -> buildSelectRecipeResponseDto(recipe, ingredientsMap, tagsMap, user))
+                .collect(Collectors.toList());
     }
 }
