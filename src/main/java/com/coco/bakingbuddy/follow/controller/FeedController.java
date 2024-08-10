@@ -26,7 +26,7 @@ public class FeedController {
     public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>>
     getFeed(@AuthenticationPrincipal User user, @RequestParam(name = "cursor", required = false) Long cursor) {
         return toResponseEntity("피드 조회 성공",
-                recipeService.selectFeed(user,cursor));
+                recipeService.selectFeed(user, cursor));
     }
 
 }

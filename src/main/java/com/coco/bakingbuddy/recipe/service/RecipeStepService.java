@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.RECIPE_STEP_NOT_FOUND;
 

@@ -1,7 +1,6 @@
 package com.coco.bakingbuddy.user.controller;
 
 import com.coco.bakingbuddy.global.response.SuccessResponse;
-import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
 import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
 import com.coco.bakingbuddy.user.domain.User;
@@ -41,6 +40,7 @@ public class UserController {
 
     /**
      * 유저 프로필 조회 (내 프로필)
+     *
      * @param user
      * @return
      */
@@ -52,6 +52,7 @@ public class UserController {
 
     /**
      * 유저 프로필 수정 (내 프로필 수정)
+     *
      * @param user
      * @param username
      * @param nickname
@@ -67,11 +68,12 @@ public class UserController {
              @RequestPart("introduction") String introduction,
              @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         return toResponseEntity("유저 정보 수정 성공",
-                fromEntity(userService.editUserInfo(user.getId(), username, nickname, introduction,profileImage)));
+                fromEntity(userService.editUserInfo(user.getId(), username, nickname, introduction, profileImage)));
     }
 
     /**
      * 유저의 최근 검색어 조회
+     *
      * @param user
      * @return
      */
@@ -84,6 +86,7 @@ public class UserController {
 
     /**
      * 유저의 레시피 조회
+     *
      * @param user
      * @return
      */
@@ -95,6 +98,7 @@ public class UserController {
 
     /**
      * 다른 사람에게 공개하는 유저의 프로필
+     *
      * @param uuid
      * @return
      */

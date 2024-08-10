@@ -24,6 +24,7 @@ public class FollowQueryController {
     selectFollowedUsers(@AuthenticationPrincipal User user) {
         return SuccessResponse.toResponseEntity(followService.getAllFollowedUsersDto(user));
     }
+
     @GetMapping("followers")
     public ResponseEntity<SuccessResponse<List<FollowResponseDto>>>
     selectFollowers(@AuthenticationPrincipal User user) {

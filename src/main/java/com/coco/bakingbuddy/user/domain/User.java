@@ -109,6 +109,7 @@ public class User extends BaseTime implements UserDetails {
     public void updateUsername(String username) {
         this.username = username;
     }
+
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
     }

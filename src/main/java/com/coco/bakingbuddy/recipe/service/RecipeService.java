@@ -225,7 +225,7 @@ public class RecipeService {
         }
     }
 
-    public List<SelectRecipeResponseDto> selectFeed(User user,Long cursor) {
+    public List<SelectRecipeResponseDto> selectFeed(User user, Long cursor) {
         List<User> allFollowedUsers = followService.getAllFollowedUsers(user);
 
         // 만약 cursor가 null이 아니라면 cursor 이후의 레시피를 가져옵니다.

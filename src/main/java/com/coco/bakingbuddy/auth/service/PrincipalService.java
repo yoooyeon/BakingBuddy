@@ -1,6 +1,5 @@
 package com.coco.bakingbuddy.auth.service;
 
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.coco.bakingbuddy.global.error.ErrorCode.*;
+import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @Service

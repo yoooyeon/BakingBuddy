@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.coco.bakingbuddy.global.error.ErrorCode.*;
+import static com.coco.bakingbuddy.global.error.ErrorCode.CANNOT_FOLLOW_SELF;
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -106,9 +106,10 @@ public class FollowService {
                 .followedUsers(followedUserDtos)
                 .build();
     }
+
     @Transactional(readOnly = true)
     public List<User> getAllFollowedUsers(User user) {
         List<Follow> follows = followRepository.findByFollower(user);
-        return follows.stream().map(x->x.getFollowed()).collect(Collectors.toList());
+        return follows.stream().map(x -> x.getFollowed()).collect(Collectors.toList());
     }
 }

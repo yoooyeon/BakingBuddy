@@ -53,7 +53,7 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MariaDBDialect
-  #        dialect: org.hibernate.dialect.H2Dialect
+    #        dialect: org.hibernate.dialect.H2Dialect
 
     servlet:
       multipart:

@@ -1,12 +1,9 @@
 package com.coco.bakingbuddy.follow.repository;
 
-import com.coco.bakingbuddy.follow.domain.Follow;
 import com.coco.bakingbuddy.user.domain.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 import static com.coco.bakingbuddy.follow.domain.QFollow.follow;
 

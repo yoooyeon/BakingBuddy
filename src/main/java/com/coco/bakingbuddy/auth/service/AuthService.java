@@ -1,10 +1,8 @@
 package com.coco.bakingbuddy.auth.service;
 
 import com.coco.bakingbuddy.auth.dto.request.LoginRequestDto;
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
-import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
