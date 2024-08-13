@@ -15,12 +15,10 @@ import lombok.NoArgsConstructor;
 public class CreateRecipeReviewRequestDto {
     private Long recipeId;
     private String content;
-    private int rating; // 1-5점 사이의 평점
 
     public static RecipeReview toEntity(CreateRecipeReviewRequestDto dto) {
         return RecipeReview.builder()
                 .content(dto.getContent())
-                .rating(dto.getRating())
                 .build();
     }
 }

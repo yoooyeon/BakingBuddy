@@ -13,5 +13,4 @@ import lombok.NoArgsConstructor;
 public class DeleteProductReviewResponseDto {
     private SelectUserResponseDto user;
     private String content;
-    private int rating; // 1-5점 사이의 평점
 }

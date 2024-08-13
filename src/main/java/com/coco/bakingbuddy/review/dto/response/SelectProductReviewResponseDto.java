@@ -16,12 +16,10 @@ public class SelectProductReviewResponseDto {
     private Long id;
     private SelectUserResponseDto user;
     private String content;
-    private int rating; // 1-5점 사이의 평점
     public static SelectProductReviewResponseDto fromEntity(ProductReview productReview) {
         return SelectProductReviewResponseDto.builder()
                 .id(productReview.getId())
                 .content(productReview.getContent())
-                .rating(productReview.getRating())
                 .build();
     }
 }

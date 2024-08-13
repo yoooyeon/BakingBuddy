@@ -15,6 +15,7 @@ import com.coco.bakingbuddy.user.dto.response.SelectUserResponseDto;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,24 +29,27 @@ public class ProductReviewService {
     private final ProductReviewRepository productReviewRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    @Transactional(readOnly = true)
 
     public List<SelectProductReviewResponseDto> selectAll(User user) {
         return productReviewRepository.findAll().stream().map(SelectProductReviewResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
+    @Transactional(readOnly = true)
 
     public SelectProductReviewResponseDto selectById(Long reviewId) {
         ProductReview review = productReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_REVIEW_NOT_FOUND));
         return SelectProductReviewResponseDto.fromEntity(review);
     }
+    @Transactional(readOnly = true)
 
     public List<SelectProductReviewResponseDto> selectByUserId(User user) {
         return productReviewRepository.findByUser(user).stream()
                 .map(SelectProductReviewResponseDto::fromEntity).collect(Collectors.toList());
     }
 
-
+    @Transactional
     public CreateProductReviewResponseDto create(Long userId, CreateProductReviewRequestDto dto) {
         ProductReview entity = CreateProductReviewRequestDto.toEntity(dto);
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -58,6 +62,7 @@ public class ProductReviewService {
         return result;
     }
 
+    @Transactional
     public CreateProductReviewResponseDto edit(EditProductReviewRequestDto dto, User user) {
         ProductReview review = productReviewRepository.findById(dto.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_REVIEW_NOT_FOUND));
@@ -68,6 +73,7 @@ public class ProductReviewService {
         productReviewRepository.save(review);
         return CreateProductReviewResponseDto.fromEntity(review);
     }
+    @Transactional
 
     public void delete(Long reviewId, User user) {
         ProductReview review = productReviewRepository.findById(reviewId)

@@ -15,12 +15,10 @@ public class CreateRecipeReviewResponseDto {
     private Long id;
     private SelectUserResponseDto user;
     private String content;
-    private int rating; // 1-5점 사이의 평점
     public static CreateRecipeReviewResponseDto fromEntity(RecipeReview recipeReview) {
         return CreateRecipeReviewResponseDto.builder()
                 .id(recipeReview.getId())
                 .content(recipeReview.getContent())
-                .rating(recipeReview.getRating())
                 .build();
     }
 }

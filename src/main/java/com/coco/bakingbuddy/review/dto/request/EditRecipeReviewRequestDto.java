@@ -18,7 +18,6 @@ public class EditRecipeReviewRequestDto {
         return RecipeReview.builder()
                 .id(dto.getId())
                 .content(dto.getContent())
-                .rating(dto.getRating())
                 .build();
     }
 }

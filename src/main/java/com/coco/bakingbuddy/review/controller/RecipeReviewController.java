@@ -52,7 +52,19 @@ public class RecipeReviewController {
         return toResponseEntity("레시피 리뷰 아이디로 조회 성공",
                 recipeReviewService.selectById(id, user));
     }
-
+    /**
+     * 레시피의 모든 리뷰 조회
+     *
+     * @param recipeId
+     * @return
+     */
+    @GetMapping("recipes/{recipeId}")
+    public ResponseEntity<SuccessResponse<List<SelectRecipeReviewResponseDto>>> selectByRecipeId(
+            @PathVariable("recipeId") Long recipeId,
+            @AuthenticationPrincipal User user) {
+        return toResponseEntity("레시피 리뷰 아이디로 조회 성공",
+                recipeReviewService.selectByRecipeId(recipeId, user));
+    }
     /**
      * 레시피 리뷰 생성
      *

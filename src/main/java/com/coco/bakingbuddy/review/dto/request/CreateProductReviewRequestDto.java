@@ -18,7 +18,6 @@ public class CreateProductReviewRequestDto {
     public static ProductReview toEntity(CreateProductReviewRequestDto dto) {
         return ProductReview.builder()
                 .content(dto.getContent())
-                .rating(dto.getRating())
                 .build();
     }
 }
