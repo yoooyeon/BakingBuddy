@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class EditProductRequestDto {
     private String name;
     private Integer price;
     private String description;
-    private String productImageUrl;
+    private MultipartFile productImage;
 
     public static Product toEntity(EditProductRequestDto dto) {
         return Product.builder()
@@ -23,7 +24,6 @@ public class EditProductRequestDto {
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
-                .productImageUrl(dto.getProductImageUrl())
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.user.controller;
 
 import com.coco.bakingbuddy.global.response.SuccessResponse;
+import com.coco.bakingbuddy.product.dto.response.SelectProductResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
 import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
 import com.coco.bakingbuddy.user.domain.User;
@@ -106,5 +107,17 @@ public class UserController {
     public ResponseEntity<SuccessResponse<SelectUserIntroResponseDto>>
     introUser(@PathVariable("uuid") UUID uuid) {
         return toResponseEntity("유저 소개 프로필 조회 성공", userService.selectIntroByUuid(uuid));
+    }
+
+    /**
+     * 유저의 상품 조회
+     *
+     * @param user
+     * @return
+     */
+    @GetMapping("products")
+    public ResponseEntity<SuccessResponse<List<SelectProductResponseDto>>>
+    selectProductsByUserId(@AuthenticationPrincipal User user) {
+        return toResponseEntity("유저 아이디로 등록한 상품 조회 성공", userService.selectProductsByUserId(user.getId()));
     }
 }

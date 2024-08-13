@@ -6,6 +6,8 @@ import com.coco.bakingbuddy.ingredient.domain.Ingredient;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
 import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
+import com.coco.bakingbuddy.product.dto.response.SelectProductResponseDto;
+import com.coco.bakingbuddy.product.service.ProductService;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
@@ -47,6 +49,7 @@ public class UserService {
     private final RecipeQueryDslRepository recipeQueryDslRepository;
     private final TagRecipeQueryDslRepository tagRecipeQueryDslRepository;
     private final IngredientRecipeQueryDslRepository ingredientRecipeQueryDslRepository;
+    private final ProductService productService;
 
     @Transactional
     public User registerUser(CreateUserRequestDto user) {
@@ -153,5 +156,9 @@ public class UserService {
         dto.setDirs(selectRecipesGroupbyDirByUserId(user.getId()));
         return dto;
 
+    }
+
+    public List<SelectProductResponseDto> selectProductsByUserId(Long id) {
+        return productService.selectProductsByUserId(id);
     }
 }

@@ -16,6 +16,8 @@ public class SelectProductResponseDto {
     private Integer price;
     private String description;
     private String productImageUrl;
+    private String username;
+    private String profileImageUrl;
 
     public static SelectProductResponseDto fromEntity(Product product) {
         return SelectProductResponseDto.builder()

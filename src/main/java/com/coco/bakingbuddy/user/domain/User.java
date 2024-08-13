@@ -3,6 +3,7 @@ package com.coco.bakingbuddy.user.domain;
 import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.like.domain.Like;
+import com.coco.bakingbuddy.product.domain.Product;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.search.domain.RecentSearch;
@@ -32,22 +33,6 @@ public class User extends BaseTime implements UserDetails {
     private String username;
     private String password;
     private String profileImageUrl;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username);
-    }
-
-
     private String introduction;
 
     @Enumerated(EnumType.STRING)
@@ -76,6 +61,11 @@ public class User extends BaseTime implements UserDetails {
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Alarm> alarms = new ArrayList<>();
+
+    @JsonIgnore
+    @Builder.Default
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Product> products = new ArrayList<>();
 
     private boolean alarmYn; // 알림 설정
     private boolean activated;
@@ -150,6 +140,20 @@ public class User extends BaseTime implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 
 

@@ -1,9 +1,11 @@
 package com.coco.bakingbuddy.file.service;
 
 import com.coco.bakingbuddy.file.domain.ImageFile;
+import com.coco.bakingbuddy.file.domain.ProductImageFile;
 import com.coco.bakingbuddy.file.domain.RecipeImageFile;
 import com.coco.bakingbuddy.file.domain.RecipeStepImageFile;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
+import com.coco.bakingbuddy.file.repository.ProductImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
@@ -12,6 +14,7 @@ import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,10 +33,12 @@ public class FileService {
     private final ImageFileRepository imageFileRepository;
     private final RecipeImageFileRepository recipeImageFileRepository;
     private final RecipeStepImageFileRepository recipeStepImageFileRepository;
+    private final ProductImageFileRepository productImageFileRepository;
 
     private final String UPLOAD_PATH = "UserProfile/";
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
     private final String RECIPE_STEP_UPLOAD_PATH = "RecipeStep/";
+    private final String PRODUCT_UPLOAD_PATH = "Product/";
     private final String BUCKET_NAME = "baking-buddy-bucket"; // 변경 불가, api 요청 상수
     private final String STORAGE_URL = "https://storage.googleapis.com/";
 
@@ -79,6 +84,27 @@ public class FileService {
                             .build());
         });
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public String uploadProductImage(Long productId, MultipartFile stepImageFile) {
+        try {
+            return uploadFile(stepImageFile, PRODUCT_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
+                productImageFileRepository.save(
+                        ProductImageFile.builder()
+                                .originalName(originalName)
+                                .ext(ext)
+                                .uuid(uuid)
+                                .fileName(fileName)
+                                .productId(productId)
+                                .uploadPath(PRODUCT_UPLOAD_PATH + uuid)
+                                .build());
+            });
+        } catch (Exception e) {
+            System.err.println("파일 업로드 중 오류 발생: " + e.getMessage());
+            throw new RuntimeException("파일 업로드 실패", e);
+        }
+    }
+
 
     private String uploadFile(MultipartFile file, String uploadPath, FileMetadataHandler handler) {
         String originalName = file.getOriginalFilename();

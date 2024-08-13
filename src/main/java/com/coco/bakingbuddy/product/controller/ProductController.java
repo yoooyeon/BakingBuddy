@@ -8,11 +8,15 @@ import com.coco.bakingbuddy.product.dto.request.EditProductRequestDto;
 import com.coco.bakingbuddy.product.dto.response.CreateProductResponseDto;
 import com.coco.bakingbuddy.product.dto.response.SelectProductResponseDto;
 import com.coco.bakingbuddy.product.service.ProductService;
+import com.coco.bakingbuddy.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,11 +59,13 @@ public class ProductController {
      * @param dto
      * @return
      */
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<CreateProductResponseDto>> create(
-            @Valid @RequestBody CreateProductRequestDto dto) {
+            @Valid @ModelAttribute CreateProductRequestDto dto,
+    @AuthenticationPrincipal User user) {
         try {
-            CreateProductResponseDto savedProduct = productService.create(dto);
+            // Save the product using the service, which now also handles the file
+            CreateProductResponseDto savedProduct = productService.create(dto,user);
             return toResponseEntity("상품 생성 성공", savedProduct);
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
