@@ -20,6 +20,7 @@ public class AlarmQueryDslRepository {
         return queryFactory
                 .selectFrom(alarm)
                 .where(alarm.user.id.eq(userId))
+                .orderBy(alarm.createdDate.desc())
                 .fetch();
     }
 
