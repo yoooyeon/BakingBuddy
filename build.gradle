@@ -31,7 +31,7 @@ dependencies {
 
     // mariadb
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-//    runtimeOnly 'com.h2database:h2'
+
     // google sql
 //    implementation platform('com.google.cloud:spring-cloud-gcp-dependencies:4.1.4')
 //    implementation 'com.google.cloud:spring-cloud-gcp-starter-sql-mysql'
@@ -52,7 +52,6 @@ dependencies {
     // jakarta.servlet-api 추가
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
-
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -65,12 +64,15 @@ dependencies {
     // 쿼리파라미터 로그 남기기
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 
+    // json
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
+    // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+    // monitor
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
@@ -86,26 +88,25 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+    // auth
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
     // Spring Batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
 
-
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-
-    // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core
     implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
-
-    // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
     implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
 
     //jackson
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
 
+    // Test dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 //dependencyManagement {
 //    imports {
