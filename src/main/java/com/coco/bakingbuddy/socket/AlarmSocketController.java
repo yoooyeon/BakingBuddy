@@ -12,7 +12,12 @@ public class AlarmSocketController {
     private final SimpMessageSendingOperations template;
 
     @MessageMapping("/alarm")
-    public void enter(@Payload AlarmRequest alarmRequest, SimpMessageHeaderAccessor headerAccessor) {
+    public void followAlarm(@Payload AlarmRequest alarmRequest, SimpMessageHeaderAccessor headerAccessor) {
         template.convertAndSend("/sub/alarm/" + alarmRequest.getId(), alarmRequest);
+    }
+
+    @MessageMapping("/recipe")
+    public void newRecipe(SimpMessageHeaderAccessor headerAccessor) {
+        template.convertAndSend("/sub/recipe/follow");
     }
 }

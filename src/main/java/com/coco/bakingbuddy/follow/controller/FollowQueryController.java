@@ -28,6 +28,6 @@ public class FollowQueryController {
     @GetMapping("followers")
     public ResponseEntity<SuccessResponse<List<FollowResponseDto>>>
     selectFollowers(@AuthenticationPrincipal User user) {
-        return SuccessResponse.toResponseEntity(followService.getAllFollowers(user));
+        return SuccessResponse.toResponseEntity(followService.getAllFollowersDto(user));
     }
 }

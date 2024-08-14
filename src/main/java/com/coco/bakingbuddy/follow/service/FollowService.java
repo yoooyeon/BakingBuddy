@@ -77,8 +77,16 @@ public class FollowService {
         }
         return result;
     }
-
-    public List<FollowResponseDto> getAllFollowers(User user) {
+    public List<User> getAllFollowers(User user) {
+        List<User> result = new ArrayList<>();
+        List<Follow> follows = followRepository.findByFollowed(user);
+        for (Follow follow : follows) {
+            User followed = follow.getFollower();
+            result.add(followed);
+        }
+        return result;
+    }
+    public List<FollowResponseDto> getAllFollowersDto(User user) {
         List<FollowResponseDto> result = new ArrayList<>();
         List<Follow> follows = followRepository.findByFollowed(user);
         for (Follow follow : follows) {

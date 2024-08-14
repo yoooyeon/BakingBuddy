@@ -99,7 +99,7 @@ public class RecipeManagementController {
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> create(
             @AuthenticationPrincipal User user,
             @Valid @RequestPart("recipe") CreateRecipeRequestDto dto,
-            @RequestPart("recipeImage") MultipartFile recipeImage) {
+            @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage) {
         try {
             CreateRecipeResponseDto savedRecipe = recipeService.create(user.getId(), dto, recipeImage);
             return toResponseEntity("레시피 생성 성공", savedRecipe);

@@ -17,4 +17,8 @@ public class AlarmWebSocketHandler {
         // "/sub/alarm/{userId}" 경로로 메시지 전송
         messagingTemplate.convertAndSend("/sub/alarm/" + username, msg);
     }
+
+    public void sendNewRecipeAlarmToUser(String username, String msg) {
+        messagingTemplate.convertAndSend("/sub/recipe/follow", msg);
+    }
 }

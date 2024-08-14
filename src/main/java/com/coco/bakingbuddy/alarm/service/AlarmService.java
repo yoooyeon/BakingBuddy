@@ -59,6 +59,18 @@ public class AlarmService {
         sendAlarmToUser(user.getUsername(), msg);
     }
 
+    @Transactional
+    public void createNewRecipeAlarm(Long recipeId, String msg, List<User> followers) {
+        for (User follower : followers) {
+            Alarm alarm = Alarm.builder()
+                    .user(follower)
+                    .msg(msg)
+                    .build();
+            alarmRepository.save(alarm);
+            sendAlarmToUser(follower.getUsername(), msg);
+        }
+    }
+
     public void sendAlarmToUser(String username, String message) {
         alarmWebSocketHandler.sendAlarmToUser(username, message);
     }

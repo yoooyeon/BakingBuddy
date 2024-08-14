@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.service;
 
+import com.coco.bakingbuddy.alarm.service.AlarmService;
 import com.coco.bakingbuddy.file.service.FileService;
 import com.coco.bakingbuddy.follow.service.FollowService;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
@@ -23,6 +24,7 @@ import com.coco.bakingbuddy.recipe.repository.DirectoryRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
+import com.coco.bakingbuddy.socket.AlarmWebSocketHandler;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
@@ -64,6 +66,8 @@ public class RecipeService {
     private final FileService fileService;
     private final RecipeStepRepository recipeStepRepository;
     private final FollowService followService;
+    private final AlarmWebSocketHandler alarmWebSocketHandler;
+    private final AlarmService alarmService;
 
     @Transactional(readOnly = true)
     public List<SelectRecipeResponseDto> selectAll(User user) {
@@ -122,8 +126,14 @@ public class RecipeService {
         recipe.setUser(user);
         saveTags(dto.getTags(), recipe);
         saveIngredients(dto.getIngredients(), recipe, dto.getServings());
-        String imageUrl = fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
-        recipe.updateImage(imageUrl);
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            String imageUrl = fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
+            recipe.updateImage(imageUrl);
+        }
+
+        followService.getAllFollowersDto(user);
+        alarmService.createNewRecipeAlarm(recipe.getId(),
+                user.getNickname() + "이 새로운 레시피" + recipe.getName() + "를 추가했습니다.", followService.getAllFollowers(user));
 
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
