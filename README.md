@@ -1,54 +1,84 @@
-# Baking Buddy
+# Recipe Diary
+### 에디터가 레시피를 공유하는 웹 사이트
 
-- 운영: https://baking-buddy-image-6q5ymuc2ha-du.a.run.app/
-- 운영 스웨거: https://baking-buddy-image-6q5ymuc2ha-du.a.run.app/swagger-ui/index.html#/
-- 로컬 스웨거: http://localhost:8080/swagger-ui/index.html#/
-- 로컬 Actuator: http://localhost:8080/manage
+## 주요 기능
 
-### 기술적 TODO
+사용자는 에디터를 팔로우하여 피드를 통해 레시피를 조회할 수 있다.
+사용자가 관심 키워드(지중해식, 다이어트 등)를 등록하면 관련 레시피를 추천한다.
+또한 검색 키워드, 클릭 상품 와 같은 행동에 따라 상품이나 레시피를 추천한다.
 
-- 권한에 따른 처리 /admin, /public, /private
-- 테스트코드
-- es 구현 후 redis 와 비교해보기
-- 모니터링 네이버 툴 (오픈소스)
-- 운영/검증 환경 따로 구성 (profile 활용, 테스트 환경 구축)
-- 성능 테스트, 부하 테스트
-- 토큰 읽을 수 없게 처리
-- ouath2 통합로그인
+## Role
 
-### 수정해야할 것
+관리자(ADMIN), 에디터(EDITOR), 판매자(SELLER), 사용자(USER) 각 역할에 따라 권한이 주어진다.
 
-- Refresh Token Test, Token Redis로 전환 Test
-- editor, admin, user 기능 나누기
-- 좋아요, 게시글을 보고있는 회원 수 등 (Socket)
-- 검색, 클릭 등 이벤트 수집 -> 취향 파악, 쿠폰 발급
-- 알림 전송, (Spring Batch)
+- 관리자는 권한을 부여하고 게시물 삭제 등 권한을 가진다.
 
-### 기능적 TODO
+- 에디터는 레시피를 등록, 팔로우 권한을 가진다.
 
-- 레시피 순서 별 체크박스 기능, 멀티 타이머, 재료 기능
-- 단계 프로그레스바, 연계 상품
-- 상품 추가, 각 레시피 연관 상품 등록 가능하게
-- 개인화 추천: (고민 필요, 실시간 추천 or AI 학습)
-- Follow 기능
+- 판매자는 상품을 등록하는 권하는 가진다.
 
-# 주요 기능
+- 사용자는 레시피를 조회, 에디터 팔로우, 상품 조회 등 권한을 가진다. 
 
-- 검색 자동완성 기능: Redis로 구현
-    - 상품 id와 이미지 url을 같이 캐싱하여 미리보기 가능하도록 함
-- 인기 검색어 기능: 1시간마다 인기 검색어 배치로 캐싱
-- 최근 검색어 기능: 이미 저장된 검색어는 timestamp만 갱신하고 중복되지 않도록 처리
-- 레시피의 요리 순서 등록 기능: 각 순서마다 이미지 1개를 첨부할 수 있음
-- 특정 API 호출 등 이벤트 발행 - ApplicationEventPublisher 활용
-- JPA, QueryDSL: 자바 코드로 동적 쿼리 작성 (조인, 검색, 페이징 등)
-- CI/CD: 깃허브 & Cloud Run으로 자동 배포
-- Spring Security를 활용한 로그인 기능
-- JWT 토큰 적용
-- Spring Actuator, Prometheus 모니터링
 
-## 부수적인 것
+## DOMAIN
+### Recipe
+디렉토리를 만들어 레시피를 저장할 수 있다. 재료, 조리 순서, 태그, 요리 설명, 이미지 등이 포함된다.
+
+### Ingredient
+재료 이름을 가지고있다. 재료 이름으로 검색하여 레시피를 검색할 수 있다. 
+
+### IngredientRecipe
+각 레시피마다 재료의 단위나 양이 달라질 수 있어서 
+Ingredient와 Recipe를 매개하는 역할로 IngredientRecipe를 두어 활용한다.
+각 레시피의 인분 기준(servings), 재료의 단위(Unit), 양(amount)을 가지고 있다. 
+
+### Tag
+각 레시피마다 태그를 추가할 수 있다. 태그 이름으로 검색 가능하다.
+
+### RecipeStep
+해당 레시피 중 몇 번째 Step인지를 나타내는 단계 번호(stepNumber), 단계 설명, 단계 이미지를 포함한다. 
+단계마다 최대 하나의 이미지를 등록할 수 있다.
+
+### AutoCompleteSearch
+Redis를 활용하여 검색 자동완성 기능을 구현했다. 검색어를 key로 하고 (상품 id, 이미지 url)을  value로 같이 캐싱하여 
+검색어 자동완성 시 이미지도 미리보기 가능하도록 했다.
+
+### RecentSearch
+사용자의 최근 검색어를 저장하기 위해 만들었다. 이미 저장된 검색어는 timestamp만 갱신하고 중복되지 않도록 처리한다.
+
+### Popular (RankingTermCache, TermCounter)
+인기 검색어를 일정 시간마다 배치를 활용해 캐싱한다.
+TermCounter에 각 검색어마나 검색 횟수를 저장한다. 
+Spring Batch로 Schedule하여 카운트가 높은 순서대로 RankingTermCacheRepository에 저장하여 활용한다. 
+
+### Follow
+다른 사용자를 팔로우, 언팔로우 할 수 있다. 내 프로필에서 팔로잉 하는 유저, 팔로워를 조회할 수 있다. 
+팔로잉 하는 유저들의 레시피를 볼 수 있는 피드에 활용된다.
+
+### LIKE
+사용자가 어떤 레시피를 '좋아요' 하기 위한 도메인이다. Like마다 하나의 User, 하나의 Recipe를 가지고있다. 
+
+### PRODUCT
+판매자(Seller) 역할은 상품을 등록할 수 있다. 레시피에 연관 상품을 보여주기 위해 만들었다.
+
+### ALARM
+팔로잉 하는 사용자가 레시피를 올렸을 때, 누군가를 팔로우 하면 두 사용자에게 알림이 발송된다. 이 때 Web socket을 활용했다.
+read 컬럼으로 읽음 처리가 가능하다.
+
+### RECOMMEND
+각 레시피마다 추천 상품을 등록해둔다.
+
+### JWT
+Spring Security와 함께 활용한다. 쿠키에 토큰을 저장한다.
+
+### REVIEW
+레시피, 상품 각각 리뷰를 작성할 수 있다. 리뷰의 형태가 서로 달라질 수 있어 도메인을 따로 만들었다. 
+
+
+## 부수 기능
 
 - validation (중복 체크, 프론트 메세지 전달)
+- actuator, prometheus
 
 # Library
 
@@ -74,9 +104,8 @@
 - Redis Clients (Jedis): latest
 
 # DB
-
-- Google Cloud SQL MySQL 8.0.31
-- Google Memory Store Redis
+- Docker MariaDB 11.4.2
+- (Google Cloud SQL MySQL 8.0.31) - 현재 제거
 - Google Cloud Storage Bucket (이미지 저장)
 
 # CI/CD
@@ -92,28 +121,9 @@
 - Intellij
 - MacOS
 
-# 기술 선택 시 고민한 내
+# API Docs
+- Local Swagger: http://localhost:8080/swagger-ui/index.html#/
+- Local Actuator: http://localhost:8080/manage
 
-## JWT, Session
 
-JWT는 속도 측면, 비용 측면에서 유리하다.
-반면 세션은 데이터베이스에서 관리하니 여러 기기 로그인 등 관리 측면, 안정성 측면에서 유리하다.
-JWT로 개발하다보니 불편한 점이 생겼다. thymeleaf에서 `recipe/{id}` 와 같이 링크로 태워 보낼 때 헤더에 토큰을 보내기가 번거롭다.
-매번 api 요청, 화면 변경 시 토큰을 보내야한다. 그래서 쿠키를 사용할 수 있다. 쿠키를 사용하면 매번 토큰을 보내지 않아도 된다.
-하지만 트렌드가 쿠키리스로 나아가는 만큼 대안이 필요할 것 같다.
-생각해본 대안은 다음과 같다.
-
-1. 세션 사용
-2. requestParam으로 토큰 전송
-3. Authorization 헤더로 토큰 전송
-4. Auth0, Firebase Authentication, AWS Cognito 같은 클라우드 서비스 사용
-
-## Socket, Polling, ServerSent
-
-## Redis, ElasticSearch
-
-# 참고 문서
-
-- ![스프링 레디스](https://googlecloudplatform.github.io/spring-cloud-gcp/reference/html/#cloud-memorystore-for-redis)
-- ![Spring Security](https://velog.io/@suhyun_zip/%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8%EB%A1%9C%EA%B7%B8%EC%95%84%EC%9B%83-%ED%9A%8C%EC%9B%90-%EA%B0%80%EC%9E%85-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0)
-- ![WS JWT](https://shout-to-my-mae.tistory.com/396)
+### 현재 비용 문제로 클라우드 사용을 중단했습니다.
