@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 @RequiredArgsConstructor
-public class AlarmController {
+public class AlarmSocketController {
     private final SimpMessageSendingOperations template;
 
     @MessageMapping("/alarm")

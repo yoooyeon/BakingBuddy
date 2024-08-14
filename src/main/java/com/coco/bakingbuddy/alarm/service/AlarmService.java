@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,6 +27,7 @@ public class AlarmService {
     private final UserRepository userRepository;
     private final AlarmQueryDslRepository alarmQueryDslRepository;
     private final AlarmWebSocketHandler alarmWebSocketHandler;
+
     @Transactional(readOnly = true)
     public List<SelectAlarmResponseDto> selectByUserId(Long userId) {
         return alarmQueryDslRepository.findByUserId(userId)
@@ -34,7 +37,7 @@ public class AlarmService {
     @Transactional
     public void updateAlarm(Long userId, String msg) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         alarmRepository.save(Alarm.builder()
                 .msg(msg)
                 .isRead(false)
@@ -45,7 +48,7 @@ public class AlarmService {
     @Transactional
     public void createAlarm(Long userId, String msg) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         Alarm alarm = Alarm.builder()
                 .user(user)
@@ -53,11 +56,21 @@ public class AlarmService {
                 .build();
 
         alarmRepository.save(alarm);
-        alarmWebSocketHandler.sendAlarmToUser(user.getUsername(), msg);
+        sendAlarmToUser(user.getUsername(), msg);
     }
-    public void sendAlarmToUser(Long userId, String message) {
-        // 사용자 ID에 맞는 세션을 찾아 메시지를 전송
-        String userIdStr = String.valueOf(userId); // 사용자 ID를 문자열로 변환
-//        alarmWebSocketHandler.sendAlarmToUser(userIdStr, message);
+
+    public void sendAlarmToUser(String username, String message) {
+        alarmWebSocketHandler.sendAlarmToUser(username, message);
+    }
+
+    public void updateReadStatus(Long id, User user) {
+        Alarm alarm = alarmRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.ALARM_NOT_FOUND));
+        if (user.getId() != alarm.getUser().getId()) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_READ);
+        }
+        alarm.markAsRead();
+        alarmRepository.save(alarm); // 명시
+
     }
 }

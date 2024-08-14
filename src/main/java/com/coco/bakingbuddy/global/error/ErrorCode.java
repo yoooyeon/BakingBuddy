@@ -65,6 +65,12 @@ public enum ErrorCode {
     PRODUCT_REVIEW_NOT_FOUND(BAD_REQUEST,"해당 리뷰를 찾을 수 없습니다."),
     RECIPE_REVIEW_NOT_FOUND(BAD_REQUEST,"해당 리뷰를 찾을 수 없습니다."),
     REVIEW_USER_MISMATCH(BAD_REQUEST,"리뷰 작성자와 로그인 한 사용자가 일치하지 않습니다."),
+
+    //alarm
+    ALARM_NOT_FOUND(BAD_REQUEST,"해당 알람을 찾을 수 없습니다."),
+    UNAUTHORIZED_READ(BAD_REQUEST,"읽음처리 권한이 없습니다.")
+
+    //
     ;
 
 

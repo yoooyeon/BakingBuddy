@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,12 @@ public class AlarmController {
     public ResponseEntity<SuccessResponse<List<SelectAlarmResponseDto>>>
     selectAlarmByUserId(@AuthenticationPrincipal User user) {
         return toResponseEntity("유저 알람 조회 성공", alarmService.selectByUserId(user.getId()));
+    }
+
+    @GetMapping("{id}/read")
+    public ResponseEntity<SuccessResponse<String>>
+    updateReadStatus(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        alarmService.updateReadStatus(id, user);
+        return toResponseEntity("알림 읽음 처리 성공");
     }
 }
