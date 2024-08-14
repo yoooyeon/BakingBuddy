@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class CreateProductReviewRequestDto {
     private String content;
-    private int rating; // 1-5점 사이의 평점
     private Long productId;
     public static ProductReview toEntity(CreateProductReviewRequestDto dto) {
         return ProductReview.builder()

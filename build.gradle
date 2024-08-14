@@ -42,9 +42,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // socket
+    // Spring WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // WebJars for STOMP WebSocket
     implementation 'org.webjars:stomp-websocket:2.3.4'
-    implementation 'org.testng:testng:7.1.0'
+//    implementation 'org.testng:testng:7.1.0'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -107,6 +110,9 @@ dependencies {
     // Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.mockito:mockito-core'
+
+
 }
 //dependencyManagement {
 //    imports {

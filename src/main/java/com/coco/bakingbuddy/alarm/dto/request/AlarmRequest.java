@@ -1,4 +1,4 @@
-package com.coco.bakingbuddy.review.dto.request;
+package com.coco.bakingbuddy.alarm.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class DeleteProductReviewResponseDto {
-    private String content;
+public class AlarmRequest {
+    private Long id;
 }

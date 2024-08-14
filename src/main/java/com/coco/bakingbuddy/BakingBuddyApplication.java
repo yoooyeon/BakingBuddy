@@ -23,10 +23,4 @@ public class BakingBuddyApplication {
     public static void main(String[] args) {
         SpringApplication.run(BakingBuddyApplication.class, args);
     }
-
-    @Bean
-    @Profile("dev")
-    public TestDataInit testDataInit(RecipeRepository recipeRepository, UserRepository userRepository, DirectoryRepository directoryRepository) {
-        return new TestDataInit(recipeRepository, userRepository, directoryRepository);
-    }
 }

@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.alarm.repository.AlarmQueryDslRepository;
 import com.coco.bakingbuddy.alarm.repository.AlarmRepository;
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
+import com.coco.bakingbuddy.socket.AlarmWebSocketHandler;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
     private final UserRepository userRepository;
     private final AlarmQueryDslRepository alarmQueryDslRepository;
-
+    private final AlarmWebSocketHandler alarmWebSocketHandler;
     @Transactional(readOnly = true)
     public List<SelectAlarmResponseDto> selectByUserId(Long userId) {
         return alarmQueryDslRepository.findByUserId(userId)
@@ -36,8 +37,27 @@ public class AlarmService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         alarmRepository.save(Alarm.builder()
                 .msg(msg)
-                .readYn("N")
+                .isRead(false)
                 .user(user)
                 .build());
+    }
+
+    @Transactional
+    public void createAlarm(Long userId, String msg) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Alarm alarm = Alarm.builder()
+                .user(user)
+                .msg(msg)
+                .build();
+
+        alarmRepository.save(alarm);
+        alarmWebSocketHandler.sendAlarmToUser(user.getUsername(), msg);
+    }
+    public void sendAlarmToUser(Long userId, String message) {
+        // 사용자 ID에 맞는 세션을 찾아 메시지를 전송
+        String userIdStr = String.valueOf(userId); // 사용자 ID를 문자열로 변환
+//        alarmWebSocketHandler.sendAlarmToUser(userIdStr, message);
     }
 }

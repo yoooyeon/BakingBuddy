@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.DUPLICATE_DIRECTORY;
 import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
+import static com.coco.bakingbuddy.user.service.RoleType.ROLE_USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -53,7 +54,7 @@ public class DirectoryServiceTest {
                 .username("TestUser")
                 .password(passwordEncoder.encode("TestUser!"))
                 .nickname("TestUser")
-                .role(RoleType.ROLE_USER)
+                .role(ROLE_USER)
                 .uuid(UUID.randomUUID())
                 .build());
     }

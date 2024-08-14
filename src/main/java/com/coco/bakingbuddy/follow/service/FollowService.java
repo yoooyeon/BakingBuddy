@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.follow.service;
 
+import com.coco.bakingbuddy.alarm.service.AlarmService;
 import com.coco.bakingbuddy.follow.domain.Follow;
 import com.coco.bakingbuddy.follow.dto.response.FollowResponseDto;
 import com.coco.bakingbuddy.follow.dto.response.FollowSummaryResponseDto;
@@ -28,6 +29,7 @@ public class FollowService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final FollowQueryDslRepository followQueryDslRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public void follow(Long followerId, UUID followedId) {
@@ -40,6 +42,8 @@ public class FollowService {
             throw new CustomException(CANNOT_FOLLOW_SELF);
         }
         followRepository.save(Follow.builder().followed(followed).follower(follower).build());
+        alarmService.createAlarm(followed.getId(), follower.getUsername() + " started following you");
+        alarmService.createAlarm(follower.getId(), "You started following " + followed.getUsername());
     }
 
     @Transactional

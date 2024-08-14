@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.alarm.repository;
 
 import com.coco.bakingbuddy.alarm.domain.Alarm;
+import com.coco.bakingbuddy.alarm.domain.QAlarm;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.coco.bakingbuddy.alarm.domain.QAlarm.alarm;
+
 
 @RequiredArgsConstructor
 @Repository

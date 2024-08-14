@@ -14,7 +14,7 @@ public class SelectAlarmResponseDto {
     private Long id;
     private String msg;
     private String type; // 알림 종류
-    private String readYn; // 읽음 여부 Y: 읽음, N: 안읽음
+    private boolean read; // 읽음 여부 Y: 읽음, N: 안읽음
 
 
     public static SelectAlarmResponseDto fromEntity(Alarm alarm) {
@@ -22,7 +22,7 @@ public class SelectAlarmResponseDto {
                 .id(alarm.getId())
                 .msg(alarm.getMsg())
                 .type(alarm.getType())
-                .readYn(alarm.getReadYn())
+                .read(alarm.isRead())
                 .build();
     }
 }
