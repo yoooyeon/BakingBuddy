@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -15,7 +17,7 @@ public class SelectProductResponseDto {
     private String name;
     private Integer price;
     private String description;
-    private String productImageUrl;
+    private List<String> productImageUrls;
     private String username;
     private String profileImageUrl;
 
@@ -25,7 +27,7 @@ public class SelectProductResponseDto {
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
-                .productImageUrl(product.getProductImageUrl())
+                .productImageUrls(product.getProductImageUrls())
                 .build();
     }
 }

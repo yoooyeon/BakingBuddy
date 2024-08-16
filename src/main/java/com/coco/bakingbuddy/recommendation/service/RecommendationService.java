@@ -1,13 +1,25 @@
 package com.coco.bakingbuddy.recommendation.service;
 
+import com.coco.bakingbuddy.product.dto.response.SelectProductResponseDto;
+import com.coco.bakingbuddy.recommendation.repository.ProductRecommendationQueryDslRepository;
+import com.coco.bakingbuddy.recommendation.repository.ProductRecommendationRepository;
 import com.coco.bakingbuddy.search.repository.RecentSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class RecommendationService {
+    private final ProductRecommendationQueryDslRepository productRecommendationQueryDslRepository;
     private final RecentSearchRepository recentSearchRepository;
+    public List<SelectProductResponseDto> selectByRecipeId(Long recipeId) {
+      return  productRecommendationQueryDslRepository.findByRecipeId(recipeId)
+              .stream().map(SelectProductResponseDto::fromEntity).collect(Collectors.toList());
+    }
+
     /**
      public List<Product> recommendProductsBasedOnRecentSearches(User user) {
      List<RecentSearch> recentSearches = recentSearchRepository.findRecentSearchesByUser(user);

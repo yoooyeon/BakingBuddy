@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.file.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
+import com.coco.bakingbuddy.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +34,10 @@ public class ProductImageFile extends BaseTime {
     private String fileName;
 
     @Column(nullable = false)
-    private Long productId;
+    private int sequence; // 이미지 순서를
 
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
 }

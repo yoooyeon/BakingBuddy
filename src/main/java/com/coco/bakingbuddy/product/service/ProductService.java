@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,8 +47,9 @@ public class ProductService {
 
         try {
             if (dto.getProductImage() != null) {
-                String imageUrl = fileService.uploadProductImage(product.getId(), dto.getProductImage());
-                product.setImageUrl(imageUrl);
+                String imageUrl = fileService.uploadProductImage(product, dto.getProductImage()); //todo 여러 이미지 받도록 수정
+               List<String> imgUrls = new ArrayList<>();
+                product.setImageUrls(imgUrls);
                 productRepository.save(product); // 이미지 URL 업데이트 후 상품 재저장
             }
         } catch (Exception e) {
@@ -76,4 +78,6 @@ public class ProductService {
     public List<SelectProductResponseDto> selectProductsByUserId(Long id) {
         return productQueryDslRepository.findByUserId(id);
     }
+
+
 }

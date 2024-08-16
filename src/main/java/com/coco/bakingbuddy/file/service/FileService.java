@@ -9,6 +9,7 @@ import com.coco.bakingbuddy.file.repository.ProductImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
+import com.coco.bakingbuddy.product.domain.Product;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +87,7 @@ public class FileService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public String uploadProductImage(Long productId, MultipartFile stepImageFile) {
+    public String uploadProductImage(Product product, MultipartFile stepImageFile) {
         try {
             return uploadFile(stepImageFile, PRODUCT_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
                 productImageFileRepository.save(
@@ -95,7 +96,7 @@ public class FileService {
                                 .ext(ext)
                                 .uuid(uuid)
                                 .fileName(fileName)
-                                .productId(productId)
+                                .product(product)
                                 .uploadPath(PRODUCT_UPLOAD_PATH + uuid)
                                 .build());
             });

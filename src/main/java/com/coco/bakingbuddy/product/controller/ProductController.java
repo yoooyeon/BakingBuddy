@@ -1,7 +1,6 @@
 package com.coco.bakingbuddy.product.controller;
 
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.global.response.ErrorResponse;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.product.dto.request.CreateProductRequestDto;
 import com.coco.bakingbuddy.product.dto.request.EditProductRequestDto;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,10 +60,10 @@ public class ProductController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<CreateProductResponseDto>> create(
             @Valid @ModelAttribute CreateProductRequestDto dto,
-    @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal User user) {
         try {
             // Save the product using the service, which now also handles the file
-            CreateProductResponseDto savedProduct = productService.create(dto,user);
+            CreateProductResponseDto savedProduct = productService.create(dto, user);
             return toResponseEntity("상품 생성 성공", savedProduct);
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
@@ -97,8 +95,12 @@ public class ProductController {
         try {
             productService.delete(id);
             return toResponseEntity("상품 삭제 성공");
-        }catch (CustomException e){
+        } catch (CustomException e) {
             return toResponseEntity(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다");
         }
     }
+
+
+
+
 }
