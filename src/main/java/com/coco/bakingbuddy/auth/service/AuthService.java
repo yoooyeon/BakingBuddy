@@ -19,19 +19,16 @@ import static com.coco.bakingbuddy.global.error.ErrorCode.INVALID_CREDENTIALS;
 @Service
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
     public String getAccessToken(LoginRequestDto loginRequest) {
         try {
-            // Authenticate user
+            // id, pw 검증
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
-
             return jwtTokenProvider.createAccessToken(authentication);
         } catch (AuthenticationException e) {
-            // Handle authentication failure
             throw new CustomException(INVALID_CREDENTIALS);
         }
     }
