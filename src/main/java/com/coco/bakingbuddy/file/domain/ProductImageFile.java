@@ -34,7 +34,7 @@ public class ProductImageFile extends BaseTime {
     private String fileName;
 
     @Column(nullable = false)
-    private int sequence; // 이미지 순서를
+    private int sequence; // 이미지 순서
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
