@@ -32,6 +32,7 @@ import com.coco.bakingbuddy.tag.repository.TagRecipeRepository;
 import com.coco.bakingbuddy.tag.repository.TagRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
+import com.coco.bakingbuddy.user.service.RoleType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.*;
 import static com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto.toEntity;
+import static com.coco.bakingbuddy.user.service.RoleType.ROLE_ADMIN;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -147,21 +149,16 @@ public class RecipeService {
 
     @Transactional
     public DeleteRecipeResponseDto delete(Long id, User user) {
-        // 레시피 존재 여부 확인
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new CustomException(RECIPE_NOT_FOUND));
-
-        log.info(">>>recipe.getUser().getId()={}", recipe.getUser().getId());
-        log.info(">>>user.getId()={}", user.getId());
-        // 레시피 소유자 확인
+        if (user.getRole().equals(ROLE_ADMIN)){
+            recipeRepository.delete(recipe);
+            return DeleteRecipeResponseDto.fromEntity(recipe);
+        }
         if (recipe.getUser().getId() != user.getId()) {
             throw new CustomException(UNAUTHORIZED_DELETE); // 권한 없음 오류 처리
         }
-
-        // 레시피 삭제 처리 (물리적 삭제 또는 논리적 삭제)
         recipeRepository.delete(recipe);
-
-        // 삭제된 레시피를 DTO로 반환
         return DeleteRecipeResponseDto.fromEntity(recipe);
     }
 

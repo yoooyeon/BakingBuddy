@@ -10,6 +10,7 @@ import com.coco.bakingbuddy.product.dto.response.SelectProductResponseDto;
 import com.coco.bakingbuddy.product.repository.ProductQueryDslRepository;
 import com.coco.bakingbuddy.product.repository.ProductRepository;
 import com.coco.bakingbuddy.user.domain.User;
+import com.coco.bakingbuddy.user.service.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.PRODUCT_NOT_FOUND;
+import static com.coco.bakingbuddy.global.error.ErrorCode.UNAUTHORIZED_DELETE;
+import static com.coco.bakingbuddy.user.service.RoleType.ROLE_ADMIN;
 
 @RequiredArgsConstructor
 @Service
@@ -48,7 +51,7 @@ public class ProductService {
         try {
             if (dto.getProductImage() != null) {
                 String imageUrl = fileService.uploadProductImage(product, dto.getProductImage()); //todo 여러 이미지 받도록 수정
-               List<String> imgUrls = new ArrayList<>();
+                List<String> imgUrls = new ArrayList<>();
                 product.setImageUrls(imgUrls);
                 productRepository.save(product); // 이미지 URL 업데이트 후 상품 재저장
             }
@@ -69,15 +72,21 @@ public class ProductService {
     }
 
     @Transactional
-
-    public void delete(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+    public void delete(User user, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+        if (user.getRole().equals(ROLE_ADMIN)) {
+            productRepository.delete(product);
+            return;
+        }
+        if (product.getUser().getId() != user.getId()) {
+            throw new CustomException(UNAUTHORIZED_DELETE); // 권한 없음 오류 처리
+        }
         productRepository.delete(product);
     }
 
     public List<SelectProductResponseDto> selectProductsByUserId(Long id) {
         return productQueryDslRepository.findByUserId(id);
     }
-
 
 }

@@ -14,5 +14,6 @@ public class LoginUserResponseDto {
     private boolean success;
     private String accessToken;
     private String refreshToken;
+    private String roleType;
 
 }

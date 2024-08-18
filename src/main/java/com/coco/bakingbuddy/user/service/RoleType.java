@@ -7,7 +7,8 @@ public enum RoleType {
     ROLE_USER("USER"),
     ROLE_ADMIN("ADMIN"),
     ROLE_EDITOR("EDITOR"),
-    ROLE_SELLER("SELLER");
+    ROLE_SELLER("SELLER"),
+    ROLE_ROOT("ROOT");
 
     private final String displayName;
     private static final Map<String, RoleType> lookup = new HashMap<>();
@@ -15,7 +16,9 @@ public enum RoleType {
     RoleType(String displayName) {
         this.displayName = displayName;
     }
-
+    public String getDisplayName() {
+        return displayName;
+    }
     public static RoleType from(String roleStr) {
         RoleType role = lookup.get(roleStr.toLowerCase());
         if (role == null) {

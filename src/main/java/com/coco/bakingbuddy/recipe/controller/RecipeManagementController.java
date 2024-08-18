@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +57,8 @@ public class RecipeManagementController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> selectAll(@AuthenticationPrincipal User user) {
+    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>>
+    selectAll(@AuthenticationPrincipal User user) {
         return toResponseEntity("레시피 조회 성공",
                 recipeService.selectAll(user));
     }
@@ -95,6 +97,7 @@ public class RecipeManagementController {
      * @param recipeImage
      * @return
      */
+    @PreAuthorize("hasRole('EDITOR', 'ADMIN')")
     @PostMapping
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> create(
             @AuthenticationPrincipal User user,
@@ -116,6 +119,7 @@ public class RecipeManagementController {
      * @param dto
      * @return
      */
+    @PreAuthorize("hasRole('EDITOR', 'ADMIN')")
     @PutMapping("{recipeId}/edit")
     public ResponseEntity<SuccessResponse<CreateRecipeResponseDto>> edit(
             @PathVariable("recipeId") Long recipeId
@@ -136,11 +140,12 @@ public class RecipeManagementController {
      * @param user
      * @return
      */
+    @PreAuthorize("hasRole('EDITOR','ADMIN')")
     @DeleteMapping("{id}")
     public ResponseEntity<SuccessResponse<DeleteRecipeResponseDto>> delete(
             @PathVariable("id") Long recipeId,
             @AuthenticationPrincipal User user) {
         return toResponseEntity("레시피 삭제 성공", recipeService.delete(recipeId, user));
-
     }
+
 }

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static com.coco.bakingbuddy.global.response.ErrorResponse.toResponseEntity;
 import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEntity;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
@@ -57,12 +59,12 @@ public class ProductController {
      * @param dto
      * @return
      */
+    @PreAuthorize("hasRole('SELLER','ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<CreateProductResponseDto>> create(
             @Valid @ModelAttribute CreateProductRequestDto dto,
             @AuthenticationPrincipal User user) {
         try {
-            // Save the product using the service, which now also handles the file
             CreateProductResponseDto savedProduct = productService.create(dto, user);
             return toResponseEntity("상품 생성 성공", savedProduct);
         } catch (Exception e) {
@@ -77,6 +79,7 @@ public class ProductController {
      * @param dto
      * @return
      */
+    @PreAuthorize("hasRole('SELLER','ADMIN')")
     @PutMapping("{id}/edit")
     public ResponseEntity<SuccessResponse<CreateProductResponseDto>> edit(
             @PathVariable("id") Long id,
@@ -90,17 +93,17 @@ public class ProductController {
      * @param id
      * @return
      */
+    @PreAuthorize("hasRole('SELLER','ADMIN')")
     @DeleteMapping("{id}")
-    public ResponseEntity<? extends Object> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<? extends Object>
+    delete(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
         try {
-            productService.delete(id);
+            productService.delete(user, id);
             return toResponseEntity("상품 삭제 성공");
         } catch (CustomException e) {
-            return toResponseEntity(HttpStatus.BAD_REQUEST, "상품을 찾을 수 없습니다");
+            return toResponseEntity(BAD_REQUEST, "상품을 찾을 수 없습니다");
         }
     }
-
-
 
 
 }
