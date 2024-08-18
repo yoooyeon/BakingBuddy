@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.user.domain;
 
 import com.coco.bakingbuddy.alarm.domain.Alarm;
+import com.coco.bakingbuddy.file.domain.UserProfileImageFile;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.product.domain.Product;
@@ -72,6 +73,9 @@ public class User extends BaseTime implements UserDetails {
     private String provider; //어떤 OAuth인지(google, naver 등)
     private String provideId; // 해당 OAuth 의 key(id)
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sequence ASC")
+    private List<UserProfileImageFile> imageFiles;
 
     public static User register(String username, String password) {
         // 사용자 객체 생성

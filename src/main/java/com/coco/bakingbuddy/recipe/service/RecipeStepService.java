@@ -50,7 +50,7 @@ public class RecipeStepService {
         recipeStep = recipeStepRepository.save(recipeStep);
 
         if (stepImage != null && !stepImage.isEmpty()) { // 이미지 있으면 파일서비스로 저장
-            String imageUrl = fileService.uploadRecipeStepImage(recipeStep.getId(), stepImage);
+            String imageUrl = fileService.uploadRecipeStepImage(recipeStep, stepImage);
             recipeStep.updateImage(imageUrl);
         }
         return CreateRecipeStepResponseDto.fromEntity(recipeStep);

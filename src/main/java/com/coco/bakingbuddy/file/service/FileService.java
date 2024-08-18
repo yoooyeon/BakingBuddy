@@ -1,15 +1,20 @@
 package com.coco.bakingbuddy.file.service;
 
-import com.coco.bakingbuddy.file.domain.ImageFile;
 import com.coco.bakingbuddy.file.domain.ProductImageFile;
 import com.coco.bakingbuddy.file.domain.RecipeImageFile;
 import com.coco.bakingbuddy.file.domain.RecipeStepImageFile;
+import com.coco.bakingbuddy.file.domain.UserProfileImageFile;
 import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.ProductImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
+import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.product.domain.Product;
+import com.coco.bakingbuddy.recipe.domain.Recipe;
+import com.coco.bakingbuddy.recipe.domain.RecipeStep;
+import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
+import com.coco.bakingbuddy.user.domain.User;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED;
+import static com.coco.bakingbuddy.global.error.ErrorCode.RECIPE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +41,7 @@ public class FileService {
     private final RecipeImageFileRepository recipeImageFileRepository;
     private final RecipeStepImageFileRepository recipeStepImageFileRepository;
     private final ProductImageFileRepository productImageFileRepository;
-
+    private final RecipeRepository recipeRepository;
     private final String UPLOAD_PATH = "UserProfile/";
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
     private final String RECIPE_STEP_UPLOAD_PATH = "RecipeStep/";
@@ -44,35 +50,50 @@ public class FileService {
     private final String STORAGE_URL = "https://storage.googleapis.com/";
 
     @Transactional
-    public String uploadUserProfileImageFile(Long userId, MultipartFile multiPartFile) {
+    public String uploadUserProfileImageFile(User user, MultipartFile multiPartFile) {
         return uploadFile(multiPartFile, UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
-            imageFileRepository.save(ImageFile.builder()
+            imageFileRepository.save(UserProfileImageFile.builder()
                     .originalName(originalName)
                     .ext(ext)
                     .uuid(uuid)
                     .fileName(fileName)
-                    .userId(userId)
+                    .user(user)
                     .uploadPath(UPLOAD_PATH + uuid)
                     .build());
         });
     }
 
     @Transactional
-    public String uploadRecipeImageFile(Long recipeId, MultipartFile multiPartFile) {
+    public String uploadRecipeImageFile(Recipe recipe, MultipartFile multiPartFile) {
         return uploadFile(multiPartFile, RECIPE_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
             recipeImageFileRepository.save(RecipeImageFile.builder()
                     .originalName(originalName)
                     .ext(ext)
                     .uuid(uuid)
                     .fileName(fileName)
-                    .recipeId(recipeId)
+                    .recipe(recipe)
                     .uploadPath(RECIPE_UPLOAD_PATH + uuid)
                     .build());
         });
     }
 
     @Transactional
-    public String uploadRecipeStepImage(Long recipeStepId, MultipartFile stepImageFile) {
+    public String uploadRecipeImageFile(Long recipeId, MultipartFile multiPartFile) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow((() -> new CustomException(RECIPE_NOT_FOUND)));
+        return uploadFile(multiPartFile, RECIPE_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
+            recipeImageFileRepository.save(RecipeImageFile.builder()
+                    .originalName(originalName)
+                    .ext(ext)
+                    .uuid(uuid)
+                    .fileName(fileName)
+                    .recipe(recipe)
+                    .uploadPath(RECIPE_UPLOAD_PATH + uuid)
+                    .build());
+        });
+    }
+
+    @Transactional
+    public String uploadRecipeStepImage(RecipeStep recipeStep, MultipartFile stepImageFile) {
         return uploadFile(stepImageFile, RECIPE_STEP_UPLOAD_PATH, (fileName, uuid, originalName, ext) -> {
             recipeStepImageFileRepository.save(
                     RecipeStepImageFile.builder()
@@ -80,7 +101,7 @@ public class FileService {
                             .ext(ext)
                             .uuid(uuid)
                             .fileName(fileName)
-                            .recipeStepId(recipeStepId)
+                            .recipeStep(recipeStep)
                             .uploadPath(RECIPE_STEP_UPLOAD_PATH + uuid)
                             .build());
         });

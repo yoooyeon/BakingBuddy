@@ -1,5 +1,7 @@
 package com.coco.bakingbuddy.recipe.domain;
 
+import com.coco.bakingbuddy.file.domain.RecipeImageFile;
+import com.coco.bakingbuddy.file.domain.UserProfileImageFile;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
 import com.coco.bakingbuddy.like.domain.Like;
@@ -59,6 +61,9 @@ public class Recipe extends BaseTime {
     private List<IngredientRecipe> ingredientRecipes;
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeReview> reviews;
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sequence ASC")
+    private List<RecipeImageFile> imageFiles;
 
     public void delete() {
         this.useYn = false;

@@ -98,7 +98,7 @@ public class UserService {
         user.updateUsername(username);
         user.updateIntroduction(introduction);
         if (profileImage != null && !profileImage.isEmpty()) {
-            String url = fileService.uploadUserProfileImageFile(userId, profileImage);
+            String url = fileService.uploadUserProfileImageFile(user, profileImage);
             user.updateProfile(url);
         }
         return userRepository.save(user);

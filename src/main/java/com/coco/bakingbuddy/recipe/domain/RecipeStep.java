@@ -1,9 +1,12 @@
 package com.coco.bakingbuddy.recipe.domain;
 
 
+import com.coco.bakingbuddy.file.domain.RecipeStepImageFile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Builder
 @Getter
@@ -23,6 +26,10 @@ public class RecipeStep {
     @ManyToOne
     @JoinColumn(name = "RECIPE_ID")
     private Recipe recipe;
+
+    @OneToMany(mappedBy = "recipeStep", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sequence ASC")
+    private List<RecipeStepImageFile> imageFiles;
 
 
     public void updateImage(String imageUrl) {

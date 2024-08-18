@@ -25,7 +25,6 @@ public class RecipeStepImageFileCreateRequestDto {
                 .uuid(uuid)
                 .uploadPath(uploadPath)
                 .fileName(fileName)
-                .recipeStepId(recipeStepId)
                 .build();
     }
 }

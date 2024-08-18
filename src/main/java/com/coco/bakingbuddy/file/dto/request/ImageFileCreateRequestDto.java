@@ -1,6 +1,6 @@
 package com.coco.bakingbuddy.file.dto.request;
 
-import com.coco.bakingbuddy.file.domain.ImageFile;
+import com.coco.bakingbuddy.file.domain.UserProfileImageFile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,14 +18,13 @@ public class ImageFileCreateRequestDto {
     private String fileName;
     private Long userId;
 
-    public static ImageFile toEntity(ImageFileCreateRequestDto dto) {
-        return ImageFile.builder()
+    public static UserProfileImageFile toEntity(ImageFileCreateRequestDto dto) {
+        return UserProfileImageFile.builder()
                 .originalName(dto.getOriginalName())
                 .ext(dto.getExt())
                 .uuid(dto.getUuid())
                 .uploadPath(dto.getUploadPath())
                 .fileName(dto.getFileName())
-                .userId(dto.getUserId())
                 .build();
     }
 }

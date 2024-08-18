@@ -25,7 +25,7 @@ public class RecipeImageFileCreateResponseDto {
                 .uuid(file.getUuid())
                 .uploadPath(file.getUploadPath())
                 .fileName(file.getFileName())
-                .recipeId(file.getRecipeId())
+                .recipeId(file.getRecipe().getId())
                 .build();
     }
 }

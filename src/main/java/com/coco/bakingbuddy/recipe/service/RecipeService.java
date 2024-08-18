@@ -127,7 +127,7 @@ public class RecipeService {
         saveTags(dto.getTags(), recipe);
         saveIngredients(dto.getIngredients(), recipe, dto.getServings());
         if (multipartFile != null && !multipartFile.isEmpty()) {
-            String imageUrl = fileService.uploadRecipeImageFile(recipe.getId(), multipartFile);
+            String imageUrl = fileService.uploadRecipeImageFile(recipe, multipartFile);
             recipe.updateImage(imageUrl);
         }
 
