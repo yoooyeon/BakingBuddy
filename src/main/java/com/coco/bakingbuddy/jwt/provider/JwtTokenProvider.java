@@ -131,6 +131,10 @@ public class JwtTokenProvider {
 
     // Refresh Token 생성
     public String createRefreshToken(String username) {
+        RefreshToken token = refreshTokenRepository.findByUsername(username);
+        if (token != null) {
+            return token.getToken();
+        }
         String refreshToken = Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidityInMilliseconds))
@@ -148,15 +152,21 @@ public class JwtTokenProvider {
 
     // Refresh Token 검증
     public boolean validateRefreshToken(String refreshToken) {
+        log.info(">>>validateRefreshToken");
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(refreshToken);
-
+            log.info(">>>claims.getBody().getSubject()={}", claims.getBody().getSubject());
             // Refresh Token이 데이터베이스에 저장된 것인지 확인
             RefreshToken tokenEntity = refreshTokenRepository.findByUsername(claims.getBody().getSubject());
+            log.info(">>>tokenEntity={}", tokenEntity);
             return tokenEntity != null && tokenEntity.getToken().equals(refreshToken) && tokenEntity.isValid();
+        } catch (JwtException e) {
+            log.error("JWT Exception: ", e);
+            return false;
         } catch (Exception e) {
+            log.error("General Exception: ", e);
             return false;
         }
     }

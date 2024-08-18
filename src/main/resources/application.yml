@@ -1,5 +1,7 @@
-spring:
+server:
+  port: 8080
 
+spring:
   data:
     redis:
       host: 127.0.0.1
@@ -80,5 +82,4 @@ management:
         include: "*"
         exclude: env, beans
       base-path: "/manage"
-server:
-  port: 8080
+
