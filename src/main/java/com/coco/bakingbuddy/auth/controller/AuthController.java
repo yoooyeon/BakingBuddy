@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.auth.controller;
 
 import com.coco.bakingbuddy.auth.dto.request.LoginRequestDto;
+import com.coco.bakingbuddy.auth.dto.response.AuthStatusResponseDto;
 import com.coco.bakingbuddy.auth.service.AuthService;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
@@ -41,28 +42,24 @@ public class AuthController {
     public ResponseEntity<?> status(
             @AuthenticationPrincipal User user) {
         if (user != null) {
-            return toResponseEntity("로그인 상태 확인", Map.of("isAuthenticated", true));
+            AuthStatusResponseDto auth = AuthStatusResponseDto.builder()
+                    .roleType(user.getRole().getDisplayName()).isAuthenticated(true)
+                    .build();
+            return toResponseEntity("로그인 상태 확인", auth);
         }
         return toResponseEntity(UNAUTHORIZED, "로그인 상태 X");
     }
 
-    @PostMapping("signup")
+    @PostMapping("api/signup")
     public ResponseEntity<SuccessResponse<CreateUserResponseDto>> register(
             @Valid @RequestBody CreateUserRequestDto user) {
         return toResponseEntity("가입 성공", fromEntity(userService.registerUser(user)));
     }
 
-    @PostMapping("login")
+    @PostMapping("api/login")
     public ResponseEntity<SuccessResponse<LoginUserResponseDto>>
     login(@RequestBody LoginRequestDto user, HttpServletResponse response) {
-        String accessToken = authService.getAccessToken(user);
-        String refreshToken = authService.getRefreshToken(user.getUsername());
-
-        // Store tokens in cookies
-        jwtTokenProvider.addTokenToCookie(response, accessToken, "accessToken");
-        jwtTokenProvider.addTokenToCookie(response, refreshToken, "refreshToken");
-        LoginUserResponseDto result = LoginUserResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
-        return toResponseEntity("로그인 성공, 토큰 생성", result);
+        return toResponseEntity("로그인 성공, 토큰 생성", authService.login(user,response));
     }
 
 
@@ -75,20 +72,44 @@ public class AuthController {
 //            return toResponseEntity(HttpStatus.FORBIDDEN, "리프레시 토큰 Invalid");
 //        }
 //    }
-    @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> body) {
-        String refreshToken = body.get("refreshToken");
+    @PostMapping("/api/validate-token")
+    public ResponseEntity<?> validateToken(@RequestBody Map<String, String> body) {
+        String accessToken = body.get("accessToken");
 
+        if (accessToken == null || !jwtTokenProvider.validateAccessToken(accessToken)) {
+            return toResponseEntity(UNAUTHORIZED, "유효하지 않은 리프레시 토큰, 재로그인 요청");
+        }
+
+        return toResponseEntity("엑세스 토큰 유효"
+                , Map.of("valid", true));
+    }
+
+    @PostMapping("/api/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refreshToken")) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
+        log.info(">>>refreshToken={}", refreshToken);
         if (refreshToken == null || !jwtTokenProvider.validateRefreshToken(refreshToken)) {
-            return toResponseEntity(UNAUTHORIZED, "유효하지 않은 리프레시 토큰");
+            log.info(">>>refreshToken 유효하지않음");
+            return toResponseEntity(UNAUTHORIZED, "유효하지 않은 리프레시 토큰, 재로그인 요청");
         }
 
         String newAccessToken = jwtTokenProvider.createAccessTokenFromRefreshToken(refreshToken);
+        log.info(">>>newAccessToken{}", newAccessToken);
+        // Store tokens in cookies
+        jwtTokenProvider.addTokenToCookie(response, newAccessToken, "accessToken");
         return toResponseEntity("리프레시 토큰으로 새 엑세스 토큰 발급"
                 , Map.of("accessToken", newAccessToken));
     }
 
-    @PostMapping("/logout")
+    @PostMapping("api/logout")
     public ResponseEntity<SuccessResponse<String>> logout(HttpServletRequest request, HttpServletResponse response) {
         // JWT 쿠키 삭제
         Cookie accessTokenCookie = new Cookie("accessToken", null);
