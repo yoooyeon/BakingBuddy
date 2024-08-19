@@ -68,9 +68,10 @@ public enum ErrorCode {
 
     //alarm
     ALARM_NOT_FOUND(BAD_REQUEST,"해당 알람을 찾을 수 없습니다."),
-    UNAUTHORIZED_READ(BAD_REQUEST,"읽음처리 권한이 없습니다.")
+    UNAUTHORIZED_READ(BAD_REQUEST,"읽음처리 권한이 없습니다."),
 
-    //
+    //report
+    REPORT_NOT_FOUND(BAD_REQUEST,"해당 신고내역을 찾을 수 없습니다.")
     ;
 
 

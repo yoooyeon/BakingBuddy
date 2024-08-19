@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.user.domain;
 
+import com.coco.bakingbuddy.admin.domain.Report;
 import com.coco.bakingbuddy.alarm.domain.Alarm;
 import com.coco.bakingbuddy.file.domain.UserProfileImageFile;
 import com.coco.bakingbuddy.global.domain.BaseTime;
@@ -76,6 +77,9 @@ public class User extends BaseTime implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequence ASC")
     private List<UserProfileImageFile> imageFiles;
+
+    @OneToMany(mappedBy = "reporter")
+    private List<Report> reports; // 사용자가 신고한 내역 확인
 
     public static User register(String username, String password) {
         // 사용자 객체 생성
