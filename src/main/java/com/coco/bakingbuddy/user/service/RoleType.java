@@ -16,9 +16,11 @@ public enum RoleType {
     RoleType(String displayName) {
         this.displayName = displayName;
     }
+
     public String getDisplayName() {
         return displayName;
     }
+
     public static RoleType from(String roleStr) {
         RoleType role = lookup.get(roleStr.toLowerCase());
         if (role == null) {
