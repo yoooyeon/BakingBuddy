@@ -17,7 +17,7 @@ public class UserAuthorityQueryDslRepository {
     public List<UserAuthority> selectUserAuthorityRequests() {
         return queryFactory
                 .selectFrom(userAuthority)
-                .where(userAuthority.approval.eq(false))
+//                .where(userAuthority.approval.eq(false))
                 .fetch();
     }
 }

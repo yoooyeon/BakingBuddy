@@ -1,6 +1,6 @@
 package com.coco.bakingbuddy.admin.controller;
 
-import com.coco.bakingbuddy.admin.dto.response.SelectUserAuthorityRequestDto;
+import com.coco.bakingbuddy.admin.dto.response.SelectUserAuthorityResponseDto;
 import com.coco.bakingbuddy.admin.service.UserAuthorityService;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.user.domain.User;
@@ -20,7 +20,7 @@ public class UserAuthorityController {
     private final UserAuthorityService userAuthorityService;
 
     @GetMapping
-    public ResponseEntity<SuccessResponse<List<SelectUserAuthorityRequestDto>>>
+    public ResponseEntity<SuccessResponse<List<SelectUserAuthorityResponseDto>>>
     selectUserAuthorityRequests() {
         return toResponseEntity("권한 승인 요청 조회 성공"
                 , userAuthorityService.selectUserAuthorityRequests());

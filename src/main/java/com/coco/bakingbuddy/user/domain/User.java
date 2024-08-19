@@ -165,8 +165,9 @@ public class User extends BaseTime implements UserDetails {
     }
 
 
-    public void updateRole(RoleType approveRole) {
+    public User updateRole(RoleType approveRole) {
         this.role = approveRole;
+        return this;
     }
 }
 

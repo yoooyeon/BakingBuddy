@@ -33,7 +33,8 @@ public class UserAuthority extends BaseTime {
     @JoinColumn(name = "APPROVAL_USER_ID")
     private User approvalUser; // 승인한 관리자
 
-    public void updateApprovalUser(User user) {
+    public void updateApproval(User user) {
         this.approvalUser = user;
+        this.approval = true;
     }
 }
