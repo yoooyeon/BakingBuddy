@@ -8,6 +8,5 @@ import java.util.Arrays;
 
 @Repository
 public interface MainRecipeRepository extends JpaRepository<MainRecipe, Long> {
-    void updateAllToNotCurrent();
 
 }

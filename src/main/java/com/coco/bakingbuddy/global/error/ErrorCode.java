@@ -71,7 +71,11 @@ public enum ErrorCode {
     UNAUTHORIZED_READ(BAD_REQUEST,"읽음처리 권한이 없습니다."),
 
     //report
-    REPORT_NOT_FOUND(BAD_REQUEST,"해당 신고내역을 찾을 수 없습니다.")
+    REPORT_NOT_FOUND(BAD_REQUEST,"해당 신고내역을 찾을 수 없습니다."),
+
+    // user authority
+    USER_AUTHORITY_NOT_FOUND(BAD_REQUEST,"해당 권한 요청을 찾을 수 없습니다."),
+    EXIST_AUTHORITY(BAD_REQUEST,"해당 권한 요청을 이미 소유하고 있습니다"),
     ;
 
 
