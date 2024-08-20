@@ -1,8 +1,8 @@
 package com.coco.bakingbuddy.admin.controller;
 
+import com.coco.bakingbuddy.admin.dto.response.SelectMainRecipeResponseDto;
 import com.coco.bakingbuddy.admin.service.MainRecipeService;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
-import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +15,28 @@ import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEnt
 @RestController
 @RequestMapping("/api/admin/main")
 public class MainPageAdminController {
+
     private final MainRecipeService mainRecipeService;
 
-    @PostMapping
-    public ResponseEntity<SuccessResponse<String>>
-    registerMainRecipe(@RequestParam Long recipeId) {
-        mainRecipeService.registerMainRecipe(recipeId);
+    @PostMapping("{id}/recipes/{recipeId}")
+    public ResponseEntity<SuccessResponse<String>> registerMainRecipe(
+            @PathVariable("id") Long id,
+            @PathVariable("recipeId") Long recipeId) {
+        mainRecipeService.registerMainRecipe(id, recipeId);
         return toResponseEntity("메인 레시피 등록 성공", "레시피 ID: " + recipeId);
     }
 
     @GetMapping
-    public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>>
-    selectMainRecipeCandidates() {
-        return toResponseEntity("메인 레시피 후보 조회"
-                , mainRecipeService.selectMainRecipeCandidates());
+    public ResponseEntity<SuccessResponse<List<SelectMainRecipeResponseDto>>> getMainRecipeCandidates() {
+        List<SelectMainRecipeResponseDto> response = mainRecipeService.getMainRecipeCandidates();
+        return toResponseEntity("메인 레시피 후보 조회", response);
+    }
+
+    @DeleteMapping("{id}/recipes/{recipeId}")
+    public ResponseEntity<SuccessResponse<String>> unregisterMainRecipe(
+            @PathVariable("id") Long id,
+            @PathVariable("recipeId") Long recipeId) {
+        mainRecipeService.unregisterMainRecipe(id, recipeId);
+        return toResponseEntity("메인 레시피 취소 성공", "레시피 ID: " + recipeId);
     }
 }

@@ -34,6 +34,7 @@ public class Report extends BaseTime {
     @Builder.Default
     @Column(nullable = false)
     private boolean isCompleted = false;
+
     private User completeAdmin;
 
     // 신고 완료처리

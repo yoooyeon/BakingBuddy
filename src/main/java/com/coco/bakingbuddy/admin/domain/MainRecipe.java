@@ -23,4 +23,7 @@ public class MainRecipe extends BaseTime {
     @Column(nullable = false)
     private boolean isCurrent; // 현재 메인 레시피 여부
 
+    public void setIsCurrent(boolean bool) {
+        isCurrent = bool;
+    }
 }

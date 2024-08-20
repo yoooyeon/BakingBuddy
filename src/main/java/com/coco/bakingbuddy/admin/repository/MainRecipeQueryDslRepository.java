@@ -18,7 +18,8 @@ public class MainRecipeQueryDslRepository {
     private final JPAQueryFactory queryFactory;
     public List<Recipe> selectCurrentMainRecipe() {
         return queryFactory
-                .selectFrom(mainRecipe.recipe)
+                .select(mainRecipe.recipe)
+                .from(mainRecipe)
                 .where(mainRecipe.isCurrent)
                 .fetch();
     }
@@ -34,7 +35,7 @@ public class MainRecipeQueryDslRepository {
     public List<MainRecipe> findAvailableMainRecipeCandidates() {
         return queryFactory
                 .selectFrom(mainRecipe)
-                .where(mainRecipe.isCurrent.eq(false)) // 현재 메인 레시피가 아닌 레시피를 조회
+//                .where(mainRecipe.isCurrent.eq(false)) // 현재 메인 레시피가 아닌 레시피를 조회
                 .fetch();
     }
 }

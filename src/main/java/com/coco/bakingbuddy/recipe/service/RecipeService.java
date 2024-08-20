@@ -135,7 +135,7 @@ public class RecipeService {
 
         followService.getAllFollowersDto(user);
         alarmService.createNewRecipeAlarm(recipe.getId(),
-                user.getNickname() + "이 새로운 레시피" + recipe.getName() + "를 추가했습니다.", followService.getAllFollowers(user));
+                user.getNickname() + "이 새로운 레시피 " + recipe.getName() + "를 추가했습니다.", followService.getAllFollowers(user));
 
         return CreateRecipeResponseDto.fromEntity(recipe);
     }

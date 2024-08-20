@@ -13,4 +13,7 @@ public enum ReportType {
         this.completedMsg = completedMsg;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
 }

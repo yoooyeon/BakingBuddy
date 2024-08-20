@@ -76,6 +76,9 @@ public enum ErrorCode {
     // user authority
     USER_AUTHORITY_NOT_FOUND(BAD_REQUEST,"해당 권한 요청을 찾을 수 없습니다."),
     EXIST_AUTHORITY(BAD_REQUEST,"해당 권한 요청을 이미 소유하고 있습니다"),
+
+    //main recipe
+    MAIN_RECIPE_NOT_FOUND(BAD_REQUEST,"해당 main recipe를 찾을 수 없습니다."),
     ;
 
 

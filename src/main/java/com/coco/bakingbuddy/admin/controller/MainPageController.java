@@ -15,14 +15,14 @@ import static com.coco.bakingbuddy.global.response.SuccessResponse.toResponseEnt
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/main-recipe")
+@RequestMapping("/api/main")
 public class MainPageController {
 
     private final MainRecipeService mainRecipeService;
 
-    @GetMapping
+    @GetMapping("recipes")
     public ResponseEntity<SuccessResponse<List<SelectRecipeResponseDto>>> mainRecipes() {
-        return toResponseEntity("메인 레시피 조회 성공", mainRecipeService.selectMainRecipes());
+        return toResponseEntity("메인 레시피 조회 성공", mainRecipeService.getCurrentMainRecipes());
     }
 
 }

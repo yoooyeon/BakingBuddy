@@ -42,8 +42,8 @@ public class FollowService {
             throw new CustomException(CANNOT_FOLLOW_SELF);
         }
         followRepository.save(Follow.builder().followed(followed).follower(follower).build());
-        alarmService.createAlarm(followed.getId(), follower.getUsername() + " started following you");
-        alarmService.createAlarm(follower.getId(), "You started following " + followed.getUsername());
+        alarmService.createAlarm(followed.getId(), follower.getUsername() + "님이 당신을 팔로우 했습니다.");
+        alarmService.createAlarm(follower.getId(),   followed.getUsername()+"님 팔로우를 시작했습니다!");
     }
 
     @Transactional
