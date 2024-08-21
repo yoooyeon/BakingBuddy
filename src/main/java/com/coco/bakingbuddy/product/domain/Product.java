@@ -24,11 +24,13 @@ public class Product extends BaseTime {
     private String name;
     private Integer price;
     private String description;
-    private List<String> productImageUrls;
+    private String link;
+    private String productImageUrl;
+    private List<String> productDetailImageUrls;
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductReview> reviews;
     private boolean useYn;
-
+    private Long providerId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user; // 상품 등록자
@@ -41,9 +43,10 @@ public class Product extends BaseTime {
         this.user = user;
     }
 
-    public void setImageUrls(List<String> imageUrls) {
-        for (String imageUrl : imageUrls) {
-            productImageUrls.add(imageUrl);
-        }
+    public void setImageUrl(String imageUrl) {
+        this.productImageUrl = imageUrl;
+    }
+    public void setDetailImageUrl(List<String> imageUrl) {
+        this.productDetailImageUrls = imageUrl;
     }
 }

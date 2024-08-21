@@ -8,7 +8,6 @@ import com.coco.bakingbuddy.file.repository.ImageFileRepository;
 import com.coco.bakingbuddy.file.repository.ProductImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeImageFileRepository;
 import com.coco.bakingbuddy.file.repository.RecipeStepImageFileRepository;
-import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
 import com.coco.bakingbuddy.product.domain.Product;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
@@ -46,7 +45,7 @@ public class FileService {
     private final String RECIPE_UPLOAD_PATH = "RecipeProfile/";
     private final String RECIPE_STEP_UPLOAD_PATH = "RecipeStep/";
     private final String PRODUCT_UPLOAD_PATH = "Product/";
-    private final String BUCKET_NAME = "baking-buddy-bucket"; // 변경 불가, api 요청 상수
+    private final String BUCKET_NAME = "cooking-bunnies"; // 변경 불가, api 요청 상수
     private final String STORAGE_URL = "https://storage.googleapis.com/";
 
     @Transactional

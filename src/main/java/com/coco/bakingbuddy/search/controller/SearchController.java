@@ -95,7 +95,7 @@ public class SearchController {
             redisService.saveSearchTerm(term);
             rankingService.incrementSearchCount(term);
             if (user != null) {
-                searchService.addRecentSearch(user.getId(), term);
+                searchService.addSearchRecord(user.getId(), term);
             }
         }
     }

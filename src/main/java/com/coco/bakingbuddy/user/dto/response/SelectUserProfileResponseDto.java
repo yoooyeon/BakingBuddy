@@ -21,6 +21,7 @@ public class SelectUserProfileResponseDto {
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .introduction(user.getIntroduction())
+                .profileImageUrl(user.getProfileImageUrl())
                 .build();
     }
 }

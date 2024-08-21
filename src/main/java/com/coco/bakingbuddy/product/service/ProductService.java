@@ -50,9 +50,8 @@ public class ProductService {
 
         try {
             if (dto.getProductImage() != null) {
-                String imageUrl = fileService.uploadProductImage(product, dto.getProductImage()); //todo 여러 이미지 받도록 수정
-                List<String> imgUrls = new ArrayList<>();
-                product.setImageUrls(imgUrls);
+                String imageUrl = fileService.uploadProductImage(product, dto.getProductImage());
+                product.setImageUrl(imageUrl);
                 productRepository.save(product); // 이미지 URL 업데이트 후 상품 재저장
             }
         } catch (Exception e) {

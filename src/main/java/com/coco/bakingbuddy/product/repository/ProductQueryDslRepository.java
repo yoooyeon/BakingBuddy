@@ -25,7 +25,7 @@ public class ProductQueryDslRepository {
                                 , product.name
                                 , product.price
                                 , product.description
-                                , product.productImageUrls
+                                , product.productImageUrl
                                 , product.user.username
                                 , product.user.profileImageUrl
                         ))

@@ -17,9 +17,10 @@ public class SelectProductResponseDto {
     private String name;
     private Integer price;
     private String description;
-    private List<String> productImageUrls;
+    private String productImageUrl;
     private String username;
     private String profileImageUrl;
+    private String link;
 
     public static SelectProductResponseDto fromEntity(Product product) {
         return SelectProductResponseDto.builder()
@@ -27,7 +28,8 @@ public class SelectProductResponseDto {
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
-                .productImageUrls(product.getProductImageUrls())
+                .productImageUrl(product.getProductImageUrl())
+                .link(product.getLink())
                 .build();
     }
 }
