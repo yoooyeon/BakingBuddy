@@ -43,15 +43,15 @@ spring:
     servlet:
       multipart:
         max-file-size: 10MB
-        max-request-size: 10MB
+        max-request-size: 10MBß
 
   cloud:
     gcp:
       storage:
         credentials:
-          location: classpath:/keys/baking-buddy-428009-28b83cf67c33.json
-        project-id: baking-buddy-428009
-        bucket: baking-buddy-bucket
+          location: classpath:/keys/cookingbunnies-8795bdb79870.json
+        project-id: cookingbunnies
+        bucket: cooking-bunnies
   batch:
     job:
       enabled: false
