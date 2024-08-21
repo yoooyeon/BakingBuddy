@@ -8,7 +8,7 @@ import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.product.domain.Product;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
-import com.coco.bakingbuddy.search.domain.RecentSearch;
+import com.coco.bakingbuddy.search.domain.SearchRecord;
 import com.coco.bakingbuddy.user.service.RoleType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -48,7 +48,7 @@ public class User extends BaseTime implements UserDetails {
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecentSearch> recentSearches = new ArrayList<>();
+    private List<SearchRecord> searchRecords = new ArrayList<>();
 
     @JsonIgnore
     @Builder.Default
@@ -113,16 +113,16 @@ public class User extends BaseTime implements UserDetails {
     }
 
     // 최대 최근 검색어 수
-    private static final int MAX_RECENT_SEARCHES = 10;
+    private static final int MAX_SEARCH_RECORDS = 10;
 
-    public void addRecentSearch(RecentSearch recentSearch) {
-        recentSearches.add(recentSearch);
-        recentSearch.setUser(this); // 연관 관계 설정
+    public void addSearchRecord(SearchRecord searchRecord) {
+        searchRecords.add(searchRecord);
+        searchRecord.setUser(this); // 연관 관계 설정
     }
 
 
-    public void clearRecentSearches() {
-        this.recentSearches.clear();
+    public void clearSearchRecords() {
+        this.searchRecords.clear();
     }
 
     @Override

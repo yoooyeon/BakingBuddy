@@ -2,9 +2,9 @@ package com.coco.bakingbuddy.search.service;
 
 import com.coco.bakingbuddy.global.error.ErrorCode;
 import com.coco.bakingbuddy.global.error.exception.CustomException;
-import com.coco.bakingbuddy.search.domain.RecentSearch;
-import com.coco.bakingbuddy.search.repository.RecentSearchQueryDslRepository;
-import com.coco.bakingbuddy.search.repository.RecentSearchRepository;
+import com.coco.bakingbuddy.search.domain.SearchRecord;
+import com.coco.bakingbuddy.search.repository.SearchRecordQueryDslRepository;
+import com.coco.bakingbuddy.search.repository.SearchRecordRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,41 +19,41 @@ import java.util.List;
 @Slf4j
 public class SearchService {
     private final UserRepository userRepository;
-    private final RecentSearchQueryDslRepository recentSearchQueryDslRepository;
-    private final RecentSearchRepository recentSearchRepository;
+    private final SearchRecordQueryDslRepository searchRecordQueryDslRepository;
+    private final SearchRecordRepository searchRecordRepository;
 
-    public void addRecentSearch(Long userId, String term) {
+    public void addSearchRecord(Long userId, String term) {
 
         // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        RecentSearch existingSearch = recentSearchQueryDslRepository.selectRecentSearchByUserIdAndTerm(userId, term);
+        SearchRecord existingSearch = searchRecordQueryDslRepository.selectSearchRecordsByUserIdAndTerm(userId, term);
 
 
         if (existingSearch != null) {
             // 검색어가 이미 존재하면 timestamp만 업데이트
             existingSearch.setTimestamp(LocalDateTime.now());
-            userRepository.save(user); // 또는 별도로 RecentSearch 저장소가 있다면 사용
+            userRepository.save(user); // 또는 별도로 searchRecords 저장소가 있다면 사용
         } else {
             // 현재 시간 기준으로 새로운 검색어 생성
-            RecentSearch recentSearch = RecentSearch.create(term, user);
-            RecentSearch save = recentSearchRepository.save(recentSearch);
+            SearchRecord searchRecord = SearchRecord.create(term, user);
+            SearchRecord save = searchRecordRepository.save(searchRecord);
             // 새로운 검색어 추가
-            user.addRecentSearch(save);
+            user.addSearchRecord(save);
             userRepository.save(user);
         }
     }
 
-    public List<RecentSearch> getRecentSearches(Long userId) {
+    public List<SearchRecord> getSearchRecords(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        return user.getRecentSearches();
+        return user.getSearchRecords();
     }
 
-    public void clearRecentSearches(Long userId) {
+    public void clearSearchRecords(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        user.clearRecentSearches();
+        user.clearSearchRecords();
         userRepository.save(user);
     }
 }

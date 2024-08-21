@@ -45,8 +45,10 @@ Ingredient와 Recipe를 매개하는 역할로 IngredientRecipe를 두어 활용
 Redis를 활용하여 검색 자동완성 기능을 구현했다. 검색어를 key로 하고 (상품 id, 이미지 url)을  value로 같이 캐싱하여 
 검색어 자동완성 시 이미지도 미리보기 가능하도록 했다.
 
-### RecentSearch
+### SearchRecord
 사용자의 최근 검색어를 저장하기 위해 만들었다. 이미 저장된 검색어는 timestamp만 갱신하고 중복되지 않도록 처리한다.
+### ClickRecord
+사용자의 레시피, 상품 등 클릭 이력을 저장한다.
 
 ### Popular (RankingTermCache, TermCounter)
 인기 검색어를 일정 시간마다 배치를 활용해 캐싱한다.

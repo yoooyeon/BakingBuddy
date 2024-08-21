@@ -3,7 +3,7 @@ package com.coco.bakingbuddy.user.controller;
 import com.coco.bakingbuddy.global.response.SuccessResponse;
 import com.coco.bakingbuddy.product.dto.response.SelectProductResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
-import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
+import com.coco.bakingbuddy.search.dto.response.SearchRecordResponseDto;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.dto.response.SelectUserIntroResponseDto;
 import com.coco.bakingbuddy.user.dto.response.SelectUserProfileResponseDto;
@@ -66,7 +66,7 @@ public class UserController {
     editUser(@AuthenticationPrincipal User user,
              @RequestPart("username") String username,
              @RequestPart("nickname") String nickname,
-             @RequestPart("introduction") String introduction,
+             @RequestPart(value = "introduction",required = false) String introduction,
              @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         return toResponseEntity("유저 정보 수정 성공",
                 fromEntity(userService.editUserInfo(user.getId(), username, nickname, introduction, profileImage)));
@@ -79,10 +79,10 @@ public class UserController {
      * @return
      */
     @GetMapping("recent")
-    public ResponseEntity<SuccessResponse<List<RecentSearchResponseDto>>>
+    public ResponseEntity<SuccessResponse<List<SearchRecordResponseDto>>>
     recent(@AuthenticationPrincipal User user) {
         return toResponseEntity("최근 검색어 조회 성공"
-                , userService.findRecentSearchesByUserId(user.getId()));
+                , userService.findSearchRecordsByUserId(user.getId()));
     }
 
     /**

@@ -12,6 +12,8 @@ import com.coco.bakingbuddy.ingredient.dto.response.IngredientResponseDto;
 import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeQueryDslRepository;
 import com.coco.bakingbuddy.ingredient.repository.IngredientRecipeRepository;
 import com.coco.bakingbuddy.ingredient.repository.IngredientRepository;
+import com.coco.bakingbuddy.product.domain.Product;
+import com.coco.bakingbuddy.product.repository.ProductRepository;
 import com.coco.bakingbuddy.recipe.domain.Directory;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.recipe.dto.request.CreateRecipeRequestDto;
@@ -24,6 +26,9 @@ import com.coco.bakingbuddy.recipe.repository.DirectoryRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
+import com.coco.bakingbuddy.recommendation.domain.ProductRecommendation;
+import com.coco.bakingbuddy.recommendation.repository.ProductRecommendationRepository;
+import com.coco.bakingbuddy.shopping.service.ShoppingService;
 import com.coco.bakingbuddy.socket.AlarmWebSocketHandler;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
@@ -32,7 +37,6 @@ import com.coco.bakingbuddy.tag.repository.TagRecipeRepository;
 import com.coco.bakingbuddy.tag.repository.TagRepository;
 import com.coco.bakingbuddy.user.domain.User;
 import com.coco.bakingbuddy.user.repository.UserRepository;
-import com.coco.bakingbuddy.user.service.RoleType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -70,6 +74,9 @@ public class RecipeService {
     private final FollowService followService;
     private final AlarmWebSocketHandler alarmWebSocketHandler;
     private final AlarmService alarmService;
+    private final ShoppingService shoppingService;
+    private final ProductRepository productRepository;
+    private final ProductRecommendationRepository productRecommendationRepository;
 
     @Transactional(readOnly = true)
     public List<SelectRecipeResponseDto> selectAll(User user) {
@@ -136,7 +143,28 @@ public class RecipeService {
         followService.getAllFollowersDto(user);
         alarmService.createNewRecipeAlarm(recipe.getId(),
                 user.getNickname() + "이 새로운 레시피 " + recipe.getName() + "를 추가했습니다.", followService.getAllFollowers(user));
-
+        List<CreateIngredientRequestDto> ingredients = dto.getIngredients();
+        for (CreateIngredientRequestDto ingredient : ingredients) {
+            shoppingService.searchProducts(ingredient.getName(), 2, 1, "sim")
+                    .subscribe(productResponse -> {
+                        productResponse.getItems().forEach(item -> {
+                            String cleanTitle = item.getTitle().replaceAll("<[^>]*>", "").trim();
+                            Product product = Product.builder()
+                                    .name(cleanTitle)
+                                    .price(item.getLprice())
+                                    .link(item.getLink())
+                                    .productImageUrl(item.getImage())
+                                    .providerId(item.getProductId())
+                                    .build();
+                            Product save = productRepository.save(product);// 상품을 DB에 저장
+                            productRecommendationRepository.save(ProductRecommendation.builder()
+                                    .product(save)
+                                    .recipe(recipe)
+                                    .build());
+                        });
+                    });
+            ;
+        }
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
 
@@ -151,7 +179,7 @@ public class RecipeService {
     public DeleteRecipeResponseDto delete(Long id, User user) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new CustomException(RECIPE_NOT_FOUND));
-        if (user.getRole().equals(ROLE_ADMIN)){
+        if (user.getRole().equals(ROLE_ADMIN)) {
             recipeRepository.delete(recipe);
             return DeleteRecipeResponseDto.fromEntity(recipe);
         }

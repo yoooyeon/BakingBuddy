@@ -14,7 +14,7 @@ import com.coco.bakingbuddy.recipe.dto.response.DirectoryWithRecipesResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.RecipeResponseDto;
 import com.coco.bakingbuddy.recipe.dto.response.SelectRecipeResponseDto;
 import com.coco.bakingbuddy.recipe.repository.RecipeQueryDslRepository;
-import com.coco.bakingbuddy.search.dto.response.RecentSearchResponseDto;
+import com.coco.bakingbuddy.search.dto.response.SearchRecordResponseDto;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
@@ -83,10 +83,10 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
-    public List<RecentSearchResponseDto> findRecentSearchesByUserId(Long id) {
+    public List<SearchRecordResponseDto> findSearchRecordsByUserId(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        return user.getRecentSearches().stream()
-                .map(RecentSearchResponseDto::fromEntity)
+        return user.getSearchRecords().stream()
+                .map(SearchRecordResponseDto::fromEntity)
                 .sorted((dto1, dto2) -> dto2.getTimestamp().compareTo(dto1.getTimestamp()))
                 .limit(10)
                 .collect(Collectors.toList());

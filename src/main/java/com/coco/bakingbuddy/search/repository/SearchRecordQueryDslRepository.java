@@ -24,7 +24,7 @@ public class SearchRecordQueryDslRepository {
                 .fetch();
     }
 
-    public SearchRecord selectRecentSearchByUserIdAndTerm(Long userId, String term) {
+    public SearchRecord selectSearchRecordsByUserIdAndTerm(Long userId, String term) {
         return queryFactory.selectFrom(searchRecord)
                 .innerJoin(searchRecord.user, user)
                 .where(user.id.eq(userId)

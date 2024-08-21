@@ -1,6 +1,6 @@
 package com.coco.bakingbuddy.search.dto.response;
 
-import com.coco.bakingbuddy.search.domain.RecentSearch;
+import com.coco.bakingbuddy.search.domain.SearchRecord;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Data
-public class RecentSearchResponseDto {
+public class SearchRecordResponseDto {
     private String search;
     private LocalDateTime timestamp;
 
-    public static RecentSearchResponseDto fromEntity(RecentSearch dto) {
-        return RecentSearchResponseDto.builder()
+    public static SearchRecordResponseDto fromEntity(SearchRecord dto) {
+        return SearchRecordResponseDto.builder()
                 .search(dto.getTerm())
                 .timestamp(dto.getTimestamp())
                 .build();
