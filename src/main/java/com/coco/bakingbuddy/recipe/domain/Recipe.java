@@ -42,6 +42,7 @@ public class Recipe extends BaseTime {
     private Integer time; // 소요시간
     private String level; // 난이도
 
+    @Builder.Default
     private Integer likeCount = 0;
     @JsonIgnore
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
