@@ -30,6 +30,7 @@ public class Product extends BaseTime {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductReview> reviews;
     private boolean useYn;
+    @Column(unique = true)
     private Long providerId;
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -46,6 +47,7 @@ public class Product extends BaseTime {
     public void setImageUrl(String imageUrl) {
         this.productImageUrl = imageUrl;
     }
+
     public void setDetailImageUrl(List<String> imageUrl) {
         this.productDetailImageUrls = imageUrl;
     }

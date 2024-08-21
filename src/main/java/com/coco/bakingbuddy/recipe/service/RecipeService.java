@@ -29,7 +29,6 @@ import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.recommendation.domain.ProductRecommendation;
 import com.coco.bakingbuddy.recommendation.repository.ProductRecommendationRepository;
 import com.coco.bakingbuddy.shopping.service.ShoppingService;
-import com.coco.bakingbuddy.socket.AlarmWebSocketHandler;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.tag.repository.TagRecipeQueryDslRepository;
@@ -49,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.coco.bakingbuddy.global.error.ErrorCode.*;
@@ -72,7 +72,6 @@ public class RecipeService {
     private final FileService fileService;
     private final RecipeStepRepository recipeStepRepository;
     private final FollowService followService;
-    private final AlarmWebSocketHandler alarmWebSocketHandler;
     private final AlarmService alarmService;
     private final ShoppingService shoppingService;
     private final ProductRepository productRepository;
@@ -127,14 +126,17 @@ public class RecipeService {
 
     @Transactional
     public CreateRecipeResponseDto create(Long userId, CreateRecipeRequestDto dto, MultipartFile multipartFile) {
-        Directory directory = directoryRepository.findById(dto.getDirId()).orElseThrow(() -> new CustomException(DIRECTORY_NOT_FOUND));
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        Directory directory = directoryRepository.findById(dto.getDirId())
+                .orElseThrow(() -> new CustomException(DIRECTORY_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         Recipe recipe = recipeRepository.save(toEntity(dto));
         recipe.setDirectory(directory);
         recipe.setUser(user);
         saveTags(dto.getTags(), recipe);
         saveIngredients(dto.getIngredients(), recipe, dto.getServings());
+
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String imageUrl = fileService.uploadRecipeImageFile(recipe, multipartFile);
             recipe.updateImage(imageUrl);
@@ -143,27 +145,34 @@ public class RecipeService {
         followService.getAllFollowersDto(user);
         alarmService.createNewRecipeAlarm(recipe.getId(),
                 user.getNickname() + "이 새로운 레시피 " + recipe.getName() + "를 추가했습니다.", followService.getAllFollowers(user));
+
         List<CreateIngredientRequestDto> ingredients = dto.getIngredients();
         for (CreateIngredientRequestDto ingredient : ingredients) {
             shoppingService.searchProducts(ingredient.getName(), 2, 1, "sim")
                     .subscribe(productResponse -> {
                         productResponse.getItems().forEach(item -> {
                             String cleanTitle = item.getTitle().replaceAll("<[^>]*>", "").trim();
-                            Product product = Product.builder()
-                                    .name(cleanTitle)
-                                    .price(item.getLprice())
-                                    .link(item.getLink())
-                                    .productImageUrl(item.getImage())
-                                    .providerId(item.getProductId())
-                                    .build();
-                            Product save = productRepository.save(product);// 상품을 DB에 저장
+                            Long providerId = item.getProductId();
+                            Product product;
+                            Optional<Product> existingProduct = productRepository.findByProviderId(providerId);
+                            if (!existingProduct.isPresent()) {
+                                product = Product.builder()
+                                        .name(cleanTitle)
+                                        .price(item.getLprice())
+                                        .link(item.getLink())
+                                        .productImageUrl(item.getImage())
+                                        .providerId(providerId)
+                                        .build();
+                                product = productRepository.save(product); // Save the new product
+                            } else {
+                                product = existingProduct.get();
+                            }
                             productRecommendationRepository.save(ProductRecommendation.builder()
-                                    .product(save)
+                                    .product(product)
                                     .recipe(recipe)
                                     .build());
                         });
                     });
-            ;
         }
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
