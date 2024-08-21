@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.search.domain;
 
 
+import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class RecentSearch {
+public class SearchRecord extends BaseTime {
 
     @Id
     @Column(name = "RECENT_SEARCH_ID")
@@ -30,8 +31,8 @@ public class RecentSearch {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
-    public static RecentSearch create(String term, User user) {
-        return RecentSearch.builder()
+    public static SearchRecord create(String term, User user) {
+        return SearchRecord.builder()
                 .term(term)
                 .timestamp(LocalDateTime.now())
                 .user(user)

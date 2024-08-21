@@ -1,7 +1,7 @@
 package com.coco.bakingbuddy.search.repository;
 
 import com.coco.bakingbuddy.recipe.domain.Recipe;
-import com.coco.bakingbuddy.search.domain.RecentSearch;
+import com.coco.bakingbuddy.search.domain.SearchRecord;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.coco.bakingbuddy.recipe.domain.QRecipe.recipe;
-import static com.coco.bakingbuddy.search.domain.QRecentSearch.recentSearch;
+import static com.coco.bakingbuddy.search.domain.QSearchRecord.searchRecord;
 import static com.coco.bakingbuddy.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 @Repository
-public class RecentSearchQueryDslRepository {
+public class SearchRecordQueryDslRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<Recipe> findByRecipeId(Long id) {
@@ -24,11 +24,11 @@ public class RecentSearchQueryDslRepository {
                 .fetch();
     }
 
-    public RecentSearch selectRecentSearchByUserIdAndTerm(Long userId, String term) {
-        return queryFactory.selectFrom(recentSearch)
-                .innerJoin(recentSearch.user, user)
+    public SearchRecord selectRecentSearchByUserIdAndTerm(Long userId, String term) {
+        return queryFactory.selectFrom(searchRecord)
+                .innerJoin(searchRecord.user, user)
                 .where(user.id.eq(userId)
-                        .and(recentSearch.term.eq(term)))
+                        .and(searchRecord.term.eq(term)))
                 .fetchOne();
     }
 }
