@@ -6,7 +6,7 @@ steps:
       - '-c'
       - |
         # Secret Manager에서 JSON 키 파일 가져오기
-        gcloud secrets versions access latest --secret=baking-buddy-key > resources/keys/baking-buddy-428009-28b83cf67c33.json
+        gcloud secrets versions access latest --secret=baking-buddy-key > resources/keys/cookingbunnies-8795bdb79870.json
 
   # Gradle 설치 및 빌드
   - name: 'gradle:7.5.1-jdk17'
@@ -24,7 +24,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'asia-northeast3-docker.pkg.dev/baking-buddy-428009/baking-buddy-image'
+      - 'asia-northeast3-docker.pkg.dev/cookingbunnies/baking-buddy-image'
       - '--build-arg=JAR_FILE=app.jar'  # 빌드할 JAR 파일 경로 지정
       - '.'
     dir: /workspace   # 작업 디렉토리 설정
@@ -33,13 +33,13 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'asia-northeast3-docker.pkg.dev/baking-buddy-428009/baking-buddy-image'
+      - 'asia-northeast3-docker.pkg.dev/cookingbunnies/baking-buddy-image'
     dir: /workspace   # 작업 디렉토리 설정
 
 options:
   logging: CLOUD_LOGGING_ONLY
 
 secrets:
-  - kmsKeyName: projects/baking-buddy-428009/locations/global/keyRings/my-key-ring/cryptoKeys/my-key
+  - kmsKeyName: projects/cookingbunnies/locations/global/keyRings/my-key-ring/cryptoKeys/my-key
     secretEnv:
-      BAKING_BUDDY_KEY: projects/baking-buddy-428009/secrets/baking-buddy-key/versions/latest
+      BAKING_BUDDY_KEY: projects/cookingbunnies/secrets/baking-buddy-key/versions/latest
