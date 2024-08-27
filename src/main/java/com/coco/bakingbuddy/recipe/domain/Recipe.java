@@ -6,6 +6,7 @@ import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.ingredient.domain.IngredientRecipe;
 import com.coco.bakingbuddy.like.domain.Like;
 import com.coco.bakingbuddy.review.domain.RecipeReview;
+import com.coco.bakingbuddy.search.domain.ClickableEntity;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
 import com.coco.bakingbuddy.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,7 +22,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Recipe extends BaseTime {
+public class Recipe extends BaseTime implements ClickableEntity {
     @Id
     @Column(name = "RECIPE_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +47,7 @@ public class Recipe extends BaseTime {
     private Integer likeCount = 0;
     @JsonIgnore
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Like> likes = new HashSet<>();
     @JsonIgnore
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

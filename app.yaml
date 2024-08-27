@@ -1,0 +1,16 @@
+runtime: java17
+env: standard
+entrypoint: java -jar ./build/libs/BakingBuddy-0.0.1-SNAPSHOT.jar
+vpc_access_connector:
+  name: "projects/cookingbunnies/locations/asia-northeast3/connectors/bunnies"
+
+env_variables:
+  SPRING_PROFILES_ACTIVE: "mysql"
+  SPRING_REDIS_HOST: "10.62.178.147"
+  SPRING_REDIS_PORT: "6379"
+  SPRING_CLOUD_GCP_SQL_INSTANCE_CONNECTION_NAME: "cookingbunnies:asia-northeast3:cooking-bunnies-db"
+  SPRING_CLOUD_GCP_SQL_DATABASE_NAME: "cooking-bunnies-db"
+
+handlers:
+  - url: /.*
+    script: this field is required, but ignored

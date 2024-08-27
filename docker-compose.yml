@@ -6,10 +6,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://baking-buddy-428009:asia-northeast3:baking-buddy-sql
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-      SPRING_REDIS_HOST: 10.170.239.131
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking-bunnies-db
+      SPRING_DATASOURCE_USERNAME: yooyeon
+      SPRING_DATASOURCE_PASSWORD: yooyeon
+      SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
     depends_on:
       - db
@@ -21,7 +21,8 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: baking_buddy
+      MYSQL_DATABASE: cooking-bunnies-db
+
   redis:
     image: redis:latest
     ports:

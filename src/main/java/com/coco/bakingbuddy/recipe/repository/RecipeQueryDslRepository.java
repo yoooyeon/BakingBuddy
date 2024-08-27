@@ -1,5 +1,6 @@
 package com.coco.bakingbuddy.recipe.repository;
 
+import com.coco.bakingbuddy.recipe.domain.QRecipe;
 import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.redis.repository.RedisAutoCompletePreviewDto;
 import com.coco.bakingbuddy.user.domain.User;
@@ -31,31 +32,31 @@ public class RecipeQueryDslRepository {
 
     public Recipe findById(Long id) {
         return queryFactory
-                .selectFrom(recipe)
-                .where(recipe.id.eq(id))
+                .selectFrom(QRecipe.recipe)
+                .where(QRecipe.recipe.id.eq(id))
                 .fetchOne();
     }
 
     public List<Recipe> findByUserId(Long userId) {
         return queryFactory
-                .selectFrom(recipe)
-                .where(recipe.user.id.eq(userId))
+                .selectFrom(QRecipe.recipe)
+                .where(QRecipe.recipe.user.id.eq(userId))
                 .fetch();
     }
 
     public List<Recipe> findByDirectoryId(Long directoryId) {
         return queryFactory
-                .selectFrom(recipe)
-                .where(recipe.directory.id.eq(directoryId))
+                .selectFrom(QRecipe.recipe)
+                .where(QRecipe.recipe.directory.id.eq(directoryId))
                 .fetch();
     }
 
 
     public Page<Recipe> findAll(Pageable pageable) {
         QueryResults<Recipe> queryResults = queryFactory
-                .selectFrom(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
-                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .selectFrom(QRecipe.recipe)
+                .leftJoin(QRecipe.recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(QRecipe.recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -66,9 +67,9 @@ public class RecipeQueryDslRepository {
 
     public Page<Recipe> findByKeyword(String keyword, Pageable pageable) {
         QueryResults<Recipe> queryResults = queryFactory
-                .selectFrom(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
-                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .selectFrom(QRecipe.recipe)
+                .leftJoin(QRecipe.recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(QRecipe.recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag).fetchJoin()
                 .where(
                         recipe.name.containsIgnoreCase(keyword)
@@ -83,9 +84,9 @@ public class RecipeQueryDslRepository {
 
     public List<Recipe> findByKeyword(String keyword) {
         return queryFactory
-                .selectFrom(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
-                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .selectFrom(QRecipe.recipe)
+                .leftJoin(QRecipe.recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(QRecipe.recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag).fetchJoin()
                 .where(
                         recipe.name.containsIgnoreCase(keyword) // 레시피 이름으로 검색
@@ -100,41 +101,41 @@ public class RecipeQueryDslRepository {
     public List<RedisAutoCompletePreviewDto> findPreviewByTerm(String term) {
         return queryFactory
                 .select(Projections.constructor(RedisAutoCompletePreviewDto.class,
-                        recipe.name,
-                        recipe.id,
-                        recipe.recipeImageUrl
+                        QRecipe.recipe.name,
+                        QRecipe.recipe.id,
+                        QRecipe.recipe.recipeImageUrl
                 ))
-                .from(recipe)
-                .where(recipe.name.containsIgnoreCase(term))
+                .from(QRecipe.recipe)
+                .where(QRecipe.recipe.name.containsIgnoreCase(term))
                 .fetch();
     }
 
     public List<Recipe> findByUsers(List<User> allFollowedUsers) {
         return queryFactory
-                .selectFrom(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
-                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .selectFrom(QRecipe.recipe)
+                .leftJoin(QRecipe.recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(QRecipe.recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag).fetchJoin()
-                .where(recipe.user.in(allFollowedUsers))
-                .orderBy(recipe.createdDate.desc())
+                .where(QRecipe.recipe.user.in(allFollowedUsers))
+                .orderBy(QRecipe.recipe.createdDate.desc())
                 .fetchResults()
                 .getResults();
     }
 
     public List<Recipe> findByUsersAfterCursor(List<User> users, Long cursor) {
         JPAQuery<Recipe> query = queryFactory
-                .selectFrom(recipe)
-                .leftJoin(recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
-                .leftJoin(recipe.tagRecipes, tagRecipe).fetchJoin()
+                .selectFrom(QRecipe.recipe)
+                .leftJoin(QRecipe.recipe.ingredientRecipes, ingredientRecipe).fetchJoin()
+                .leftJoin(QRecipe.recipe.tagRecipes, tagRecipe).fetchJoin()
                 .leftJoin(tagRecipe.tag, tag).fetchJoin()
-                .where(recipe.user.in(users));
+                .where(QRecipe.recipe.user.in(users));
 
         if (cursor != null) {
             // cursor 이후의 레시피를 가져오도록 조건 추가
-            query.where(recipe.id.gt(cursor));
+            query.where(QRecipe.recipe.id.gt(cursor));
         }
 
-        return query.orderBy(recipe.createdDate.desc()) // createdDate로 변경
+        return query.orderBy(QRecipe.recipe.createdDate.desc()) // createdDate로 변경
                 .limit(10) // 페이지당 가져올 레시피 수 제한
                 .fetch();
     }

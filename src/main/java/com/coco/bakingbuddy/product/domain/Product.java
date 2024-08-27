@@ -4,6 +4,7 @@ package com.coco.bakingbuddy.product.domain;
 import com.coco.bakingbuddy.file.domain.ProductImageFile;
 import com.coco.bakingbuddy.global.domain.BaseTime;
 import com.coco.bakingbuddy.review.domain.ProductReview;
+import com.coco.bakingbuddy.search.domain.ClickableEntity;
 import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Product extends BaseTime {
+public class Product extends BaseTime implements ClickableEntity {
     @Column(name = "PRODUCT_ID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +39,7 @@ public class Product extends BaseTime {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sequence ASC")
+    @Builder.Default
     private List<ProductImageFile> productImageFiles = new ArrayList<>();
 
     public void setUser(User user) {

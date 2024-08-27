@@ -20,6 +20,7 @@ public class CreateRecipeStepResponseDto {
     public static CreateRecipeStepResponseDto fromEntity(RecipeStep recipeStep) {
         return CreateRecipeStepResponseDto.builder()
                 .id(recipeStep.getId())
+                .recipeId(recipeStep.getRecipe().getId())
                 .stepNumber(recipeStep.getStepNumber())
                 .description(recipeStep.getDescription())
                 .stepImage(recipeStep.getStepImage())

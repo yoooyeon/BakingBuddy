@@ -174,11 +174,15 @@ public class JwtTokenProvider {
     // 쿠키에 토큰 저장
     public void addTokenToCookie(HttpServletResponse response, String token, String tokenName) {
         Cookie cookie = new Cookie(tokenName, token);
+        cookie.setDomain("127.0.0.1");
         cookie.setPath("/");
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) (tokenName.equals("accessToken") ? accessTokenValidityInMilliseconds : refreshTokenValidityInMilliseconds) / 1000);
+        response.addHeader("Access-Control-Allow-Credentials","true");
+        response.addHeader("Access-Control-Allow-Origin","*");
         response.addCookie(cookie);
+
     }
 
     // 토큰을 쿠키에서 가져오기

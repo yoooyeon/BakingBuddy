@@ -43,6 +43,7 @@ public class User extends BaseTime implements UserDetails {
     private UUID uuid;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<Like> likedRecipes = new HashSet<>();
 
     @JsonIgnore

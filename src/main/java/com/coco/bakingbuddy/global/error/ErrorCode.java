@@ -79,6 +79,9 @@ public enum ErrorCode {
 
     //main recipe
     MAIN_RECIPE_NOT_FOUND(BAD_REQUEST,"해당 main recipe를 찾을 수 없습니다."),
+
+    //click
+    INVALID_CLICK_TYPE(BAD_REQUEST,"유효하지 않은 클릭 타입 입니다."),
     ;
 
 

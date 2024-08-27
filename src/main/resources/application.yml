@@ -1,10 +1,17 @@
 server:
   port: 8080
+  servlet:
+    session:
+      cookie:
+        same-site: "None"
+        secure: true
 
 spring:
+  profiles:
+    active: mysql
   data:
     redis:
-      host: 127.0.0.1
+      host: 10.62.178.147
       port: 6379
     jedis:
       pool:
@@ -18,10 +25,11 @@ spring:
     name: BakingBuddy
 
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/baking_buddy
-    username: root
-    password: root
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://127.0.0.1:3306/baking_buddy
+    username: yooyeon
+    password: yooyeon
+#    password: root
   #    driver-class-name: org.h2.Driver
   #    url: jdbc:h2:~/baking_buddy
   #    username: sa
@@ -69,10 +77,9 @@ logging:
   level:
     org:
       springframework:
-        security: DEBUG
-        web: DEBUG
-
-      hibernate: DEBUG
+        security: INFO
+        web: INFO
+      hibernate: INFO
 
 
 management:

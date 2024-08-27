@@ -177,4 +177,3 @@ Spring Security와 함께 활용한다. 쿠키에 토큰을 저장한다.
 - Local Actuator: http://localhost:8080/manage
 
 
-### 현재 비용 문제로 클라우드 사용을 중단했습니다.

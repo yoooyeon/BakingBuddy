@@ -1,7 +1,6 @@
 package com.coco.bakingbuddy.search.domain;
 
 import com.coco.bakingbuddy.global.domain.BaseTime;
-import com.coco.bakingbuddy.recipe.domain.Recipe;
 import com.coco.bakingbuddy.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +20,11 @@ public class ClickRecord extends BaseTime {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ClickType clickType;
+
+    @Column(name = "entity_id")
+    private Long entityId;
+
 }

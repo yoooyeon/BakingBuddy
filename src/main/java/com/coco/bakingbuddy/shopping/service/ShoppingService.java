@@ -10,11 +10,12 @@ import reactor.core.publisher.Mono;
 public class ShoppingService {
     private final String NAVER_API_DOMAIN = "https://openapi.naver.com/v1/search/shop.json";
 
-    @Value("${naver.api.client-id}")
-    private String clientId;
+    //    @Value("${naver.api.client-id}")
+    private String clientId="UoMIUV2XU8pZenSQwq6N";
 
-    @Value("${naver.api.client-secret}")
-    private String clientSecret ;
+    //    @Value("${naver.api.client-secret}")
+    private String clientSecret="xI_pZqAkvh" ;
+
 
     private final WebClient webClient;
 
