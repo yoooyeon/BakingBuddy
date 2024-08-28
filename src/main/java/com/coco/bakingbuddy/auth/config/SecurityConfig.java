@@ -1,6 +1,7 @@
 package com.coco.bakingbuddy.auth.config;
 
 import com.coco.bakingbuddy.auth.service.PrincipalService;
+import com.coco.bakingbuddy.global.config.CorsConfig;
 import com.coco.bakingbuddy.jwt.filter.JwtAuthenticationFilter;
 import com.coco.bakingbuddy.jwt.provider.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,12 +27,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final PrincipalService principalService;
+    private final CorsConfig corsConfig; // 추가된 CORS 설정 클래스
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/signup").permitAll()
