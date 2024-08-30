@@ -1,0 +1,8 @@
+database: mysql
+spring:
+  cloud:
+    gcp:
+      sql:
+        instance-connection-name: cookingbunnies:asia-northeast3:cooking-bunnies-db
+        database-name: cooking-bunnies-db
+

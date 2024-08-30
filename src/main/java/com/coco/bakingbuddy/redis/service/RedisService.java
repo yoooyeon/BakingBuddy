@@ -43,7 +43,6 @@ public class RedisService {
         String redisPattern = "search_autocomplete:" + prefix + "*";
         Set<String> keys = redisTemplate.keys(redisPattern);
         List<RedisAutoCompletePreviewDto> autocompleteResults = new ArrayList<>();
-
         ObjectMapper mapper = new ObjectMapper();
         if (keys != null && !keys.isEmpty() && keys.size() > 0) {
             for (String key : keys) {

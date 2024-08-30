@@ -34,25 +34,19 @@ public class LikeService {
 
         Optional<Like> existingLike = likeRepository.findByRecipeAndUser(recipe, user);
         boolean isLiked;
-        if (!existingLike.isPresent()) {
+        if (existingLike.isEmpty()) {
             Like newLike = Like.builder()
                     .recipe(recipe)
                     .user(user)
                     .build();
-            likeRepository.save(newLike);
-            recipe.increaseLikeCount(newLike);
-            isLiked = true;
-        } else {
-            Like like = existingLike.get();
-            likeRepository.delete(like);
-            recipe.decreaseLikeCount(like);
-            isLiked = false;
+            Like save = likeRepository.save(newLike);
+            recipe.increaseLikeCount(save);
         }
 
         Recipe save = recipeRepository.save(recipe);
 //        messagingService.broadcastLikeUpdate(new LikeResponseDto(isLiked, save.getLikeCount()));
         return LikeResponseDto.builder()
-                .userLiked(isLiked)
+                .userLiked(true)
                 .likeCount(save.getLikeCount())
                 .build();
     }
@@ -65,16 +59,18 @@ public class LikeService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Like> existingLike = likeRepository.findByRecipeAndUser(recipe, user);
+        boolean isLiked;
+
         if (existingLike.isPresent()) {
             Like like = existingLike.get();
             likeRepository.delete(like);
             recipe.decreaseLikeCount(like);
-            recipeRepository.save(recipe);
         }
 
+        Recipe updatedRecipe = recipeRepository.save(recipe);
         return LikeResponseDto.builder()
                 .userLiked(false)
-                .likeCount(recipe.getLikeCount())
+                .likeCount(updatedRecipe.getLikeCount())
                 .build();
     }
 

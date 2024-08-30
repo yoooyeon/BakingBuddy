@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.coco.bakingbuddy.global.error.ErrorCode.USER_NOT_FOUND;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -26,14 +28,14 @@ public class SearchService {
 
         // 사용자 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         SearchRecord existingSearch = searchRecordQueryDslRepository.selectSearchRecordsByUserIdAndTerm(userId, term);
 
 
         if (existingSearch != null) {
             // 검색어가 이미 존재하면 timestamp만 업데이트
             existingSearch.setTimestamp(LocalDateTime.now());
-            userRepository.save(user); // 또는 별도로 searchRecords 저장소가 있다면 사용
+            searchRecordRepository.save(existingSearch);
         } else {
             // 현재 시간 기준으로 새로운 검색어 생성
             SearchRecord searchRecord = SearchRecord.create(term, user);
@@ -46,13 +48,13 @@ public class SearchService {
 
     public List<SearchRecord> getSearchRecords(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return user.getSearchRecords();
     }
 
     public void clearSearchRecords(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.clearSearchRecords();
         userRepository.save(user);
     }

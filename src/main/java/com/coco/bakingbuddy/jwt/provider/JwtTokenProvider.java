@@ -101,7 +101,6 @@ public class JwtTokenProvider {
 
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateAccessToken(String jwtToken) {
-
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secretKey)
@@ -152,15 +151,11 @@ public class JwtTokenProvider {
 
     // Refresh Token 검증
     public boolean validateRefreshToken(String refreshToken) {
-        log.info(">>>validateRefreshToken");
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(refreshToken);
-            log.info(">>>claims.getBody().getSubject()={}", claims.getBody().getSubject());
-            // Refresh Token이 데이터베이스에 저장된 것인지 확인
             RefreshToken tokenEntity = refreshTokenRepository.findByUsername(claims.getBody().getSubject());
-            log.info(">>>tokenEntity={}", tokenEntity);
             return tokenEntity != null && tokenEntity.getToken().equals(refreshToken) && tokenEntity.isValid();
         } catch (JwtException e) {
             log.error("JWT Exception: ", e);
@@ -179,8 +174,6 @@ public class JwtTokenProvider {
         cookie.setSecure(false);
         cookie.setHttpOnly(true);
         cookie.setMaxAge((int) (tokenName.equals("accessToken") ? accessTokenValidityInMilliseconds : refreshTokenValidityInMilliseconds) / 1000);
-//        response.addHeader("Access-Control-Allow-Credentials","true");
-//        response.addHeader("Access-Control-Allow-Origin","*");
         response.addCookie(cookie);
 
     }

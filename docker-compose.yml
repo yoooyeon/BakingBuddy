@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/cooking-bunnies-db
+      SPRING_DATASOURCE_URL: jdbc:mysql://cookingbunnies:asia-northeast3:cooking-bunnies-db/cooking-bunnies-db
       SPRING_DATASOURCE_USERNAME: yooyeon
       SPRING_DATASOURCE_PASSWORD: yooyeon
       SPRING_REDIS_HOST: redis

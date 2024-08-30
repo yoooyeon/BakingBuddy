@@ -116,7 +116,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.mockito:mockito-core'
 
-
+    testImplementation 'org.apache.httpcomponents.client5:httpclient5'
 
 }
 dependencyManagement {

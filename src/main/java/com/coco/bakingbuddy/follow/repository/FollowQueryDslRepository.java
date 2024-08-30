@@ -6,7 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-//import static com.coco.bakingbuddy.follow.domain.QFollow.follow;
+import static com.coco.bakingbuddy.follow.domain.QFollow.follow;
 
 @RequiredArgsConstructor
 @Repository
@@ -15,18 +15,18 @@ public class FollowQueryDslRepository {
 
     public long unFollow(User follower, User followed) {
         return queryFactory
-                .delete(QFollow.follow)
-                .where(QFollow.follow.follower.id.eq(follower.getId())
-                        .and(QFollow.follow.followed.id.eq(followed.getId()))
+                .delete(follow)
+                .where(follow.follower.id.eq(follower.getId())
+                        .and(follow.followed.id.eq(followed.getId()))
                 )
                 .execute(); // execute() 메소드로 삭제된 행의 수를 반환
     }
 
     public boolean existsByFollowerAndFollowed(User follower, User followed) {
         return queryFactory
-                .selectFrom(QFollow.follow)
-                .where(QFollow.follow.follower.eq(follower)
-                        .and(QFollow.follow.followed.eq(followed)))
+                .selectFrom(follow)
+                .where(follow.follower.eq(follower)
+                        .and(follow.followed.eq(followed)))
                 .fetchCount() > 0;
     }
 }
