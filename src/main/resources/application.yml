@@ -26,7 +26,7 @@ spring:
 
   datasource:
 #    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://127.0.0.1:3306/baking_buddy
+    url: jdbc:mariadb://cookingbunnies:asia-northeast3:cooking-bunnies-db/cooking-bunnies-db
     username: yooyeon
     password: yooyeon
 #    password: root
