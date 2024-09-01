@@ -5,7 +5,7 @@ import com.coco.bakingbuddy.shopping.service.ShoppingService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+
 
 @RestController
 public class ShoppingController {
@@ -17,7 +17,7 @@ public class ShoppingController {
     }
 
     @GetMapping("/search")
-    public Mono<ProductResponse> searchProducts(
+    public ProductResponse searchProducts(
             @RequestParam("query") String query,
             @RequestParam(value = "display", required = false) Integer display,
             @RequestParam(value = "start", required = false) Integer start,

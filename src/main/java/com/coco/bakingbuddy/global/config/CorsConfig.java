@@ -13,21 +13,13 @@ import java.util.Arrays;
 import static java.util.Arrays.asList;
 
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("https://baking-buddy-frontend-h5cn.vercel.app")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+public class CorsConfig {
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
                 asList("http://localhost:3001"
-                        , "http://localhost:3002"
                         , "http://localhost:3000"
                         , "http://localhost:8080"
                         , "https://baking-buddy-frontend-h5cn.vercel.app"
@@ -36,16 +28,16 @@ public class CorsConfig implements WebMvcConfigurer {
         configuration.setAllowedMethods(asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(asList(
                 "Content-Type",
-//                "Authorization",
-//                "X-Requested-With",
-                "Accept"
-//                "accessToken",
-//                "refreshToken"
+                "Authorization",
+                "X-Requested-With",
+                "Accept",
+                "accessToken",
+                "refreshToken"
         ));
         configuration.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
+

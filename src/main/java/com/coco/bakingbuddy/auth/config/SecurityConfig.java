@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
@@ -33,10 +31,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // CORS 설정 적용
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**/*").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
@@ -84,6 +81,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
 }

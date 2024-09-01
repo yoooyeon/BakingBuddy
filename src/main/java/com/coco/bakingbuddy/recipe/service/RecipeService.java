@@ -28,6 +28,7 @@ import com.coco.bakingbuddy.recipe.repository.RecipeRepository;
 import com.coco.bakingbuddy.recipe.repository.RecipeStepRepository;
 import com.coco.bakingbuddy.recommendation.domain.ProductRecommendation;
 import com.coco.bakingbuddy.recommendation.repository.ProductRecommendationRepository;
+import com.coco.bakingbuddy.shopping.domain.ProductResponse;
 import com.coco.bakingbuddy.shopping.service.ShoppingService;
 import com.coco.bakingbuddy.tag.domain.Tag;
 import com.coco.bakingbuddy.tag.domain.TagRecipe;
@@ -124,6 +125,7 @@ public class RecipeService {
         return dto;
     }
 
+
     @Transactional
     public CreateRecipeResponseDto create(Long userId, CreateRecipeRequestDto dto, MultipartFile multipartFile) {
         Directory directory = directoryRepository.findById(dto.getDirId())
@@ -148,34 +150,34 @@ public class RecipeService {
 
         List<CreateIngredientRequestDto> ingredients = dto.getIngredients();
         for (CreateIngredientRequestDto ingredient : ingredients) {
-            shoppingService.searchProducts(ingredient.getName(), 2, 1, "sim")
-                    .subscribe(productResponse -> {
-                        productResponse.getItems().forEach(item -> {
-                            String cleanTitle = item.getTitle().replaceAll("<[^>]*>", "").trim();
-                            Long providerId = item.getProductId();
-                            Product product;
-                            Optional<Product> existingProduct = productRepository.findByProviderId(providerId);
-                            if (!existingProduct.isPresent()) {
-                                product = Product.builder()
-                                        .name(cleanTitle)
-                                        .price(item.getLprice())
-                                        .link(item.getLink())
-                                        .productImageUrl(item.getImage())
-                                        .providerId(providerId)
-                                        .build();
-                                product = productRepository.save(product); // Save the new product
-                            } else {
-                                product = existingProduct.get();
-                            }
-                            productRecommendationRepository.save(ProductRecommendation.builder()
-                                    .product(product)
-                                    .recipe(recipe)
-                                    .build());
-                        });
-                    });
+            // 동기 방식으로 API 호출
+            ProductResponse productResponse = shoppingService.searchProducts(ingredient.getName(), 2, 1, "sim");
+            productResponse.getItems().forEach(item -> {
+                String cleanTitle = item.getTitle().replaceAll("<[^>]*>", "").trim();
+                Long providerId = item.getProductId();
+                Product product;
+                Optional<Product> existingProduct = productRepository.findByProviderId(providerId);
+                if (!existingProduct.isPresent()) {
+                    product = Product.builder()
+                            .name(cleanTitle)
+                            .price(item.getLprice())
+                            .link(item.getLink())
+                            .productImageUrl(item.getImage())
+                            .providerId(providerId)
+                            .build();
+                    product = productRepository.save(product); // Save the new product
+                } else {
+                    product = existingProduct.get();
+                }
+                productRecommendationRepository.save(ProductRecommendation.builder()
+                        .product(product)
+                        .recipe(recipe)
+                        .build());
+            });
         }
         return CreateRecipeResponseDto.fromEntity(recipe);
     }
+
 
     @Transactional
     public CreateRecipeResponseDto edit(EditRecipeRequestDto dto) {

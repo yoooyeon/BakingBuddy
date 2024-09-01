@@ -342,7 +342,6 @@ Spring Security와 함께 활용한다. 쿠키에 토큰을 저장한다.
     - Spring Boot Starter Validation: 3.2.5
     - Spring Boot Starter Actuator: 3.2.5
     - Spring Boot Starter AOP: 3.2.5
-    - Spring Boot Starter Thymeleaf: 3.2.5
 - Springdoc OpenAPI: 2.0.2
 - Spring Cloud GCP Starter: 1.2.5.RELEASE
 - Spring Cloud GCP Storage: 1.2.5.RELEASE
